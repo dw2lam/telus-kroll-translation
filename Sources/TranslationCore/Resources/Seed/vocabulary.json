@@ -1,0 +1,3331 @@
+{
+  "items": [
+    {
+      "component": "verb",
+      "surface": "take",
+      "value": "TAKE"
+    },
+    {
+      "component": "verb",
+      "surface": "takes",
+      "value": "TAKE"
+    },
+    {
+      "component": "verb",
+      "surface": "taking",
+      "value": "TAKE"
+    },
+    {
+      "component": "verb",
+      "surface": "swallow",
+      "value": "TAKE"
+    },
+    {
+      "component": "verb",
+      "surface": "drink",
+      "value": "TAKE"
+    },
+    {
+      "component": "verb",
+      "surface": "give",
+      "value": "TAKE"
+    },
+    {
+      "component": "verb",
+      "surface": "chew and swallow",
+      "value": "TAKE"
+    },
+    {
+      "component": "verb",
+      "surface": "apply",
+      "value": "APPLY"
+    },
+    {
+      "component": "verb",
+      "surface": "rub",
+      "value": "APPLY"
+    },
+    {
+      "component": "verb",
+      "surface": "rub in",
+      "value": "APPLY"
+    },
+    {
+      "component": "verb",
+      "surface": "spread",
+      "value": "APPLY"
+    },
+    {
+      "component": "verb",
+      "surface": "massage",
+      "value": "APPLY"
+    },
+    {
+      "component": "verb",
+      "surface": "instill",
+      "value": "INSTILL"
+    },
+    {
+      "component": "verb",
+      "surface": "instil",
+      "value": "INSTILL"
+    },
+    {
+      "component": "verb",
+      "surface": "put",
+      "value": "INSTILL"
+    },
+    {
+      "component": "verb",
+      "surface": "inhale",
+      "value": "INHALE"
+    },
+    {
+      "component": "verb",
+      "surface": "breathe in",
+      "value": "INHALE"
+    },
+    {
+      "component": "verb",
+      "surface": "insert",
+      "value": "INSERT"
+    },
+    {
+      "component": "verb",
+      "surface": "chew",
+      "value": "CHEW"
+    },
+    {
+      "component": "verb",
+      "surface": "dissolve",
+      "value": "DISSOLVE"
+    },
+    {
+      "component": "verb",
+      "surface": "let dissolve",
+      "value": "DISSOLVE"
+    },
+    {
+      "component": "verb",
+      "surface": "allow to dissolve",
+      "value": "DISSOLVE"
+    },
+    {
+      "component": "verb",
+      "surface": "use",
+      "value": "USE"
+    },
+    {
+      "component": "verb",
+      "surface": "using",
+      "value": "USE"
+    },
+    {
+      "component": "verb",
+      "surface": "place",
+      "value": "PLACE"
+    },
+    {
+      "component": "verb",
+      "surface": "spray",
+      "value": "SPRAY"
+    },
+    {
+      "component": "verb",
+      "surface": "inject",
+      "value": "INJECT"
+    },
+    {
+      "component": "dose",
+      "surface": "one",
+      "value": "1"
+    },
+    {
+      "component": "dose",
+      "surface": "a single",
+      "value": "1"
+    },
+    {
+      "component": "dose",
+      "surface": "two",
+      "value": "2"
+    },
+    {
+      "component": "dose",
+      "surface": "three",
+      "value": "3"
+    },
+    {
+      "component": "dose",
+      "surface": "four",
+      "value": "4"
+    },
+    {
+      "component": "dose",
+      "surface": "five",
+      "value": "5"
+    },
+    {
+      "component": "dose",
+      "surface": "half",
+      "value": "1/2"
+    },
+    {
+      "component": "dose",
+      "surface": "one half",
+      "value": "1/2"
+    },
+    {
+      "component": "dose",
+      "surface": "one-half",
+      "value": "1/2"
+    },
+    {
+      "component": "dose",
+      "surface": "a half",
+      "value": "1/2"
+    },
+    {
+      "component": "dose",
+      "surface": "one and a half",
+      "value": "1.5"
+    },
+    {
+      "component": "dose",
+      "surface": "one and one half",
+      "value": "1.5"
+    },
+    {
+      "component": "dose",
+      "surface": "# to #",
+      "value": "#-#"
+    },
+    {
+      "component": "dose",
+      "surface": "# or #",
+      "value": "#-#"
+    },
+    {
+      "component": "form",
+      "surface": "cap",
+      "value": "CAPSULE"
+    },
+    {
+      "component": "form",
+      "surface": "caps",
+      "value": "CAPSULE"
+    },
+    {
+      "component": "form",
+      "surface": "capsule",
+      "value": "CAPSULE"
+    },
+    {
+      "component": "form",
+      "surface": "capsules",
+      "value": "CAPSULE"
+    },
+    {
+      "component": "form",
+      "surface": "capsule(s)",
+      "value": "CAPSULE"
+    },
+    {
+      "component": "form",
+      "surface": "cap(s)",
+      "value": "CAPSULE"
+    },
+    {
+      "component": "form",
+      "surface": "tab",
+      "value": "TABLET"
+    },
+    {
+      "component": "form",
+      "surface": "tabs",
+      "value": "TABLET"
+    },
+    {
+      "component": "form",
+      "surface": "tablet",
+      "value": "TABLET"
+    },
+    {
+      "component": "form",
+      "surface": "tablets",
+      "value": "TABLET"
+    },
+    {
+      "component": "form",
+      "surface": "tablet(s)",
+      "value": "TABLET"
+    },
+    {
+      "component": "form",
+      "surface": "tab(s)",
+      "value": "TABLET"
+    },
+    {
+      "component": "form",
+      "surface": "pill",
+      "value": "TABLET"
+    },
+    {
+      "component": "form",
+      "surface": "pills",
+      "value": "TABLET"
+    },
+    {
+      "component": "form",
+      "surface": "ml",
+      "value": "ML"
+    },
+    {
+      "component": "form",
+      "surface": "mls",
+      "value": "ML"
+    },
+    {
+      "component": "form",
+      "surface": "millilitre",
+      "value": "ML"
+    },
+    {
+      "component": "form",
+      "surface": "millilitres",
+      "value": "ML"
+    },
+    {
+      "component": "form",
+      "surface": "milliliter",
+      "value": "ML"
+    },
+    {
+      "component": "form",
+      "surface": "milliliters",
+      "value": "ML"
+    },
+    {
+      "component": "form",
+      "surface": "cc",
+      "value": "ML"
+    },
+    {
+      "component": "form",
+      "surface": "tsp",
+      "value": "TSP"
+    },
+    {
+      "component": "form",
+      "surface": "teaspoon",
+      "value": "TSP"
+    },
+    {
+      "component": "form",
+      "surface": "teaspoons",
+      "value": "TSP"
+    },
+    {
+      "component": "form",
+      "surface": "teaspoonful",
+      "value": "TSP"
+    },
+    {
+      "component": "form",
+      "surface": "teaspoonfuls",
+      "value": "TSP"
+    },
+    {
+      "component": "form",
+      "surface": "tbsp",
+      "value": "TBSP"
+    },
+    {
+      "component": "form",
+      "surface": "tablespoon",
+      "value": "TBSP"
+    },
+    {
+      "component": "form",
+      "surface": "tablespoons",
+      "value": "TBSP"
+    },
+    {
+      "component": "form",
+      "surface": "tablespoonful",
+      "value": "TBSP"
+    },
+    {
+      "component": "form",
+      "surface": "drop",
+      "value": "DROP"
+    },
+    {
+      "component": "form",
+      "surface": "drops",
+      "value": "DROP"
+    },
+    {
+      "component": "form",
+      "surface": "gtt",
+      "value": "DROP"
+    },
+    {
+      "component": "form",
+      "surface": "gtts",
+      "value": "DROP"
+    },
+    {
+      "component": "form",
+      "surface": "gtt(s)",
+      "value": "DROP"
+    },
+    {
+      "component": "form",
+      "surface": "drop(s)",
+      "value": "DROP"
+    },
+    {
+      "component": "form",
+      "surface": "puff",
+      "value": "PUFF"
+    },
+    {
+      "component": "form",
+      "surface": "puffs",
+      "value": "PUFF"
+    },
+    {
+      "component": "form",
+      "surface": "inhalation",
+      "value": "PUFF"
+    },
+    {
+      "component": "form",
+      "surface": "inhalations",
+      "value": "PUFF"
+    },
+    {
+      "component": "form",
+      "surface": "puff(s)",
+      "value": "PUFF"
+    },
+    {
+      "component": "form",
+      "surface": "patch",
+      "value": "PATCH"
+    },
+    {
+      "component": "form",
+      "surface": "patches",
+      "value": "PATCH"
+    },
+    {
+      "component": "form",
+      "surface": "cream",
+      "value": "CREAM"
+    },
+    {
+      "component": "form",
+      "surface": "ointment",
+      "value": "OINTMENT"
+    },
+    {
+      "component": "form",
+      "surface": "oint",
+      "value": "OINTMENT"
+    },
+    {
+      "component": "form",
+      "surface": "gel",
+      "value": "GEL"
+    },
+    {
+      "component": "form",
+      "surface": "lotion",
+      "value": "LOTION"
+    },
+    {
+      "component": "form",
+      "surface": "suppository",
+      "value": "SUPPOSITORY"
+    },
+    {
+      "component": "form",
+      "surface": "suppositories",
+      "value": "SUPPOSITORY"
+    },
+    {
+      "component": "form",
+      "surface": "supp",
+      "value": "SUPPOSITORY"
+    },
+    {
+      "component": "form",
+      "surface": "lozenge",
+      "value": "LOZENGE"
+    },
+    {
+      "component": "form",
+      "surface": "lozenges",
+      "value": "LOZENGE"
+    },
+    {
+      "component": "form",
+      "surface": "sachet",
+      "value": "SACHET"
+    },
+    {
+      "component": "form",
+      "surface": "sachets",
+      "value": "SACHET"
+    },
+    {
+      "component": "form",
+      "surface": "packet",
+      "value": "SACHET"
+    },
+    {
+      "component": "form",
+      "surface": "packets",
+      "value": "SACHET"
+    },
+    {
+      "component": "form",
+      "surface": "unit",
+      "value": "UNIT"
+    },
+    {
+      "component": "form",
+      "surface": "units",
+      "value": "UNIT"
+    },
+    {
+      "component": "form",
+      "surface": "sprays",
+      "value": "SPRAY"
+    },
+    {
+      "component": "route",
+      "surface": "po",
+      "value": "PO"
+    },
+    {
+      "component": "route",
+      "surface": "by mouth",
+      "value": "PO"
+    },
+    {
+      "component": "route",
+      "surface": "orally",
+      "value": "PO"
+    },
+    {
+      "component": "route",
+      "surface": "oral",
+      "value": "PO"
+    },
+    {
+      "component": "route",
+      "surface": "per os",
+      "value": "PO"
+    },
+    {
+      "component": "route",
+      "surface": "per mouth",
+      "value": "PO"
+    },
+    {
+      "component": "route",
+      "surface": "through the mouth",
+      "value": "PO"
+    },
+    {
+      "component": "route",
+      "surface": "sl",
+      "value": "SL"
+    },
+    {
+      "component": "route",
+      "surface": "sublingual",
+      "value": "SL"
+    },
+    {
+      "component": "route",
+      "surface": "sublingually",
+      "value": "SL"
+    },
+    {
+      "component": "route",
+      "surface": "under the tongue",
+      "value": "SL"
+    },
+    {
+      "component": "route",
+      "surface": "under tongue",
+      "value": "SL"
+    },
+    {
+      "component": "route",
+      "surface": "pr",
+      "value": "PR"
+    },
+    {
+      "component": "route",
+      "surface": "rectally",
+      "value": "PR"
+    },
+    {
+      "component": "route",
+      "surface": "per rectum",
+      "value": "PR"
+    },
+    {
+      "component": "route",
+      "surface": "in the rectum",
+      "value": "PR"
+    },
+    {
+      "component": "route",
+      "surface": "into the rectum",
+      "value": "PR"
+    },
+    {
+      "component": "route",
+      "surface": "pv",
+      "value": "PV"
+    },
+    {
+      "component": "route",
+      "surface": "vaginally",
+      "value": "PV"
+    },
+    {
+      "component": "route",
+      "surface": "per vagina",
+      "value": "PV"
+    },
+    {
+      "component": "route",
+      "surface": "into the vagina",
+      "value": "PV"
+    },
+    {
+      "component": "route",
+      "surface": "top",
+      "value": "TOP"
+    },
+    {
+      "component": "route",
+      "surface": "topically",
+      "value": "TOP"
+    },
+    {
+      "component": "route",
+      "surface": "topical",
+      "value": "TOP"
+    },
+    {
+      "component": "route",
+      "surface": "to the skin",
+      "value": "TOP"
+    },
+    {
+      "component": "route",
+      "surface": "on the skin",
+      "value": "TOP"
+    },
+    {
+      "component": "route",
+      "surface": "to skin",
+      "value": "TOP"
+    },
+    {
+      "component": "route",
+      "surface": "externally",
+      "value": "TOP"
+    },
+    {
+      "component": "route",
+      "surface": "in the right eye",
+      "value": "OD"
+    },
+    {
+      "component": "route",
+      "surface": "into the right eye",
+      "value": "OD"
+    },
+    {
+      "component": "route",
+      "surface": "to the right eye",
+      "value": "OD"
+    },
+    {
+      "component": "route",
+      "surface": "right eye",
+      "value": "OD"
+    },
+    {
+      "component": "route",
+      "surface": "od",
+      "value": "OD",
+      "when": "form=DROP"
+    },
+    {
+      "component": "route",
+      "surface": "in the left eye",
+      "value": "OS"
+    },
+    {
+      "component": "route",
+      "surface": "into the left eye",
+      "value": "OS"
+    },
+    {
+      "component": "route",
+      "surface": "to the left eye",
+      "value": "OS"
+    },
+    {
+      "component": "route",
+      "surface": "left eye",
+      "value": "OS"
+    },
+    {
+      "component": "route",
+      "surface": "os",
+      "value": "OS",
+      "when": "form=DROP"
+    },
+    {
+      "component": "route",
+      "surface": "in both eyes",
+      "value": "OU"
+    },
+    {
+      "component": "route",
+      "surface": "into both eyes",
+      "value": "OU"
+    },
+    {
+      "component": "route",
+      "surface": "in each eye",
+      "value": "OU"
+    },
+    {
+      "component": "route",
+      "surface": "into each eye",
+      "value": "OU"
+    },
+    {
+      "component": "route",
+      "surface": "to both eyes",
+      "value": "OU"
+    },
+    {
+      "component": "route",
+      "surface": "both eyes",
+      "value": "OU"
+    },
+    {
+      "component": "route",
+      "surface": "each eye",
+      "value": "OU"
+    },
+    {
+      "component": "route",
+      "surface": "ou",
+      "value": "OU",
+      "when": "form=DROP"
+    },
+    {
+      "component": "route",
+      "surface": "in the right ear",
+      "value": "AD"
+    },
+    {
+      "component": "route",
+      "surface": "into the right ear",
+      "value": "AD"
+    },
+    {
+      "component": "route",
+      "surface": "right ear",
+      "value": "AD"
+    },
+    {
+      "component": "route",
+      "surface": "ad",
+      "value": "AD",
+      "when": "form=DROP"
+    },
+    {
+      "component": "route",
+      "surface": "in the left ear",
+      "value": "AS"
+    },
+    {
+      "component": "route",
+      "surface": "into the left ear",
+      "value": "AS"
+    },
+    {
+      "component": "route",
+      "surface": "left ear",
+      "value": "AS"
+    },
+    {
+      "component": "route",
+      "surface": "as",
+      "value": "AS",
+      "when": "form=DROP"
+    },
+    {
+      "component": "route",
+      "surface": "in both ears",
+      "value": "AU"
+    },
+    {
+      "component": "route",
+      "surface": "into both ears",
+      "value": "AU"
+    },
+    {
+      "component": "route",
+      "surface": "in each ear",
+      "value": "AU"
+    },
+    {
+      "component": "route",
+      "surface": "into each ear",
+      "value": "AU"
+    },
+    {
+      "component": "route",
+      "surface": "both ears",
+      "value": "AU"
+    },
+    {
+      "component": "route",
+      "surface": "each ear",
+      "value": "AU"
+    },
+    {
+      "component": "route",
+      "surface": "au",
+      "value": "AU",
+      "when": "form=DROP"
+    },
+    {
+      "component": "route",
+      "surface": "in each nostril",
+      "value": "NASAL"
+    },
+    {
+      "component": "route",
+      "surface": "into each nostril",
+      "value": "NASAL"
+    },
+    {
+      "component": "route",
+      "surface": "in both nostrils",
+      "value": "NASAL"
+    },
+    {
+      "component": "route",
+      "surface": "into both nostrils",
+      "value": "NASAL"
+    },
+    {
+      "component": "route",
+      "surface": "intranasally",
+      "value": "NASAL"
+    },
+    {
+      "component": "route",
+      "surface": "in the nose",
+      "value": "NASAL"
+    },
+    {
+      "component": "route",
+      "surface": "into the nose",
+      "value": "NASAL"
+    },
+    {
+      "component": "route",
+      "surface": "per nostril",
+      "value": "NASAL"
+    },
+    {
+      "component": "route",
+      "surface": "nasally",
+      "value": "NASAL"
+    },
+    {
+      "component": "route",
+      "surface": "inh",
+      "value": "INH"
+    },
+    {
+      "component": "route",
+      "surface": "by inhalation",
+      "value": "INH"
+    },
+    {
+      "component": "route",
+      "surface": "inhaled",
+      "value": "INH"
+    },
+    {
+      "component": "route",
+      "surface": "by mouth inhalation",
+      "value": "INH"
+    },
+    {
+      "component": "route",
+      "surface": "sc",
+      "value": "SC"
+    },
+    {
+      "component": "route",
+      "surface": "subcutaneously",
+      "value": "SC"
+    },
+    {
+      "component": "route",
+      "surface": "subcut",
+      "value": "SC"
+    },
+    {
+      "component": "route",
+      "surface": "under the skin",
+      "value": "SC"
+    },
+    {
+      "component": "route",
+      "surface": "subcutaneous",
+      "value": "SC"
+    },
+    {
+      "component": "route",
+      "surface": "im",
+      "value": "IM"
+    },
+    {
+      "component": "route",
+      "surface": "intramuscularly",
+      "value": "IM"
+    },
+    {
+      "component": "route",
+      "surface": "intramuscular",
+      "value": "IM"
+    },
+    {
+      "component": "frequency",
+      "surface": "qd",
+      "value": "QD"
+    },
+    {
+      "component": "frequency",
+      "surface": "od",
+      "value": "QD"
+    },
+    {
+      "component": "frequency",
+      "surface": "daily",
+      "value": "QD"
+    },
+    {
+      "component": "frequency",
+      "surface": "once daily",
+      "value": "QD"
+    },
+    {
+      "component": "frequency",
+      "surface": "once a day",
+      "value": "QD"
+    },
+    {
+      "component": "frequency",
+      "surface": "every day",
+      "value": "QD"
+    },
+    {
+      "component": "frequency",
+      "surface": "everyday",
+      "value": "QD"
+    },
+    {
+      "component": "frequency",
+      "surface": "each day",
+      "value": "QD"
+    },
+    {
+      "component": "frequency",
+      "surface": "once per day",
+      "value": "QD"
+    },
+    {
+      "component": "frequency",
+      "surface": "per day",
+      "value": "QD"
+    },
+    {
+      "component": "frequency",
+      "surface": "a day",
+      "value": "QD"
+    },
+    {
+      "component": "frequency",
+      "surface": "1 time a day",
+      "value": "QD"
+    },
+    {
+      "component": "frequency",
+      "surface": "one time a day",
+      "value": "QD"
+    },
+    {
+      "component": "frequency",
+      "surface": "once every day",
+      "value": "QD"
+    },
+    {
+      "component": "frequency",
+      "surface": "q24h",
+      "value": "QD"
+    },
+    {
+      "component": "frequency",
+      "surface": "q1d",
+      "value": "QD"
+    },
+    {
+      "component": "frequency",
+      "surface": "every 24 hours",
+      "value": "QD"
+    },
+    {
+      "component": "frequency",
+      "surface": "bid",
+      "value": "BID"
+    },
+    {
+      "component": "frequency",
+      "surface": "twice daily",
+      "value": "BID"
+    },
+    {
+      "component": "frequency",
+      "surface": "twice a day",
+      "value": "BID"
+    },
+    {
+      "component": "frequency",
+      "surface": "two times a day",
+      "value": "BID"
+    },
+    {
+      "component": "frequency",
+      "surface": "two times daily",
+      "value": "BID"
+    },
+    {
+      "component": "frequency",
+      "surface": "2 times a day",
+      "value": "BID"
+    },
+    {
+      "component": "frequency",
+      "surface": "2 times daily",
+      "value": "BID"
+    },
+    {
+      "component": "frequency",
+      "surface": "2x daily",
+      "value": "BID"
+    },
+    {
+      "component": "frequency",
+      "surface": "2x a day",
+      "value": "BID"
+    },
+    {
+      "component": "frequency",
+      "surface": "twice per day",
+      "value": "BID"
+    },
+    {
+      "component": "frequency",
+      "surface": "two times per day",
+      "value": "BID"
+    },
+    {
+      "component": "frequency",
+      "surface": "q12h",
+      "value": "BID"
+    },
+    {
+      "component": "frequency",
+      "surface": "every 12 hours",
+      "value": "BID"
+    },
+    {
+      "component": "frequency",
+      "surface": "morning and evening",
+      "value": "BID"
+    },
+    {
+      "component": "frequency",
+      "surface": "morning and night",
+      "value": "BID"
+    },
+    {
+      "component": "frequency",
+      "surface": "tid",
+      "value": "TID"
+    },
+    {
+      "component": "frequency",
+      "surface": "three times a day",
+      "value": "TID"
+    },
+    {
+      "component": "frequency",
+      "surface": "three times daily",
+      "value": "TID"
+    },
+    {
+      "component": "frequency",
+      "surface": "3 times a day",
+      "value": "TID"
+    },
+    {
+      "component": "frequency",
+      "surface": "3 times daily",
+      "value": "TID"
+    },
+    {
+      "component": "frequency",
+      "surface": "3x daily",
+      "value": "TID"
+    },
+    {
+      "component": "frequency",
+      "surface": "3x a day",
+      "value": "TID"
+    },
+    {
+      "component": "frequency",
+      "surface": "three times per day",
+      "value": "TID"
+    },
+    {
+      "component": "frequency",
+      "surface": "q8h",
+      "value": "TID"
+    },
+    {
+      "component": "frequency",
+      "surface": "every 8 hours",
+      "value": "TID"
+    },
+    {
+      "component": "frequency",
+      "surface": "qid",
+      "value": "QID"
+    },
+    {
+      "component": "frequency",
+      "surface": "four times a day",
+      "value": "QID"
+    },
+    {
+      "component": "frequency",
+      "surface": "four times daily",
+      "value": "QID"
+    },
+    {
+      "component": "frequency",
+      "surface": "4 times a day",
+      "value": "QID"
+    },
+    {
+      "component": "frequency",
+      "surface": "4 times daily",
+      "value": "QID"
+    },
+    {
+      "component": "frequency",
+      "surface": "4x daily",
+      "value": "QID"
+    },
+    {
+      "component": "frequency",
+      "surface": "4x a day",
+      "value": "QID"
+    },
+    {
+      "component": "frequency",
+      "surface": "four times per day",
+      "value": "QID"
+    },
+    {
+      "component": "frequency",
+      "surface": "q#h",
+      "value": "Q#H"
+    },
+    {
+      "component": "frequency",
+      "surface": "q # h",
+      "value": "Q#H"
+    },
+    {
+      "component": "frequency",
+      "surface": "q#hr",
+      "value": "Q#H"
+    },
+    {
+      "component": "frequency",
+      "surface": "q#hrs",
+      "value": "Q#H"
+    },
+    {
+      "component": "frequency",
+      "surface": "every # hours",
+      "value": "Q#H"
+    },
+    {
+      "component": "frequency",
+      "surface": "every # hrs",
+      "value": "Q#H"
+    },
+    {
+      "component": "frequency",
+      "surface": "every # hr",
+      "value": "Q#H"
+    },
+    {
+      "component": "frequency",
+      "surface": "each # hours",
+      "value": "Q#H"
+    },
+    {
+      "component": "frequency",
+      "surface": "q # hours",
+      "value": "Q#H"
+    },
+    {
+      "component": "frequency",
+      "surface": "q#-#h",
+      "value": "Q#-#H"
+    },
+    {
+      "component": "frequency",
+      "surface": "every # to # hours",
+      "value": "Q#-#H"
+    },
+    {
+      "component": "frequency",
+      "surface": "every #-# hours",
+      "value": "Q#-#H"
+    },
+    {
+      "component": "frequency",
+      "surface": "q # to # hours",
+      "value": "Q#-#H"
+    },
+    {
+      "component": "frequency",
+      "surface": "every # or # hours",
+      "value": "Q#-#H"
+    },
+    {
+      "component": "frequency",
+      "surface": "every # days",
+      "value": "Q#D"
+    },
+    {
+      "component": "frequency",
+      "surface": "q#d",
+      "value": "Q#D"
+    },
+    {
+      "component": "frequency",
+      "surface": "q # days",
+      "value": "Q#D"
+    },
+    {
+      "component": "frequency",
+      "surface": "qod",
+      "value": "QOD"
+    },
+    {
+      "component": "frequency",
+      "surface": "every other day",
+      "value": "QOD"
+    },
+    {
+      "component": "frequency",
+      "surface": "alternate days",
+      "value": "QOD"
+    },
+    {
+      "component": "frequency",
+      "surface": "on alternate days",
+      "value": "QOD"
+    },
+    {
+      "component": "frequency",
+      "surface": "every second day",
+      "value": "QOD"
+    },
+    {
+      "component": "frequency",
+      "surface": "weekly",
+      "value": "WEEKLY"
+    },
+    {
+      "component": "frequency",
+      "surface": "once a week",
+      "value": "WEEKLY"
+    },
+    {
+      "component": "frequency",
+      "surface": "once weekly",
+      "value": "WEEKLY"
+    },
+    {
+      "component": "frequency",
+      "surface": "every week",
+      "value": "WEEKLY"
+    },
+    {
+      "component": "frequency",
+      "surface": "each week",
+      "value": "WEEKLY"
+    },
+    {
+      "component": "frequency",
+      "surface": "qw",
+      "value": "WEEKLY"
+    },
+    {
+      "component": "frequency",
+      "surface": "q1w",
+      "value": "WEEKLY"
+    },
+    {
+      "component": "frequency",
+      "surface": "q7d",
+      "value": "WEEKLY"
+    },
+    {
+      "component": "frequency",
+      "surface": "every 7 days",
+      "value": "WEEKLY"
+    },
+    {
+      "component": "frequency",
+      "surface": "qam",
+      "value": "QAM"
+    },
+    {
+      "component": "frequency",
+      "surface": "every morning",
+      "value": "QAM"
+    },
+    {
+      "component": "frequency",
+      "surface": "in the morning",
+      "value": "QAM"
+    },
+    {
+      "component": "frequency",
+      "surface": "each morning",
+      "value": "QAM"
+    },
+    {
+      "component": "frequency",
+      "surface": "mornings",
+      "value": "QAM"
+    },
+    {
+      "component": "frequency",
+      "surface": "am",
+      "value": "QAM"
+    },
+    {
+      "component": "frequency",
+      "surface": "in the am",
+      "value": "QAM"
+    },
+    {
+      "component": "frequency",
+      "surface": "once daily in the morning",
+      "value": "QAM"
+    },
+    {
+      "component": "frequency",
+      "surface": "once a day in the morning",
+      "value": "QAM"
+    },
+    {
+      "component": "frequency",
+      "surface": "qpm",
+      "value": "QPM"
+    },
+    {
+      "component": "frequency",
+      "surface": "every evening",
+      "value": "QPM"
+    },
+    {
+      "component": "frequency",
+      "surface": "in the evening",
+      "value": "QPM"
+    },
+    {
+      "component": "frequency",
+      "surface": "each evening",
+      "value": "QPM"
+    },
+    {
+      "component": "frequency",
+      "surface": "evenings",
+      "value": "QPM"
+    },
+    {
+      "component": "frequency",
+      "surface": "pm",
+      "value": "QPM"
+    },
+    {
+      "component": "frequency",
+      "surface": "in the pm",
+      "value": "QPM"
+    },
+    {
+      "component": "frequency",
+      "surface": "once daily in the evening",
+      "value": "QPM"
+    },
+    {
+      "component": "frequency",
+      "surface": "in the afternoon",
+      "value": "QPM"
+    },
+    {
+      "component": "frequency",
+      "surface": "qhs",
+      "value": "QHS"
+    },
+    {
+      "component": "frequency",
+      "surface": "hs",
+      "value": "QHS"
+    },
+    {
+      "component": "frequency",
+      "surface": "at bedtime",
+      "value": "QHS"
+    },
+    {
+      "component": "frequency",
+      "surface": "at bed time",
+      "value": "QHS"
+    },
+    {
+      "component": "frequency",
+      "surface": "bedtime",
+      "value": "QHS"
+    },
+    {
+      "component": "frequency",
+      "surface": "at night",
+      "value": "QHS"
+    },
+    {
+      "component": "frequency",
+      "surface": "nightly",
+      "value": "QHS"
+    },
+    {
+      "component": "frequency",
+      "surface": "before bed",
+      "value": "QHS"
+    },
+    {
+      "component": "frequency",
+      "surface": "before bedtime",
+      "value": "QHS"
+    },
+    {
+      "component": "frequency",
+      "surface": "every night",
+      "value": "QHS"
+    },
+    {
+      "component": "frequency",
+      "surface": "each night",
+      "value": "QHS"
+    },
+    {
+      "component": "frequency",
+      "surface": "at nighttime",
+      "value": "QHS"
+    },
+    {
+      "component": "frequency",
+      "surface": "once daily at bedtime",
+      "value": "QHS"
+    },
+    {
+      "component": "frequency",
+      "surface": "once a day at bedtime",
+      "value": "QHS"
+    },
+    {
+      "component": "frequency",
+      "surface": "before sleep",
+      "value": "QHS"
+    },
+    {
+      "component": "frequency",
+      "surface": "before going to bed",
+      "value": "QHS"
+    },
+    {
+      "component": "frequency",
+      "surface": "at hs",
+      "value": "QHS"
+    },
+    {
+      "component": "frequency",
+      "surface": "once",
+      "value": "ONCE"
+    },
+    {
+      "component": "frequency",
+      "surface": "one time",
+      "value": "ONCE"
+    },
+    {
+      "component": "frequency",
+      "surface": "one time only",
+      "value": "ONCE"
+    },
+    {
+      "component": "frequency",
+      "surface": "single dose",
+      "value": "ONCE"
+    },
+    {
+      "component": "frequency",
+      "surface": "one dose",
+      "value": "ONCE"
+    },
+    {
+      "component": "frequency",
+      "surface": "stat",
+      "value": "STAT"
+    },
+    {
+      "component": "frequency",
+      "surface": "immediately",
+      "value": "STAT"
+    },
+    {
+      "component": "frequency",
+      "surface": "right away",
+      "value": "STAT"
+    },
+    {
+      "component": "frequency",
+      "surface": "now",
+      "value": "STAT"
+    },
+    {
+      "component": "timing",
+      "surface": "ac",
+      "value": "AC"
+    },
+    {
+      "component": "timing",
+      "surface": "before meals",
+      "value": "AC"
+    },
+    {
+      "component": "timing",
+      "surface": "before food",
+      "value": "AC"
+    },
+    {
+      "component": "timing",
+      "surface": "before eating",
+      "value": "AC"
+    },
+    {
+      "component": "timing",
+      "surface": "before each meal",
+      "value": "AC"
+    },
+    {
+      "component": "timing",
+      "surface": "before a meal",
+      "value": "AC"
+    },
+    {
+      "component": "timing",
+      "surface": "30 minutes before meals",
+      "value": "AC"
+    },
+    {
+      "component": "timing",
+      "surface": "half an hour before meals",
+      "value": "AC"
+    },
+    {
+      "component": "timing",
+      "surface": "one hour before meals",
+      "value": "AC"
+    },
+    {
+      "component": "timing",
+      "surface": "1 hour before meals",
+      "value": "AC"
+    },
+    {
+      "component": "timing",
+      "surface": "before breakfast",
+      "value": "AC"
+    },
+    {
+      "component": "timing",
+      "surface": "pc",
+      "value": "PC"
+    },
+    {
+      "component": "timing",
+      "surface": "after meals",
+      "value": "PC"
+    },
+    {
+      "component": "timing",
+      "surface": "after food",
+      "value": "PC"
+    },
+    {
+      "component": "timing",
+      "surface": "after eating",
+      "value": "PC"
+    },
+    {
+      "component": "timing",
+      "surface": "after each meal",
+      "value": "PC"
+    },
+    {
+      "component": "timing",
+      "surface": "after a meal",
+      "value": "PC"
+    },
+    {
+      "component": "timing",
+      "surface": "after breakfast",
+      "value": "PC"
+    },
+    {
+      "component": "timing",
+      "surface": "after supper",
+      "value": "PC"
+    },
+    {
+      "component": "timing",
+      "surface": "after dinner",
+      "value": "PC"
+    },
+    {
+      "component": "timing",
+      "surface": "with food",
+      "value": "CF"
+    },
+    {
+      "component": "timing",
+      "surface": "with meals",
+      "value": "CF"
+    },
+    {
+      "component": "timing",
+      "surface": "with a meal",
+      "value": "CF"
+    },
+    {
+      "component": "timing",
+      "surface": "with each meal",
+      "value": "CF"
+    },
+    {
+      "component": "timing",
+      "surface": "with or after food",
+      "value": "CF"
+    },
+    {
+      "component": "timing",
+      "surface": "with or after meals",
+      "value": "CF"
+    },
+    {
+      "component": "timing",
+      "surface": "during meals",
+      "value": "CF"
+    },
+    {
+      "component": "timing",
+      "surface": "at mealtime",
+      "value": "CF"
+    },
+    {
+      "component": "timing",
+      "surface": "at mealtimes",
+      "value": "CF"
+    },
+    {
+      "component": "timing",
+      "surface": "cf",
+      "value": "CF"
+    },
+    {
+      "component": "timing",
+      "surface": "with your meal",
+      "value": "CF"
+    },
+    {
+      "component": "timing",
+      "surface": "with breakfast",
+      "value": "BREAKFAST"
+    },
+    {
+      "component": "timing",
+      "surface": "at breakfast",
+      "value": "BREAKFAST"
+    },
+    {
+      "component": "timing",
+      "surface": "with lunch",
+      "value": "LUNCH"
+    },
+    {
+      "component": "timing",
+      "surface": "at lunch",
+      "value": "LUNCH"
+    },
+    {
+      "component": "timing",
+      "surface": "with dinner",
+      "value": "DINNER"
+    },
+    {
+      "component": "timing",
+      "surface": "with supper",
+      "value": "DINNER"
+    },
+    {
+      "component": "timing",
+      "surface": "at dinner",
+      "value": "DINNER"
+    },
+    {
+      "component": "timing",
+      "surface": "at supper",
+      "value": "DINNER"
+    },
+    {
+      "component": "timing",
+      "surface": "with the evening meal",
+      "value": "DINNER"
+    },
+    {
+      "component": "timing",
+      "surface": "on an empty stomach",
+      "value": "EMPTY"
+    },
+    {
+      "component": "timing",
+      "surface": "empty stomach",
+      "value": "EMPTY"
+    },
+    {
+      "component": "timing",
+      "surface": "on empty stomach",
+      "value": "EMPTY"
+    },
+    {
+      "component": "timing",
+      "surface": "between meals",
+      "value": "EMPTY"
+    },
+    {
+      "component": "prn",
+      "surface": "prn",
+      "value": "PRN"
+    },
+    {
+      "component": "prn",
+      "surface": "as needed",
+      "value": "PRN"
+    },
+    {
+      "component": "prn",
+      "surface": "if needed",
+      "value": "PRN"
+    },
+    {
+      "component": "prn",
+      "surface": "when needed",
+      "value": "PRN"
+    },
+    {
+      "component": "prn",
+      "surface": "when necessary",
+      "value": "PRN"
+    },
+    {
+      "component": "prn",
+      "surface": "if necessary",
+      "value": "PRN"
+    },
+    {
+      "component": "prn",
+      "surface": "as required",
+      "value": "PRN"
+    },
+    {
+      "component": "prn",
+      "surface": "when required",
+      "value": "PRN"
+    },
+    {
+      "component": "prn",
+      "surface": "as needed for",
+      "value": "PRN"
+    },
+    {
+      "component": "prn",
+      "surface": "if needed for",
+      "value": "PRN"
+    },
+    {
+      "component": "prn",
+      "surface": "when necessary for",
+      "value": "PRN"
+    },
+    {
+      "component": "prn",
+      "surface": "if required for",
+      "value": "PRN"
+    },
+    {
+      "component": "prn",
+      "surface": "as required for",
+      "value": "PRN"
+    },
+    {
+      "component": "prn",
+      "surface": "only if needed",
+      "value": "PRN"
+    },
+    {
+      "component": "prn",
+      "surface": "only when needed",
+      "value": "PRN"
+    },
+    {
+      "component": "indication",
+      "surface": "pain",
+      "value": "PAIN"
+    },
+    {
+      "component": "indication",
+      "surface": "for pain",
+      "value": "PAIN"
+    },
+    {
+      "component": "indication",
+      "surface": "for the pain",
+      "value": "PAIN"
+    },
+    {
+      "component": "indication",
+      "surface": "painful",
+      "value": "PAIN"
+    },
+    {
+      "component": "indication",
+      "surface": "aches",
+      "value": "PAIN"
+    },
+    {
+      "component": "indication",
+      "surface": "for aches",
+      "value": "PAIN"
+    },
+    {
+      "component": "indication",
+      "surface": "for pain and fever",
+      "value": "PAIN"
+    },
+    {
+      "component": "indication",
+      "surface": "dizziness",
+      "value": "DIZZINESS"
+    },
+    {
+      "component": "indication",
+      "surface": "for dizziness",
+      "value": "DIZZINESS"
+    },
+    {
+      "component": "indication",
+      "surface": "vertigo",
+      "value": "DIZZINESS"
+    },
+    {
+      "component": "indication",
+      "surface": "for vertigo",
+      "value": "DIZZINESS"
+    },
+    {
+      "component": "indication",
+      "surface": "dizzy",
+      "value": "DIZZINESS"
+    },
+    {
+      "component": "indication",
+      "surface": "for dizzy spells",
+      "value": "DIZZINESS"
+    },
+    {
+      "component": "indication",
+      "surface": "nausea",
+      "value": "NAUSEA"
+    },
+    {
+      "component": "indication",
+      "surface": "for nausea",
+      "value": "NAUSEA"
+    },
+    {
+      "component": "indication",
+      "surface": "vomiting",
+      "value": "NAUSEA"
+    },
+    {
+      "component": "indication",
+      "surface": "for vomiting",
+      "value": "NAUSEA"
+    },
+    {
+      "component": "indication",
+      "surface": "nausea and vomiting",
+      "value": "NAUSEA"
+    },
+    {
+      "component": "indication",
+      "surface": "for nausea and vomiting",
+      "value": "NAUSEA"
+    },
+    {
+      "component": "indication",
+      "surface": "n/v",
+      "value": "NAUSEA"
+    },
+    {
+      "component": "indication",
+      "surface": "for n/v",
+      "value": "NAUSEA"
+    },
+    {
+      "component": "indication",
+      "surface": "nausea or vomiting",
+      "value": "NAUSEA"
+    },
+    {
+      "component": "indication",
+      "surface": "sleep",
+      "value": "SLEEP"
+    },
+    {
+      "component": "indication",
+      "surface": "for sleep",
+      "value": "SLEEP"
+    },
+    {
+      "component": "indication",
+      "surface": "insomnia",
+      "value": "SLEEP"
+    },
+    {
+      "component": "indication",
+      "surface": "for insomnia",
+      "value": "SLEEP"
+    },
+    {
+      "component": "indication",
+      "surface": "to sleep",
+      "value": "SLEEP"
+    },
+    {
+      "component": "indication",
+      "surface": "to help sleep",
+      "value": "SLEEP"
+    },
+    {
+      "component": "indication",
+      "surface": "to help you sleep",
+      "value": "SLEEP"
+    },
+    {
+      "component": "indication",
+      "surface": "for sleeping",
+      "value": "SLEEP"
+    },
+    {
+      "component": "indication",
+      "surface": "anxiety",
+      "value": "ANXIETY"
+    },
+    {
+      "component": "indication",
+      "surface": "for anxiety",
+      "value": "ANXIETY"
+    },
+    {
+      "component": "indication",
+      "surface": "nerves",
+      "value": "ANXIETY"
+    },
+    {
+      "component": "indication",
+      "surface": "for nerves",
+      "value": "ANXIETY"
+    },
+    {
+      "component": "indication",
+      "surface": "anxious",
+      "value": "ANXIETY"
+    },
+    {
+      "component": "indication",
+      "surface": "cough",
+      "value": "COUGH"
+    },
+    {
+      "component": "indication",
+      "surface": "for cough",
+      "value": "COUGH"
+    },
+    {
+      "component": "indication",
+      "surface": "coughing",
+      "value": "COUGH"
+    },
+    {
+      "component": "indication",
+      "surface": "for coughing",
+      "value": "COUGH"
+    },
+    {
+      "component": "indication",
+      "surface": "fever",
+      "value": "FEVER"
+    },
+    {
+      "component": "indication",
+      "surface": "for fever",
+      "value": "FEVER"
+    },
+    {
+      "component": "indication",
+      "surface": "temperature",
+      "value": "FEVER"
+    },
+    {
+      "component": "indication",
+      "surface": "for temperature",
+      "value": "FEVER"
+    },
+    {
+      "component": "indication",
+      "surface": "headache",
+      "value": "HEADACHE"
+    },
+    {
+      "component": "indication",
+      "surface": "for headache",
+      "value": "HEADACHE"
+    },
+    {
+      "component": "indication",
+      "surface": "headaches",
+      "value": "HEADACHE"
+    },
+    {
+      "component": "indication",
+      "surface": "for headaches",
+      "value": "HEADACHE"
+    },
+    {
+      "component": "indication",
+      "surface": "migraine",
+      "value": "HEADACHE"
+    },
+    {
+      "component": "indication",
+      "surface": "for migraine",
+      "value": "HEADACHE"
+    },
+    {
+      "component": "indication",
+      "surface": "migraines",
+      "value": "HEADACHE"
+    },
+    {
+      "component": "indication",
+      "surface": "for migraines",
+      "value": "HEADACHE"
+    },
+    {
+      "component": "indication",
+      "surface": "constipation",
+      "value": "CONSTIPATION"
+    },
+    {
+      "component": "indication",
+      "surface": "for constipation",
+      "value": "CONSTIPATION"
+    },
+    {
+      "component": "indication",
+      "surface": "diarrhea",
+      "value": "DIARRHEA"
+    },
+    {
+      "component": "indication",
+      "surface": "diarrhoea",
+      "value": "DIARRHEA"
+    },
+    {
+      "component": "indication",
+      "surface": "for diarrhea",
+      "value": "DIARRHEA"
+    },
+    {
+      "component": "indication",
+      "surface": "for diarrhoea",
+      "value": "DIARRHEA"
+    },
+    {
+      "component": "indication",
+      "surface": "loose stools",
+      "value": "DIARRHEA"
+    },
+    {
+      "component": "indication",
+      "surface": "heartburn",
+      "value": "HEARTBURN"
+    },
+    {
+      "component": "indication",
+      "surface": "for heartburn",
+      "value": "HEARTBURN"
+    },
+    {
+      "component": "indication",
+      "surface": "indigestion",
+      "value": "HEARTBURN"
+    },
+    {
+      "component": "indication",
+      "surface": "for indigestion",
+      "value": "HEARTBURN"
+    },
+    {
+      "component": "indication",
+      "surface": "reflux",
+      "value": "HEARTBURN"
+    },
+    {
+      "component": "indication",
+      "surface": "for reflux",
+      "value": "HEARTBURN"
+    },
+    {
+      "component": "indication",
+      "surface": "acid reflux",
+      "value": "HEARTBURN"
+    },
+    {
+      "component": "indication",
+      "surface": "for acid reflux",
+      "value": "HEARTBURN"
+    },
+    {
+      "component": "indication",
+      "surface": "itching",
+      "value": "ITCHING"
+    },
+    {
+      "component": "indication",
+      "surface": "for itching",
+      "value": "ITCHING"
+    },
+    {
+      "component": "indication",
+      "surface": "itch",
+      "value": "ITCHING"
+    },
+    {
+      "component": "indication",
+      "surface": "for itch",
+      "value": "ITCHING"
+    },
+    {
+      "component": "indication",
+      "surface": "itchiness",
+      "value": "ITCHING"
+    },
+    {
+      "component": "indication",
+      "surface": "for itchiness",
+      "value": "ITCHING"
+    },
+    {
+      "component": "indication",
+      "surface": "itchy skin",
+      "value": "ITCHING"
+    },
+    {
+      "component": "indication",
+      "surface": "allergies",
+      "value": "ALLERGIES"
+    },
+    {
+      "component": "indication",
+      "surface": "for allergies",
+      "value": "ALLERGIES"
+    },
+    {
+      "component": "indication",
+      "surface": "allergy",
+      "value": "ALLERGIES"
+    },
+    {
+      "component": "indication",
+      "surface": "for allergy",
+      "value": "ALLERGIES"
+    },
+    {
+      "component": "indication",
+      "surface": "hay fever",
+      "value": "ALLERGIES"
+    },
+    {
+      "component": "indication",
+      "surface": "for hay fever",
+      "value": "ALLERGIES"
+    },
+    {
+      "component": "indication",
+      "surface": "allergic symptoms",
+      "value": "ALLERGIES"
+    },
+    {
+      "component": "indication",
+      "surface": "inflammation",
+      "value": "INFLAMMATION"
+    },
+    {
+      "component": "indication",
+      "surface": "for inflammation",
+      "value": "INFLAMMATION"
+    },
+    {
+      "component": "indication",
+      "surface": "swelling",
+      "value": "INFLAMMATION"
+    },
+    {
+      "component": "indication",
+      "surface": "for swelling",
+      "value": "INFLAMMATION"
+    },
+    {
+      "component": "indication",
+      "surface": "rash",
+      "value": "RASH"
+    },
+    {
+      "component": "indication",
+      "surface": "for rash",
+      "value": "RASH"
+    },
+    {
+      "component": "indication",
+      "surface": "for the rash",
+      "value": "RASH"
+    },
+    {
+      "component": "indication",
+      "surface": "wheezing",
+      "value": "BREATHING"
+    },
+    {
+      "component": "indication",
+      "surface": "for wheezing",
+      "value": "BREATHING"
+    },
+    {
+      "component": "indication",
+      "surface": "shortness of breath",
+      "value": "BREATHING"
+    },
+    {
+      "component": "indication",
+      "surface": "for shortness of breath",
+      "value": "BREATHING"
+    },
+    {
+      "component": "indication",
+      "surface": "breathing",
+      "value": "BREATHING"
+    },
+    {
+      "component": "indication",
+      "surface": "for breathing",
+      "value": "BREATHING"
+    },
+    {
+      "component": "indication",
+      "surface": "difficulty breathing",
+      "value": "BREATHING"
+    },
+    {
+      "component": "indication",
+      "surface": "for difficulty breathing",
+      "value": "BREATHING"
+    },
+    {
+      "component": "indication",
+      "surface": "infection",
+      "value": "INFECTION"
+    },
+    {
+      "component": "indication",
+      "surface": "for infection",
+      "value": "INFECTION"
+    },
+    {
+      "component": "indication",
+      "surface": "for the infection",
+      "value": "INFECTION"
+    },
+    {
+      "component": "indication",
+      "surface": "blood pressure",
+      "value": "BP"
+    },
+    {
+      "component": "indication",
+      "surface": "for blood pressure",
+      "value": "BP"
+    },
+    {
+      "component": "indication",
+      "surface": "hypertension",
+      "value": "BP"
+    },
+    {
+      "component": "indication",
+      "surface": "for hypertension",
+      "value": "BP"
+    },
+    {
+      "component": "indication",
+      "surface": "high blood pressure",
+      "value": "BP"
+    },
+    {
+      "component": "indication",
+      "surface": "for high blood pressure",
+      "value": "BP"
+    },
+    {
+      "component": "indication",
+      "surface": "spasm",
+      "value": "SPASM"
+    },
+    {
+      "component": "indication",
+      "surface": "spasms",
+      "value": "SPASM"
+    },
+    {
+      "component": "indication",
+      "surface": "for spasm",
+      "value": "SPASM"
+    },
+    {
+      "component": "indication",
+      "surface": "for spasms",
+      "value": "SPASM"
+    },
+    {
+      "component": "indication",
+      "surface": "muscle spasm",
+      "value": "SPASM"
+    },
+    {
+      "component": "indication",
+      "surface": "muscle spasms",
+      "value": "SPASM"
+    },
+    {
+      "component": "indication",
+      "surface": "for muscle spasm",
+      "value": "SPASM"
+    },
+    {
+      "component": "indication",
+      "surface": "for muscle spasms",
+      "value": "SPASM"
+    },
+    {
+      "component": "indication",
+      "surface": "cramps",
+      "value": "CRAMPS"
+    },
+    {
+      "component": "indication",
+      "surface": "for cramps",
+      "value": "CRAMPS"
+    },
+    {
+      "component": "indication",
+      "surface": "cramping",
+      "value": "CRAMPS"
+    },
+    {
+      "component": "indication",
+      "surface": "for cramping",
+      "value": "CRAMPS"
+    },
+    {
+      "component": "indication",
+      "surface": "congestion",
+      "value": "CONGESTION"
+    },
+    {
+      "component": "indication",
+      "surface": "for congestion",
+      "value": "CONGESTION"
+    },
+    {
+      "component": "indication",
+      "surface": "stuffy nose",
+      "value": "CONGESTION"
+    },
+    {
+      "component": "indication",
+      "surface": "for stuffy nose",
+      "value": "CONGESTION"
+    },
+    {
+      "component": "indication",
+      "surface": "nasal congestion",
+      "value": "CONGESTION"
+    },
+    {
+      "component": "indication",
+      "surface": "for nasal congestion",
+      "value": "CONGESTION"
+    },
+    {
+      "component": "indication",
+      "surface": "acne",
+      "value": "ACNE"
+    },
+    {
+      "component": "indication",
+      "surface": "for acne",
+      "value": "ACNE"
+    },
+    {
+      "component": "indication",
+      "surface": "dry eyes",
+      "value": "DRYNESS"
+    },
+    {
+      "component": "indication",
+      "surface": "for dry eyes",
+      "value": "DRYNESS"
+    },
+    {
+      "component": "indication",
+      "surface": "dryness",
+      "value": "DRYNESS"
+    },
+    {
+      "component": "indication",
+      "surface": "for dryness",
+      "value": "DRYNESS"
+    },
+    {
+      "component": "indication",
+      "surface": "dry skin",
+      "value": "DRYNESS"
+    },
+    {
+      "component": "indication",
+      "surface": "for dry skin",
+      "value": "DRYNESS"
+    },
+    {
+      "component": "duration",
+      "surface": "for # days",
+      "value": "D#"
+    },
+    {
+      "component": "duration",
+      "surface": "x # days",
+      "value": "D#"
+    },
+    {
+      "component": "duration",
+      "surface": "x#d",
+      "value": "D#"
+    },
+    {
+      "component": "duration",
+      "surface": "for # day",
+      "value": "D#"
+    },
+    {
+      "component": "duration",
+      "surface": "times # days",
+      "value": "D#"
+    },
+    {
+      "component": "duration",
+      "surface": "x # d",
+      "value": "D#"
+    },
+    {
+      "component": "duration",
+      "surface": "for the next # days",
+      "value": "D#"
+    },
+    {
+      "component": "duration",
+      "surface": "for # weeks",
+      "value": "W#"
+    },
+    {
+      "component": "duration",
+      "surface": "x # weeks",
+      "value": "W#"
+    },
+    {
+      "component": "duration",
+      "surface": "for # week",
+      "value": "W#"
+    },
+    {
+      "component": "duration",
+      "surface": "x#w",
+      "value": "W#"
+    },
+    {
+      "component": "duration",
+      "surface": "for # months",
+      "value": "M#"
+    },
+    {
+      "component": "duration",
+      "surface": "x # months",
+      "value": "M#"
+    },
+    {
+      "component": "duration",
+      "surface": "for # month",
+      "value": "M#"
+    },
+    {
+      "component": "duration",
+      "surface": "for # doses",
+      "value": "DOSES#"
+    },
+    {
+      "component": "duration",
+      "surface": "x # doses",
+      "value": "DOSES#"
+    },
+    {
+      "component": "duration",
+      "surface": "until finished",
+      "value": "UNTIL_FINISHED"
+    },
+    {
+      "component": "duration",
+      "surface": "until gone",
+      "value": "UNTIL_FINISHED"
+    },
+    {
+      "component": "duration",
+      "surface": "until all taken",
+      "value": "UNTIL_FINISHED"
+    },
+    {
+      "component": "duration",
+      "surface": "until all gone",
+      "value": "UNTIL_FINISHED"
+    },
+    {
+      "component": "duration",
+      "surface": "until complete",
+      "value": "UNTIL_FINISHED"
+    },
+    {
+      "component": "duration",
+      "surface": "until completed",
+      "value": "UNTIL_FINISHED"
+    },
+    {
+      "component": "duration",
+      "surface": "to completion",
+      "value": "UNTIL_FINISHED"
+    },
+    {
+      "component": "duration",
+      "surface": "until done",
+      "value": "UNTIL_FINISHED"
+    },
+    {
+      "component": "duration",
+      "surface": "until finished all",
+      "value": "UNTIL_FINISHED"
+    },
+    {
+      "component": "duration",
+      "surface": "till finished",
+      "value": "UNTIL_FINISHED"
+    },
+    {
+      "component": "duration",
+      "surface": "till gone",
+      "value": "UNTIL_FINISHED"
+    },
+    {
+      "component": "modifier",
+      "surface": "sparingly",
+      "value": "SPARINGLY"
+    },
+    {
+      "component": "modifier",
+      "surface": "in a small amount",
+      "value": "SPARINGLY"
+    },
+    {
+      "component": "modifier",
+      "surface": "a small amount",
+      "value": "SPARINGLY"
+    },
+    {
+      "component": "modifier",
+      "surface": "small amount",
+      "value": "SPARINGLY"
+    },
+    {
+      "component": "modifier",
+      "surface": "thin layer",
+      "value": "THIN"
+    },
+    {
+      "component": "modifier",
+      "surface": "a thin layer",
+      "value": "THIN"
+    },
+    {
+      "component": "modifier",
+      "surface": "thinly",
+      "value": "THIN"
+    },
+    {
+      "component": "modifier",
+      "surface": "thin film",
+      "value": "THIN"
+    },
+    {
+      "component": "modifier",
+      "surface": "a thin film",
+      "value": "THIN"
+    },
+    {
+      "component": "modifier",
+      "surface": "in a thin layer",
+      "value": "THIN"
+    },
+    {
+      "component": "modifier",
+      "surface": "liberally",
+      "value": "LIBERALLY"
+    },
+    {
+      "component": "modifier",
+      "surface": "generously",
+      "value": "LIBERALLY"
+    },
+    {
+      "component": "modifier",
+      "surface": "freely",
+      "value": "LIBERALLY"
+    },
+    {
+      "component": "modifier",
+      "surface": "whole",
+      "value": "WHOLE"
+    },
+    {
+      "component": "modifier",
+      "surface": "swallow whole",
+      "value": "WHOLE"
+    },
+    {
+      "component": "modifier",
+      "surface": "do not crush",
+      "value": "WHOLE"
+    },
+    {
+      "component": "modifier",
+      "surface": "do not chew",
+      "value": "WHOLE"
+    },
+    {
+      "component": "modifier",
+      "surface": "do not crush or chew",
+      "value": "WHOLE"
+    },
+    {
+      "component": "modifier",
+      "surface": "do not chew or crush",
+      "value": "WHOLE"
+    },
+    {
+      "component": "modifier",
+      "surface": "without chewing",
+      "value": "WHOLE"
+    },
+    {
+      "component": "modifier",
+      "surface": "without crushing",
+      "value": "WHOLE"
+    },
+    {
+      "component": "modifier",
+      "surface": "as directed",
+      "value": "DIRECTED"
+    },
+    {
+      "component": "modifier",
+      "surface": "as directed by physician",
+      "value": "DIRECTED"
+    },
+    {
+      "component": "modifier",
+      "surface": "as directed by your doctor",
+      "value": "DIRECTED"
+    },
+    {
+      "component": "modifier",
+      "surface": "as directed by doctor",
+      "value": "DIRECTED"
+    },
+    {
+      "component": "modifier",
+      "surface": "as directed by the doctor",
+      "value": "DIRECTED"
+    },
+    {
+      "component": "modifier",
+      "surface": "ud",
+      "value": "DIRECTED"
+    },
+    {
+      "component": "modifier",
+      "surface": "ut dict",
+      "value": "DIRECTED"
+    },
+    {
+      "component": "modifier",
+      "surface": "as prescribed",
+      "value": "DIRECTED"
+    },
+    {
+      "component": "modifier",
+      "surface": "as instructed",
+      "value": "DIRECTED"
+    },
+    {
+      "component": "modifier",
+      "surface": "as directed by your physician",
+      "value": "DIRECTED"
+    },
+    {
+      "component": "modifier",
+      "surface": "per instructions",
+      "value": "DIRECTED"
+    },
+    {
+      "component": "modifier",
+      "surface": "as per instructions",
+      "value": "DIRECTED"
+    },
+    {
+      "component": "modifier",
+      "surface": "as told",
+      "value": "DIRECTED"
+    },
+    {
+      "component": "modifier",
+      "surface": "with water",
+      "value": "WATER"
+    },
+    {
+      "component": "modifier",
+      "surface": "with a glass of water",
+      "value": "WATER"
+    },
+    {
+      "component": "modifier",
+      "surface": "with a full glass of water",
+      "value": "WATER"
+    },
+    {
+      "component": "modifier",
+      "surface": "with plenty of water",
+      "value": "WATER"
+    },
+    {
+      "component": "modifier",
+      "surface": "with a large glass of water",
+      "value": "WATER"
+    },
+    {
+      "component": "modifier",
+      "surface": "with lots of water",
+      "value": "WATER"
+    },
+    {
+      "component": "modifier",
+      "surface": "shake well",
+      "value": "SHAKE"
+    },
+    {
+      "component": "modifier",
+      "surface": "shake well before use",
+      "value": "SHAKE"
+    },
+    {
+      "component": "modifier",
+      "surface": "shake well before using",
+      "value": "SHAKE"
+    },
+    {
+      "component": "modifier",
+      "surface": "shake before use",
+      "value": "SHAKE"
+    },
+    {
+      "component": "modifier",
+      "surface": "shake before using",
+      "value": "SHAKE"
+    },
+    {
+      "component": "modifier",
+      "surface": "gently",
+      "value": "GENTLY"
+    },
+    {
+      "component": "modifier",
+      "surface": "rub in gently",
+      "value": "GENTLY"
+    },
+    {
+      "component": "modifier",
+      "surface": "massage gently",
+      "value": "GENTLY"
+    },
+    {
+      "component": "modifier",
+      "surface": "wash hands after use",
+      "value": "WASH"
+    },
+    {
+      "component": "modifier",
+      "surface": "wash hands after",
+      "value": "WASH"
+    },
+    {
+      "component": "modifier",
+      "surface": "and wash hands",
+      "value": "WASH"
+    },
+    {
+      "component": "site",
+      "surface": "affected area",
+      "value": "AFFECTED"
+    },
+    {
+      "component": "site",
+      "surface": "affected areas",
+      "value": "AFFECTED"
+    },
+    {
+      "component": "site",
+      "surface": "to affected area",
+      "value": "AFFECTED"
+    },
+    {
+      "component": "site",
+      "surface": "to the affected area",
+      "value": "AFFECTED"
+    },
+    {
+      "component": "site",
+      "surface": "to affected areas",
+      "value": "AFFECTED"
+    },
+    {
+      "component": "site",
+      "surface": "to the affected areas",
+      "value": "AFFECTED"
+    },
+    {
+      "component": "site",
+      "surface": "affected area(s)",
+      "value": "AFFECTED"
+    },
+    {
+      "component": "site",
+      "surface": "irritated skin",
+      "value": "AFFECTED"
+    },
+    {
+      "component": "site",
+      "surface": "irritated area",
+      "value": "AFFECTED"
+    },
+    {
+      "component": "site",
+      "surface": "the affected area",
+      "value": "AFFECTED"
+    },
+    {
+      "component": "site",
+      "surface": "affected skin",
+      "value": "AFFECTED"
+    },
+    {
+      "component": "site",
+      "surface": "the area",
+      "value": "AFFECTED"
+    },
+    {
+      "component": "site",
+      "surface": "to area",
+      "value": "AFFECTED"
+    },
+    {
+      "component": "site",
+      "surface": "to the area",
+      "value": "AFFECTED"
+    },
+    {
+      "component": "site",
+      "surface": "scalp",
+      "value": "SCALP"
+    },
+    {
+      "component": "site",
+      "surface": "to scalp",
+      "value": "SCALP"
+    },
+    {
+      "component": "site",
+      "surface": "to the scalp",
+      "value": "SCALP"
+    },
+    {
+      "component": "site",
+      "surface": "on the scalp",
+      "value": "SCALP"
+    },
+    {
+      "component": "site",
+      "surface": "face",
+      "value": "FACE"
+    },
+    {
+      "component": "site",
+      "surface": "to face",
+      "value": "FACE"
+    },
+    {
+      "component": "site",
+      "surface": "to the face",
+      "value": "FACE"
+    },
+    {
+      "component": "site",
+      "surface": "on the face",
+      "value": "FACE"
+    },
+    {
+      "component": "site",
+      "surface": "skin",
+      "value": "SKIN"
+    },
+    {
+      "component": "site",
+      "surface": "on skin",
+      "value": "SKIN"
+    },
+    {
+      "component": "site",
+      "surface": "hands",
+      "value": "HANDS"
+    },
+    {
+      "component": "site",
+      "surface": "to hands",
+      "value": "HANDS"
+    },
+    {
+      "component": "site",
+      "surface": "to the hands",
+      "value": "HANDS"
+    },
+    {
+      "component": "site",
+      "surface": "on the hands",
+      "value": "HANDS"
+    },
+    {
+      "component": "site",
+      "surface": "feet",
+      "value": "FEET"
+    },
+    {
+      "component": "site",
+      "surface": "foot",
+      "value": "FEET"
+    },
+    {
+      "component": "site",
+      "surface": "to feet",
+      "value": "FEET"
+    },
+    {
+      "component": "site",
+      "surface": "to the feet",
+      "value": "FEET"
+    },
+    {
+      "component": "site",
+      "surface": "to the foot",
+      "value": "FEET"
+    },
+    {
+      "component": "site",
+      "surface": "chest",
+      "value": "CHEST"
+    },
+    {
+      "component": "site",
+      "surface": "to chest",
+      "value": "CHEST"
+    },
+    {
+      "component": "site",
+      "surface": "to the chest",
+      "value": "CHEST"
+    },
+    {
+      "component": "site",
+      "surface": "on the chest",
+      "value": "CHEST"
+    },
+    {
+      "component": "site",
+      "surface": "back",
+      "value": "BACK"
+    },
+    {
+      "component": "site",
+      "surface": "to the back",
+      "value": "BACK"
+    },
+    {
+      "component": "site",
+      "surface": "to back",
+      "value": "BACK"
+    },
+    {
+      "component": "site",
+      "surface": "on the back",
+      "value": "BACK"
+    },
+    {
+      "component": "site",
+      "surface": "lips",
+      "value": "LIPS"
+    },
+    {
+      "component": "site",
+      "surface": "to lips",
+      "value": "LIPS"
+    },
+    {
+      "component": "site",
+      "surface": "to the lips",
+      "value": "LIPS"
+    },
+    {
+      "component": "site",
+      "surface": "on the lips",
+      "value": "LIPS"
+    },
+    {
+      "component": "site",
+      "surface": "gums",
+      "value": "GUMS"
+    },
+    {
+      "component": "site",
+      "surface": "to gums",
+      "value": "GUMS"
+    },
+    {
+      "component": "site",
+      "surface": "to the gums",
+      "value": "GUMS"
+    },
+    {
+      "component": "site",
+      "surface": "on the gums",
+      "value": "GUMS"
+    },
+    {
+      "component": "site",
+      "surface": "wound",
+      "value": "WOUND"
+    },
+    {
+      "component": "site",
+      "surface": "to wound",
+      "value": "WOUND"
+    },
+    {
+      "component": "site",
+      "surface": "to the wound",
+      "value": "WOUND"
+    },
+    {
+      "component": "site",
+      "surface": "on the wound",
+      "value": "WOUND"
+    },
+    {
+      "component": "site",
+      "surface": "joint",
+      "value": "JOINT"
+    },
+    {
+      "component": "site",
+      "surface": "joints",
+      "value": "JOINT"
+    },
+    {
+      "component": "site",
+      "surface": "to the joint",
+      "value": "JOINT"
+    },
+    {
+      "component": "site",
+      "surface": "to affected joint",
+      "value": "JOINT"
+    },
+    {
+      "component": "site",
+      "surface": "to affected joints",
+      "value": "JOINT"
+    },
+    {
+      "component": "stop",
+      "surface": "to",
+      "value": ""
+    },
+    {
+      "component": "stop",
+      "surface": "the",
+      "value": ""
+    },
+    {
+      "component": "stop",
+      "surface": "a",
+      "value": ""
+    },
+    {
+      "component": "stop",
+      "surface": "an",
+      "value": ""
+    },
+    {
+      "component": "stop",
+      "surface": "of",
+      "value": ""
+    },
+    {
+      "component": "stop",
+      "surface": "and",
+      "value": ""
+    },
+    {
+      "component": "stop",
+      "surface": "then",
+      "value": ""
+    },
+    {
+      "component": "stop",
+      "surface": "please",
+      "value": ""
+    },
+    {
+      "component": "stop",
+      "surface": "with",
+      "value": ""
+    },
+    {
+      "component": "stop",
+      "surface": "in",
+      "value": ""
+    },
+    {
+      "component": "stop",
+      "surface": "your",
+      "value": ""
+    },
+    {
+      "component": "stop",
+      "surface": "for",
+      "value": ""
+    },
+    {
+      "component": "stop",
+      "surface": "by",
+      "value": ""
+    },
+    {
+      "component": "stop",
+      "surface": "at",
+      "value": ""
+    },
+    {
+      "component": "stop",
+      "surface": "on",
+      "value": ""
+    },
+    {
+      "component": "stop",
+      "surface": "per",
+      "value": ""
+    },
+    {
+      "component": "stop",
+      "surface": "into",
+      "value": ""
+    },
+    {
+      "component": "stop",
+      "surface": "each",
+      "value": ""
+    },
+    {
+      "component": "stop",
+      "surface": "every",
+      "value": ""
+    },
+    {
+      "component": "stop",
+      "surface": "this",
+      "value": ""
+    },
+    {
+      "component": "stop",
+      "surface": "that",
+      "value": ""
+    },
+    {
+      "component": "stop",
+      "surface": "it",
+      "value": ""
+    },
+    {
+      "component": "stop",
+      "surface": "is",
+      "value": ""
+    },
+    {
+      "component": "stop",
+      "surface": "be",
+      "value": ""
+    },
+    {
+      "component": "stop",
+      "surface": "should",
+      "value": ""
+    },
+    {
+      "component": "stop",
+      "surface": "may",
+      "value": ""
+    },
+    {
+      "component": "stop",
+      "surface": "will",
+      "value": ""
+    },
+    {
+      "component": "stop",
+      "surface": "you",
+      "value": ""
+    },
+    {
+      "component": "stop",
+      "surface": "time",
+      "value": ""
+    },
+    {
+      "component": "stop",
+      "surface": "times",
+      "value": ""
+    },
+    {
+      "component": "stop",
+      "surface": "directed",
+      "value": ""
+    }
+  ],
+  "version": 1
+}

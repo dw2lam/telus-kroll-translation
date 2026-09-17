@@ -20,7 +20,10 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "TranslationCore"
+            name: "TranslationCore",
+            resources: [
+                .copy("Resources/Seed"),
+            ]
         ),
         .executableTarget(
             name: "KrollLabelApp",
