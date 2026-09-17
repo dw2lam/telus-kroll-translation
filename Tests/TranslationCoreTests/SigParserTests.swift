@@ -85,8 +85,8 @@ struct SigParserTests {
     }
 
     @Test func durationsAndEveryNHours() {
-        let p = parser.parse("take 1 tablet every 6 hours for 7 days")
-        #expect(p.code.key == "TAKE|TABLET|PO|Q6H|-|-|-|D7|-|-")
+        let p = parser.parse("take 1 tablet every 5 hours for 7 days")
+        #expect(p.code.key == "TAKE|TABLET|PO|Q5H|-|-|-|D7|-|-")
         #expect(p.dose == Dose("1"))
     }
 

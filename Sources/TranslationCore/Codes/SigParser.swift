@@ -173,8 +173,9 @@ public struct SigParser: Sendable {
     static func infer(_ code: inout SigCode, pickerForm: DosageForm) -> [SigComponent] {
         var inferred: [SigComponent] = []
 
-        // The drug card already knows the form; only oral forms are implied this way.
-        if code.form == nil, let picked = pickerForm.formCode, code.verb == nil || code.verb == "TAKE" {
+        // The drug card already knows the form; only oral forms are implied this
+        // way, and only when the sig itself said something.
+        if code.form == nil, !code.isEmpty, let picked = pickerForm.formCode, code.verb == nil || code.verb == "TAKE" {
             code.form = picked
             inferred.append(.form)
         }

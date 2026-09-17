@@ -22,16 +22,25 @@ struct SigCodeTests {
 
     @Test func frequencyAndPrnAreExpensive() {
         let qd = SigCode(verb: "TAKE", form: "CAPSULE", route: "PO", frequency: "QD")
-        // frequency differs (4) and prn differs (3)
-        #expect(qhsPrn.distance(to: qd) == 7)
+        // frequency stated differently on both sides (2 × 4) and prn only on one side (3)
+        #expect(qhsPrn.distance(to: qd) == 11)
         #expect(qd.diff(qhsPrn).map(\.component) == [.frequency, .prn])
     }
 
     @Test func distanceIsSymmetricAndBounded() {
         let empty = SigCode()
         #expect(qhsPrn.distance(to: empty) == empty.distance(to: qhsPrn))
-        #expect(qhsPrn.distance(to: empty) <= ComponentWeights.default.maximum)
+        #expect(qhsPrn.distance(to: empty) == 5 + 4 + 3 + 4 + 3)
         #expect(ComponentWeights.default.maximum == 27)
+    }
+
+    @Test func silenceBeatsContradiction() {
+        var dizziness = qhsPrn
+        dizziness.indication = "DIZZINESS"
+        var sleep = qhsPrn
+        sleep.indication = "SLEEP"
+        #expect(dizziness.distance(to: qhsPrn) == 1)
+        #expect(dizziness.distance(to: sleep) == 2)
     }
 
     @Test func subscriptRoundTripsEveryComponent() {

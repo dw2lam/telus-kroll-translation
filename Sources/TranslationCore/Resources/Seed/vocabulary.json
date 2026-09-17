@@ -3325,6 +3325,66 @@
       "component": "stop",
       "surface": "directed",
       "value": ""
+    },
+    {
+      "component": "frequency",
+      "surface": "q 24 h",
+      "value": "QD"
+    },
+    {
+      "component": "frequency",
+      "surface": "q 12 h",
+      "value": "BID"
+    },
+    {
+      "component": "frequency",
+      "surface": "q 8 h",
+      "value": "TID"
+    },
+    {
+      "component": "frequency",
+      "surface": "q6h",
+      "value": "QID"
+    },
+    {
+      "component": "frequency",
+      "surface": "every 6 hours",
+      "value": "QID"
+    },
+    {
+      "component": "frequency",
+      "surface": "q 6 h",
+      "value": "QID"
+    },
+    {
+      "component": "frequency",
+      "surface": "daily at bedtime",
+      "value": "QHS"
+    },
+    {
+      "component": "frequency",
+      "surface": "every day at bedtime",
+      "value": "QHS"
+    },
+    {
+      "component": "frequency",
+      "surface": "each day at bedtime",
+      "value": "QHS"
+    },
+    {
+      "component": "frequency",
+      "surface": "once nightly",
+      "value": "QHS"
+    },
+    {
+      "component": "frequency",
+      "surface": "daily at night",
+      "value": "QHS"
+    },
+    {
+      "component": "frequency",
+      "surface": "every day at night",
+      "value": "QHS"
     }
   ],
   "version": 1

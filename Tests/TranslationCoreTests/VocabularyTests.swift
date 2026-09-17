@@ -33,7 +33,8 @@ struct VocabularyTests {
     @Test func numeralPlaceholdersBind() throws {
         let v = try Vocabulary.seed()
         #expect(v.longestMatch(in: ["for", "7", "days"], at: 0, context: SigCode())?.value == "D7")
-        #expect(v.longestMatch(in: ["q6h"], at: 0, context: SigCode())?.value == "Q6H")
+        #expect(v.longestMatch(in: ["q5h"], at: 0, context: SigCode())?.value == "Q5H")
+        #expect(v.longestMatch(in: ["q6h"], at: 0, context: SigCode())?.value == "QID")
         #expect(v.longestMatch(in: ["q4-6h"], at: 0, context: SigCode())?.value == "Q4-6H")
         #expect(v.longestMatch(in: ["every", "4", "to", "6", "hours"], at: 0, context: SigCode())?.value == "Q4-6H")
         #expect(v.longestMatch(in: ["1", "to", "2"], at: 0, context: SigCode())?.value == "1-2")

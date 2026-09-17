@@ -103,11 +103,12 @@ public struct SigCode: Hashable, Codable, Sendable {
         SigComponent.allCases.filter { self[$0] != nil }
     }
 
-    /// Weighted count of differing components — the whole ranking model.
+    /// Weighted count of differing components — the whole ranking model. A
+    /// component only one side states costs its weight; one both sides state
+    /// differently costs double, so a template that is silent about the
+    /// indication outranks one that names a different indication.
     public func distance(to other: SigCode, weights: ComponentWeights = .default) -> Int {
-        SigComponent.allCases.reduce(0) { sum, component in
-            self[component] == other[component] ? sum : sum + weights.weight(for: component)
-        }
+        diff(other, weights: weights).reduce(0) { $0 + $1.cost }
     }
 
     /// Every component that differs, with what each side has, so a result can
@@ -232,6 +233,9 @@ public struct ComponentDiff: Hashable, Codable, Sendable {
         default: .different
         }
     }
+
+    /// What this difference adds to the distance.
+    public var cost: Int { kind == .different ? weight * 2 : weight }
 
     /// `missing from template: indication DIZZINESS`
     public var description: String {
