@@ -1,0 +1,385 @@
+{
+  "items": [
+    {
+      "id": "e0aa6642-1ef6-5bf8-a4e4-419755524cc9",
+      "language": "hi",
+      "note": "Illustrative seed — not human-verified. Replace before any real use.",
+      "recordedAt": "2026-03-12T00:00:00Z",
+      "revision": 1,
+      "snapshot": {
+        "id": "350c5ec3-4cac-5ecd-af0d-b4617f0c79d6",
+        "language": "hi",
+        "note": null,
+        "reviewer": "A. Joshi",
+        "revision": 1,
+        "status": "verified",
+        "text": "दिन में एक बार [N] कैप्सूल मुँह से लें",
+        "translator": "R. Mehta",
+        "updatedAt": "2026-03-12T00:00:00Z",
+        "verifiedAt": "2026-03-12T00:00:00Z"
+      },
+      "templateID": "qd.capsule"
+    },
+    {
+      "id": "7e904fd4-505f-5924-a172-7aa7c6842052",
+      "language": "ar",
+      "note": "Illustrative seed — not human-verified. Replace before any real use.",
+      "recordedAt": "2026-04-03T00:00:00Z",
+      "revision": 1,
+      "snapshot": {
+        "id": "95dc3273-80cf-51cf-a199-b6aa0a04fad9",
+        "language": "ar",
+        "note": null,
+        "reviewer": null,
+        "revision": 1,
+        "status": "pending",
+        "text": "تناول [N] كبسولة عن طريق الفم مرة واحدة يومياً",
+        "translator": "S. Haddad",
+        "updatedAt": "2026-04-03T00:00:00Z",
+        "verifiedAt": null
+      },
+      "templateID": "qd.capsule"
+    },
+    {
+      "id": "22e230a8-79f6-5a40-808e-f7dc1b49f722",
+      "language": "hi",
+      "note": "Illustrative seed — not human-verified. Replace before any real use.",
+      "recordedAt": "2026-03-12T00:00:00Z",
+      "revision": 1,
+      "snapshot": {
+        "id": "fceff84e-8330-5fba-879f-09920bcb0dba",
+        "language": "hi",
+        "note": null,
+        "reviewer": "A. Joshi",
+        "revision": 1,
+        "status": "verified",
+        "text": "दिन में दो बार [N] कैप्सूल मुँह से लें",
+        "translator": "R. Mehta",
+        "updatedAt": "2026-03-12T00:00:00Z",
+        "verifiedAt": "2026-03-12T00:00:00Z"
+      },
+      "templateID": "bid.capsule"
+    },
+    {
+      "id": "9675e3a4-4ab4-510d-acae-f675ddf20fea",
+      "language": "ar",
+      "note": "Illustrative seed — not human-verified. Replace before any real use.",
+      "recordedAt": "2026-04-03T00:00:00Z",
+      "revision": 1,
+      "snapshot": {
+        "id": "518d8150-4db0-5db0-a48e-f591ce5197d8",
+        "language": "ar",
+        "note": null,
+        "reviewer": null,
+        "revision": 1,
+        "status": "pending",
+        "text": "تناول [N] كبسولة عن طريق الفم مرتين يومياً",
+        "translator": "S. Haddad",
+        "updatedAt": "2026-04-03T00:00:00Z",
+        "verifiedAt": null
+      },
+      "templateID": "bid.capsule"
+    },
+    {
+      "id": "b796d306-76e0-5efe-ac9a-2b98959a5374",
+      "language": "hi",
+      "note": "Illustrative seed — not human-verified. Replace before any real use.",
+      "recordedAt": "2026-03-12T00:00:00Z",
+      "revision": 1,
+      "snapshot": {
+        "id": "8d158917-3d7a-5f5c-8123-29d196e57528",
+        "language": "hi",
+        "note": null,
+        "reviewer": "A. Joshi",
+        "revision": 1,
+        "status": "verified",
+        "text": "दिन में तीन बार [N] कैप्सूल मुँह से लें",
+        "translator": "R. Mehta",
+        "updatedAt": "2026-03-12T00:00:00Z",
+        "verifiedAt": "2026-03-12T00:00:00Z"
+      },
+      "templateID": "tid.capsule"
+    },
+    {
+      "id": "78f13c8d-e906-55a8-85b9-ca483813c232",
+      "language": "hi",
+      "note": "Illustrative seed — not human-verified. Replace before any real use.",
+      "recordedAt": "2026-04-03T00:00:00Z",
+      "revision": 1,
+      "snapshot": {
+        "id": "f6519666-9e97-5286-98d0-720402a6ed5c",
+        "language": "hi",
+        "note": null,
+        "reviewer": null,
+        "revision": 1,
+        "status": "pending",
+        "text": "दिन में चार बार [N] कैप्सूल मुँह से लें",
+        "translator": "R. Mehta",
+        "updatedAt": "2026-04-03T00:00:00Z",
+        "verifiedAt": null
+      },
+      "templateID": "qid.capsule"
+    },
+    {
+      "id": "c671372d-511f-5d9a-b60f-8803df8bf0c5",
+      "language": "hi",
+      "note": "Illustrative seed — not human-verified. Replace before any real use.",
+      "recordedAt": "2026-04-03T00:00:00Z",
+      "revision": 1,
+      "snapshot": {
+        "id": "bba77a52-2f63-5d3a-a0a4-5346aa600aaf",
+        "language": "hi",
+        "note": null,
+        "reviewer": "A. Joshi",
+        "revision": 1,
+        "status": "verified",
+        "text": "सोते समय [N] कैप्सूल मुँह से लें",
+        "translator": "R. Mehta",
+        "updatedAt": "2026-04-03T00:00:00Z",
+        "verifiedAt": "2026-04-03T00:00:00Z"
+      },
+      "templateID": "qhs.capsule"
+    },
+    {
+      "id": "b2ad7c19-9402-52c1-b909-6ee908306f1e",
+      "language": "ar",
+      "note": "Illustrative seed — not human-verified. Replace before any real use.",
+      "recordedAt": "2026-04-03T00:00:00Z",
+      "revision": 1,
+      "snapshot": {
+        "id": "6e77c47c-ce5b-575a-8e80-941a54291129",
+        "language": "ar",
+        "note": null,
+        "reviewer": null,
+        "revision": 1,
+        "status": "pending",
+        "text": "تناول [N] كبسولة عن طريق الفم عند النوم",
+        "translator": "S. Haddad",
+        "updatedAt": "2026-04-03T00:00:00Z",
+        "verifiedAt": null
+      },
+      "templateID": "qhs.capsule"
+    },
+    {
+      "id": "bf7c38db-09e7-55c8-ba68-fdf022a57bc4",
+      "language": "hi",
+      "note": "Illustrative seed — not human-verified. Replace before any real use.",
+      "recordedAt": "2026-04-03T00:00:00Z",
+      "revision": 1,
+      "snapshot": {
+        "id": "e5473ac7-a6cf-5051-a94e-3d46ad999642",
+        "language": "hi",
+        "note": null,
+        "reviewer": "A. Joshi",
+        "revision": 1,
+        "status": "verified",
+        "text": "ज़रूरत पड़ने पर सोते समय [N] कैप्सूल मुँह से लें",
+        "translator": "R. Mehta",
+        "updatedAt": "2026-04-03T00:00:00Z",
+        "verifiedAt": "2026-04-03T00:00:00Z"
+      },
+      "templateID": "qhs-prn.capsule"
+    },
+    {
+      "id": "f06084f4-8249-52a0-b595-98412ae09940",
+      "language": "hi",
+      "note": "Illustrative seed — not human-verified. Replace before any real use.",
+      "recordedAt": "2026-04-03T00:00:00Z",
+      "revision": 1,
+      "snapshot": {
+        "id": "210901ae-1ff2-551f-9d38-70124b5b95b5",
+        "language": "hi",
+        "note": null,
+        "reviewer": "A. Joshi",
+        "revision": 1,
+        "status": "verified",
+        "text": "नींद के लिए ज़रूरत पड़ने पर सोते समय [N] कैप्सूल मुँह से लें",
+        "translator": "R. Mehta",
+        "updatedAt": "2026-04-03T00:00:00Z",
+        "verifiedAt": "2026-04-03T00:00:00Z"
+      },
+      "templateID": "qhs-prn-sleep.capsule"
+    },
+    {
+      "id": "8985c1a2-6c3e-51d5-8b4d-59f01bd3a31e",
+      "language": "hi",
+      "note": "Illustrative seed — not human-verified. Replace before any real use.",
+      "recordedAt": "2026-04-03T00:00:00Z",
+      "revision": 1,
+      "snapshot": {
+        "id": "dd9eb17e-1190-53dc-861a-d550ec995069",
+        "language": "hi",
+        "note": null,
+        "reviewer": "A. Joshi",
+        "revision": 1,
+        "status": "verified",
+        "text": "ज़रूरत पड़ने पर दिन में एक बार [N] कैप्सूल मुँह से लें",
+        "translator": "R. Mehta",
+        "updatedAt": "2026-04-03T00:00:00Z",
+        "verifiedAt": "2026-04-03T00:00:00Z"
+      },
+      "templateID": "qd-prn.capsule"
+    },
+    {
+      "id": "d2379738-5241-5759-8c57-ed547eda43af",
+      "language": "hi",
+      "note": "Illustrative seed — not human-verified. Replace before any real use.",
+      "recordedAt": "2026-04-03T00:00:00Z",
+      "revision": 1,
+      "snapshot": {
+        "id": "914e6fac-7c46-519e-a8b4-9c72f72d6668",
+        "language": "hi",
+        "note": null,
+        "reviewer": "A. Joshi",
+        "revision": 1,
+        "status": "verified",
+        "text": "ज़रूरत पड़ने पर [N] कैप्सूल मुँह से लें",
+        "translator": "R. Mehta",
+        "updatedAt": "2026-04-03T00:00:00Z",
+        "verifiedAt": "2026-04-03T00:00:00Z"
+      },
+      "templateID": "prn.capsule"
+    },
+    {
+      "id": "50e3a09c-745f-5ee1-bd5a-bcba4d3a03ac",
+      "language": "hi",
+      "note": "Illustrative seed — not human-verified. Replace before any real use.",
+      "recordedAt": "2026-04-03T00:00:00Z",
+      "revision": 1,
+      "snapshot": {
+        "id": "f9cebeac-1838-5089-a205-ff1b68055cad",
+        "language": "hi",
+        "note": null,
+        "reviewer": "A. Joshi",
+        "revision": 1,
+        "status": "verified",
+        "text": "भोजन के साथ [N] कैप्सूल मुँह से लें",
+        "translator": "R. Mehta",
+        "updatedAt": "2026-04-03T00:00:00Z",
+        "verifiedAt": "2026-04-03T00:00:00Z"
+      },
+      "templateID": "cf.capsule"
+    },
+    {
+      "id": "c79ad8f1-78c2-56d6-93cb-5b5181c18143",
+      "language": "hi",
+      "note": "Illustrative seed — not human-verified. Replace before any real use.",
+      "recordedAt": "2026-03-12T00:00:00Z",
+      "revision": 1,
+      "snapshot": {
+        "id": "c3d21ebb-11e7-536a-8c52-a4a711ad0d59",
+        "language": "hi",
+        "note": null,
+        "reviewer": "A. Joshi",
+        "revision": 1,
+        "status": "verified",
+        "text": "निर्देशानुसार लें",
+        "translator": "R. Mehta",
+        "updatedAt": "2026-03-12T00:00:00Z",
+        "verifiedAt": "2026-03-12T00:00:00Z"
+      },
+      "templateID": "ud.any"
+    },
+    {
+      "id": "ef89fbd0-7b08-533d-97b4-c4106f57b707",
+      "language": "ar",
+      "note": "Illustrative seed — not human-verified. Replace before any real use.",
+      "recordedAt": "2026-04-03T00:00:00Z",
+      "revision": 1,
+      "snapshot": {
+        "id": "41eb5b9d-e9c5-5eef-8b83-161eb0cc5268",
+        "language": "ar",
+        "note": null,
+        "reviewer": null,
+        "revision": 1,
+        "status": "pending",
+        "text": "استخدم حسب التوجيهات",
+        "translator": "S. Haddad",
+        "updatedAt": "2026-04-03T00:00:00Z",
+        "verifiedAt": null
+      },
+      "templateID": "ud.any"
+    },
+    {
+      "id": "b04acef5-51da-5451-9a55-184799a4b122",
+      "language": "hi",
+      "note": "Illustrative seed — not human-verified. Replace before any real use.",
+      "recordedAt": "2026-04-03T00:00:00Z",
+      "revision": 1,
+      "snapshot": {
+        "id": "43cdaca9-cc14-5616-a18c-1ed2dbb8bd1c",
+        "language": "hi",
+        "note": null,
+        "reviewer": "A. Joshi",
+        "revision": 1,
+        "status": "verified",
+        "text": "प्रभावित स्थान पर दिन में दो बार लगाएं",
+        "translator": "R. Mehta",
+        "updatedAt": "2026-04-03T00:00:00Z",
+        "verifiedAt": "2026-04-03T00:00:00Z"
+      },
+      "templateID": "aa.topical"
+    },
+    {
+      "id": "63b37f8a-7d55-5535-8d46-748d9262d468",
+      "language": "zh-Hant",
+      "note": "Illustrative seed — not human-verified. Replace before any real use.",
+      "recordedAt": "2026-04-03T00:00:00Z",
+      "revision": 1,
+      "snapshot": {
+        "id": "7f57a668-f4e4-5a30-989e-5daa04b4ca32",
+        "language": "zh-Hant",
+        "note": null,
+        "reviewer": null,
+        "revision": 1,
+        "status": "pending",
+        "text": "每日兩次，塗於患處",
+        "translator": "W. Chan",
+        "updatedAt": "2026-04-03T00:00:00Z",
+        "verifiedAt": null
+      },
+      "templateID": "aa.topical"
+    },
+    {
+      "id": "79fee69a-4106-5dbf-b9da-a12fd9d4e4f8",
+      "language": "zh-Hant",
+      "note": "Illustrative seed — not human-verified. Replace before any real use.",
+      "recordedAt": "2026-04-03T00:00:00Z",
+      "revision": 1,
+      "snapshot": {
+        "id": "d9d20367-6f16-588b-b507-d86089218327",
+        "language": "zh-Hant",
+        "note": null,
+        "reviewer": null,
+        "revision": 1,
+        "status": "pending",
+        "text": "每日兩次，每次[N]粒，口服",
+        "translator": "W. Chan",
+        "updatedAt": "2026-04-03T00:00:00Z",
+        "verifiedAt": null
+      },
+      "templateID": "bid.tablet"
+    },
+    {
+      "id": "5e8f6d18-e7f6-501b-ba93-4b9e02d4c997",
+      "language": "zh-Hant",
+      "note": "Illustrative seed — not human-verified. Replace before any real use.",
+      "recordedAt": "2026-04-03T00:00:00Z",
+      "revision": 1,
+      "snapshot": {
+        "id": "13db324b-b87a-548a-8b5e-9e5511913ad9",
+        "language": "zh-Hant",
+        "note": null,
+        "reviewer": null,
+        "revision": 1,
+        "status": "pending",
+        "text": "隨餐服用，每日一次，每次[N]粒，口服",
+        "translator": "W. Chan",
+        "updatedAt": "2026-04-03T00:00:00Z",
+        "verifiedAt": null
+      },
+      "templateID": "qd-cf.tablet"
+    }
+  ],
+  "version": 1
+}
