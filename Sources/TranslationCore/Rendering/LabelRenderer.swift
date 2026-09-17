@@ -10,6 +10,14 @@ public struct RenderedLabel: Codable, Sendable, Hashable {
     /// The template has a `[N]` slot and no dose was given.
     public var needsDose: Bool
 
+    public init(english: String, supplementary: String?, language: LanguageCode, isRTL: Bool, needsDose: Bool) {
+        self.english = english
+        self.supplementary = supplementary
+        self.language = language
+        self.isRTL = isRTL
+        self.needsDose = needsDose
+    }
+
     /// A label with a literal `[N]` left in it is never printable.
     public var isPrintable: Bool {
         !needsDose && !english.contains(DoseSlot.token) && !(supplementary ?? "").contains(DoseSlot.token)
