@@ -1,0 +1,29 @@
+.DS_Store
+.idea/
+.vscode/
+
+# Xcode
+DerivedData/
+build/
+*.xcodeproj/
+*.xcworkspace/xcuserdata/
+*.xcuserdatad/
+*.xcuserstate
+
+# Swift Package Manager
+.build/
+.swiftpm/
+Packages/
+Package.resolved
+
+# Local tooling artifacts
+.claude/
+CLAUDE.md
+CLAUDE.local.md
+output/
+
+# Logs and temp files
+*.log
+*.tmp
+.worktrees/
+.gstack/
