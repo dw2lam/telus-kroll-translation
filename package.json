@@ -18,7 +18,7 @@
     "dist:mac": "npm run build && electron-builder --mac",
     "dist:win": "npm run build && electron-builder --win",
     "test:e2e": "npm run build && node tests/e2e/flow.e2e.mjs",
-    "release": "npm run typecheck && npm test && npm run build && GH_TOKEN=${GH_TOKEN:-$(gh auth token)} electron-builder --mac --win --publish always"
+    "release": "npm run typecheck && npm test && npm run build && rm -rf dist && electron-builder --mac --win --publish never && gh release create v$npm_package_version --repo dw2lam/telus-kroll-translation --target main --title \"Telus Kroll Translation Demo $npm_package_version\" --generate-notes dist/*.dmg dist/*.exe"
   },
   "devDependencies": {
     "@fontsource/inter": "^5.3.0",
@@ -47,8 +47,5 @@
     "type": "git",
     "url": "https://github.com/dw2lam/telus-kroll-translation.git"
   },
-  "homepage": "https://github.com/dw2lam/telus-kroll-translation",
-  "dependencies": {
-    "electron-updater": "^6.8.11"
-  }
+  "homepage": "https://github.com/dw2lam/telus-kroll-translation"
 }

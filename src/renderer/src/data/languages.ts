@@ -40,7 +40,7 @@ export const LANGUAGES: Language[] = [
       tag: 'INSTRUCTIONS · हिन्दी',
       footer: [
         'दवा का नाम अंग्रेज़ी में है  ·  Drug name stays in Latin script (WHO INN)',
-        'अनुवाद: सत्यापित वाक्यांश बैंक  ·  Translated from a human-verified phrase bank, not machine translation. Auxiliary warnings remain English in v1.',
+        'अनुवाद: सत्यापित वाक्यांश बैंक  ·  Translated from a human-verified phrase bank, not machine translation.',
       ],
     },
   },

@@ -1,5 +1,5 @@
 import peelOff from '@/assets/peel-off.svg'
-import { RX } from '@/data/demo'
+import { RX, RX_WARNINGS } from '@/data/demo'
 import { languageByCode } from '@/data/languages'
 import type { PrintJob } from '@/flow/state'
 import './labels.css'
@@ -67,27 +67,39 @@ export function Panel2({ job }: { job: PrintJob }) {
   if (!t) return null
   const language = languageByCode(t.language)
   const strings = language.label!
+  const warnings = RX_WARNINGS[t.language]
   return (
-    <div className="lbl lbl-p2" data-panel="2">
+    <div className={'lbl lbl-p2' + (warnings ? ' has-warnings' : '')} data-panel="2">
       <div className="lbl-p2-head" dir={language.rtl ? 'rtl' : 'ltr'}>
         <span lang={t.language} className="lbl-p2-title">{strings.header}</span>
         <span className="lbl-9b" dir="ltr">{strings.tag}</span>
       </div>
       <div className="lbl-p2-body">
-        <div className="lbl-line">
-          <div className="lbl-stack">
-            <span className="lbl-16b">Shah, Rohan</span>
-            <span className="lbl-11b">{`${RX.brand}  ${RX.strength}  ·  ${RX.generic}`}</span>
+        <div className={warnings ? 'lbl-p2-cols' : undefined} dir={warnings && language.rtl ? 'rtl' : undefined}>
+          <div className="lbl-p2-main" dir="ltr">
+            <div className="lbl-line">
+              <div className="lbl-stack">
+                <span className="lbl-16b">Shah, Rohan</span>
+                <span className="lbl-11b">{`${RX.brand}  ${RX.strength}  ·  ${RX.generic}`}</span>
+              </div>
+              <div className="lbl-stack is-end">
+                <span className="lbl-11b">Rx:{RX.number}</span>
+                <span className="lbl-9">DIN: {RX.din}</span>
+              </div>
+            </div>
+            <div className="lbl-rule" />
+            <div className="lbl-translated" dir={language.rtl ? 'rtl' : 'ltr'}>
+              <p className="lbl-translated-main" lang={t.language} data-testid="label-translated-sig">{t.text}</p>
+              <p className="lbl-gloss" dir="ltr">{t.gloss}</p>
+            </div>
           </div>
-          <div className="lbl-stack is-end">
-            <span className="lbl-11b">Rx:{RX.number}</span>
-            <span className="lbl-9">DIN: {RX.din}</span>
-          </div>
-        </div>
-        <div className="lbl-rule" />
-        <div className="lbl-translated" dir={language.rtl ? 'rtl' : 'ltr'}>
-          <p className="lbl-translated-main" lang={t.language} data-testid="label-translated-sig">{t.text}</p>
-          <p className="lbl-gloss" dir="ltr">{t.gloss}</p>
+          {warnings && (
+            <ol className="lbl-p2-warnings" lang={t.language} dir={language.rtl ? 'rtl' : 'ltr'} data-testid="label-translated-warnings">
+              {warnings.map((w) => (
+                <li key={w}>{w}</li>
+              ))}
+            </ol>
+          )}
         </div>
         <div className="lbl-footer">
           {strings.footer.map((line) => (

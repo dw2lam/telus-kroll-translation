@@ -43,3 +43,13 @@
 .lbl-gloss { font-size: 10px; color: var(--text-muted); }
 .lbl-footer { display: flex; flex-direction: column; gap: 3px; font-size: 9.5px; color: var(--text-muted); }
 .lbl-demo { font-size: 7px; font-weight: 700; letter-spacing: 0.04em; color: var(--accent-warning); }
+
+/* Under-panel with translated warnings: sig on the left, warnings on the right, as on panel 1. */
+.lbl-p2-cols { display: flex; gap: 14px; align-items: flex-start; }
+.lbl-p2-main { display: flex; flex-direction: column; gap: 10px; }
+.lbl-p2-cols .lbl-p2-main { width: 290px; flex-shrink: 0; }
+.lbl-p2-cols .lbl-line { white-space: normal; }
+.lbl-p2.has-warnings .lbl-p2-body { gap: 8px; padding: 10px 14px 9px; }
+.lbl-p2.has-warnings .lbl-translated-main { font-size: 22px; line-height: 1.3; }
+.lbl-p2-warnings { flex: 1; min-width: 0; margin: 0; padding: 0 0 0 1.2em; display: flex; flex-direction: column; gap: 3px; font-size: 9px; line-height: 1.3; }
+.lbl-p2-warnings[dir='rtl'] { padding: 0 1.2em 0 0; }
