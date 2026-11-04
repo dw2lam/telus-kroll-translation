@@ -14,7 +14,7 @@ export const LANGUAGES: Language[] = [
       peel: 'اسحب',
       header: 'التعليمات',
       tag: 'INSTRUCTIONS · العربية',
-      footer: ['اسم الدواء مكتوب بالحروف اللاتينية  ·  Drug name stays in Latin script (WHO INN)'],
+      footer: ['اسم الدواء مكتوب بالحروف اللاتينية  ·  The medicine name is in English'],
     },
   },
   {
@@ -26,7 +26,7 @@ export const LANGUAGES: Language[] = [
       peel: '撕開',
       header: '用藥說明',
       tag: 'TRADITIONAL · 繁體',
-      footer: ['Drug name stays in Latin script (WHO INN)'],
+      footer: ['The medicine name is in English'],
     },
   },
   {
@@ -39,7 +39,7 @@ export const LANGUAGES: Language[] = [
       header: 'निर्देश',
       tag: 'INSTRUCTIONS · हिन्दी',
       footer: [
-        'दवा का नाम अंग्रेज़ी में है  ·  Drug name stays in Latin script (WHO INN)',
+        'दवा का नाम अंग्रेज़ी में है  ·  The medicine name is in English',
         'अनुवाद: सत्यापित वाक्यांश बैंक  ·  Translated from a human-verified phrase bank, not machine translation.',
       ],
     },
@@ -53,7 +53,7 @@ export const LANGUAGES: Language[] = [
       peel: 'کھچو',
       header: 'ہدایتاں',
       tag: 'INSTRUCTIONS · PUNJABI (SHAHMUKHI)',
-      footer: ['Drug name stays in Latin script (WHO INN)'],
+      footer: ['The medicine name is in English'],
     },
   },
   { code: 'es', name: 'Spanish', rtl: false },
