@@ -15,11 +15,8 @@ Get the latest build from **[Releases](https://github.com/dw2lam/telus-kroll-tra
 
 | Platform | File |
 |---|---|
-| macOS · Apple Silicon | `Kroll.Label-<version>-mac-arm64.dmg` |
-| macOS · Intel | `Kroll.Label-<version>-mac-x64.dmg` |
-| Windows · x64 installer | `Kroll.Label-<version>-win-setup-x64.exe` |
-| Windows · ARM installer | `Kroll.Label-<version>-win-setup-arm64.exe` |
-| Windows · no install | `Kroll.Label-<version>-win-portable.exe` |
+| macOS · Apple Silicon | `Kroll-Label-<version>-mac-arm64.dmg` |
+| Windows · x64 | `Kroll-Label-<version>-win-setup-x64.exe` |
 
 The builds are **unsigned**, so each OS will warn you the first time:
 
@@ -27,6 +24,15 @@ The builds are **unsigned**, so each OS will warn you the first time:
   - If macOS says it "can't be opened" or "is damaged", go to *System Settings → Privacy & Security* and click **Open Anyway**.
   - Or run this in Terminal: `xattr -dr com.apple.quarantine "/Applications/Kroll Label.app"`
 - **Windows:** SmartScreen shows "Windows protected your PC". Click **More info → Run anyway**.
+
+### Auto-updates
+
+The installed app checks this repo's Releases on launch, every 4 hours, and from **Help → Check for Updates…**.
+
+- **Windows:** the update downloads in the background, then the app offers **Restart now** (otherwise it installs on quit).
+- **macOS:** the app offers **Download**, fetches the new `.dmg` into Downloads and opens it. Drag the new version over the old one. An unsigned Mac app can't replace itself; signing with an Apple Developer ID would make this automatic too.
+
+**While this repo is private, installed copies can't see new releases**, and background checks fail silently. Either make the repo public, or build with a **read-only** fine-grained token (Contents: Read on this repo only) in `MAIN_VITE_UPDATE_TOKEN` (`.env.local` locally, the `UPDATE_TOKEN` secret in CI). Either way, nothing else changes.
 
 ## The flow
 
@@ -125,11 +131,17 @@ npm run typecheck
 
 ```sh
 npm run dist       # macOS + Windows into dist/
-npm run dist:mac   # dmg + zip, arm64 + x64
-npm run dist:win   # NSIS installers (x64, arm64) + portable exe
+npm run dist:mac   # Apple Silicon dmg (+ zip for the update feed)
+npm run dist:win   # Windows x64 installer
 ```
 
-Both platforms build on a Mac; no Wine is needed. [`.github/workflows/build.yml`](.github/workflows/build.yml) does three things:
+Both platforms build on a Mac; no Wine is needed.
+
+### Release (with auto-update)
+
+1. Put the read-only update token in `.env.local` (see `.env.example`; it's git-ignored).
+2. Bump `version` in `package.json` (e.g. `0.1.1`) and commit.
+3. Run `npm run release`. It tests and builds both platforms, then publishes `v<version>` to GitHub Releases with the installers and the `latest.yml` / `latest-mac.yml` feeds that installed copies check. The upload uses your `gh` login. [`.github/workflows/build.yml`](.github/workflows/build.yml) does three things:
 
 - runs the tests;
 - builds macOS on `macos-latest` and Windows on `windows-latest`;

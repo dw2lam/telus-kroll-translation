@@ -8,29 +8,33 @@ files:
   - out/**
   - package.json
 asar: true
-artifactName: ${productName}-${version}-${os}-${arch}.${ext}
+publish:
+  provider: github
+  owner: dw2lam
+  repo: telus-kroll-translation
+  releaseType: release
+# No spaces: GitHub renames spaces in asset names, which would break latest*.yml.
+artifactName: Kroll-Label-${version}-${os}-${arch}.${ext}
 
+# macOS — Apple Silicon only. The zip is what the update feed (latest-mac.yml) lists.
 mac:
   category: public.app-category.medical
   target:
     - target: dmg
-      arch: [arm64, x64]
+      arch: [arm64]
     - target: zip
-      arch: [arm64, x64]
+      arch: [arm64]
   identity: null
 dmg:
   title: Kroll Label ${version}
 
+# Windows — x64 installer only; latest.yml points at it for auto-updates.
 win:
   target:
     - target: nsis
-      arch: [x64, arm64]
-    - target: portable
       arch: [x64]
 nsis:
   oneClick: false
   perMachine: false
   allowToChangeInstallationDirectory: true
-  artifactName: ${productName}-${version}-win-setup-${arch}.${ext}
-portable:
-  artifactName: ${productName}-${version}-win-portable.${ext}
+  artifactName: Kroll-Label-${version}-win-setup-x64.${ext}

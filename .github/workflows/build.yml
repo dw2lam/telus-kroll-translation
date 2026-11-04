@@ -38,6 +38,9 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
+        env:
+          # Read-only token for the private auto-update feed (repo secret UPDATE_TOKEN).
+          MAIN_VITE_UPDATE_TOKEN: ${{ secrets.UPDATE_TOKEN }}
       - run: npx electron-builder ${{ matrix.target }} --publish never
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'
@@ -48,4 +51,5 @@ jobs:
             dist/*.dmg
             dist/*.zip
             dist/*.exe
+            dist/latest*.yml
           if-no-files-found: error

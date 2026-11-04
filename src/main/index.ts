@@ -1,6 +1,7 @@
 import { app, BrowserWindow, Menu, shell } from 'electron'
 import { join } from 'node:path'
 import { registerLabelIpc } from './labels'
+import { checkForUpdatesNow, setUpAutoUpdates } from './updater'
 
 const isMac = process.platform === 'darwin'
 
@@ -56,6 +57,13 @@ function buildMenu(): void {
       ],
     },
     { role: 'windowMenu' },
+    {
+      role: 'help',
+      submenu: [
+        { label: 'Check for Updates…', click: () => checkForUpdatesNow() },
+        { label: 'Releases on GitHub', click: () => void shell.openExternal('https://github.com/dw2lam/telus-kroll-translation/releases') },
+      ],
+    },
   ]
   Menu.setApplicationMenu(Menu.buildFromTemplate(template))
 }
@@ -74,6 +82,7 @@ if (!app.requestSingleInstanceLock()) {
     if (process.platform === 'win32') app.setAppUserModelId('com.davidlam.krolllabel')
     buildMenu()
     registerLabelIpc()
+    setUpAutoUpdates()
     createWindow()
     app.on('activate', () => {
       if (BrowserWindow.getAllWindows().length === 0) createWindow()
