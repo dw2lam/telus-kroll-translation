@@ -83,7 +83,7 @@ export function PrintView({ job, onBack, onNewRx }: { job: PrintJob; onBack: () 
         <div className="print-actions">
           <button type="button" onClick={replay} data-testid="btn-replay">↻ Replay</button>
           {job.translation && (
-            <button type="button" onClick={() => setPeeled((p) => !p)} disabled={phase.phase !== 'done'} data-testid="btn-peel">
+            <button type="button" onClick={() => setPeeled((p) => !p)} disabled={phase.phase !== 'done'} data-testid="btn-peel" data-peeled={peeled}>
               {peeled ? 'Press panel back' : 'Peel panel 1'}
             </button>
           )}

@@ -1,7 +1,7 @@
 {
-  "name": "kroll-label",
-  "productName": "Kroll Label",
-  "version": "0.1.0",
+  "name": "telus-kroll-translation-demo",
+  "productName": "Telus Kroll Translation Demo",
+  "version": "0.1.1",
   "description": "Deterministic sig-translation engine and desktop app for TELUS Health Kroll prescription labels.",
   "author": "David Lam",
   "license": "MIT",

@@ -1,20 +1,24 @@
 import { app, BrowserWindow, Menu, shell } from 'electron'
 import { join } from 'node:path'
+import type { DemoCommand } from '../shared/api'
+import { closeCheatSheet, openCheatSheet, registerCheatSheetIpc } from './cheatsheet'
 import { registerLabelIpc } from './labels'
 import { checkForUpdatesNow, setUpAutoUpdates } from './updater'
 
 const isMac = process.platform === 'darwin'
+let mainWindow: BrowserWindow | null = null
 
 function createWindow(): BrowserWindow {
   const win = new BrowserWindow({
-    title: 'Kroll Label',
+    title: 'Telus Kroll Translation Demo',
     width: 1440,
     height: 900,
     minWidth: 1180,
     minHeight: 720,
     show: false,
-    backgroundColor: '#e9ecef',
     autoHideMenuBar: !isMac,
+    // macOS draws the presenter sidebar's material; the page leaves that area transparent.
+    ...(isMac ? { vibrancy: 'sidebar' as const, visualEffectState: 'followWindow' as const, backgroundColor: '#00000000' } : { backgroundColor: '#f1f1f1' }),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       contextIsolation: true,
@@ -33,9 +37,19 @@ function createWindow(): BrowserWindow {
   win.webContents.on('will-navigate', (event, url) => {
     if (url !== win.webContents.getURL()) event.preventDefault()
   })
+  win.on('closed', () => {
+    if (mainWindow === win) mainWindow = null
+    closeCheatSheet()
+  })
+  mainWindow = win
   if (process.env.ELECTRON_RENDERER_URL) void win.loadURL(process.env.ELECTRON_RENDERER_URL)
   else void win.loadFile(join(__dirname, '../renderer/index.html'))
   return win
+}
+
+/** Sends a presenter command to the Kroll window. */
+function demo(command: DemoCommand): () => void {
+  return () => mainWindow?.webContents.send('demo:command', command)
 }
 
 function buildMenu(): void {
@@ -56,6 +70,17 @@ function buildMenu(): void {
         { role: 'togglefullscreen' },
       ],
     },
+    {
+      label: 'Demo',
+      submenu: [
+        // The renderer handles these keys itself, so the menu only shows them.
+        { label: 'Start Walkthrough', click: demo('guide') },
+        { label: 'Show or Hide Presenter', accelerator: 'CmdOrCtrl+,', registerAccelerator: false, click: demo('settings') },
+        { label: 'Cheat Sheet', accelerator: 'F1', registerAccelerator: false, click: () => openCheatSheet() },
+        { type: 'separator' },
+        { label: 'Restart Demo', click: demo('restart') },
+      ],
+    },
     { role: 'windowMenu' },
     {
       role: 'help',
@@ -72,7 +97,7 @@ if (!app.requestSingleInstanceLock()) {
   app.quit()
 } else {
   app.on('second-instance', () => {
-    const [win] = BrowserWindow.getAllWindows()
+    const win = mainWindow
     if (win) {
       if (win.isMinimized()) win.restore()
       win.focus()
@@ -82,10 +107,11 @@ if (!app.requestSingleInstanceLock()) {
     if (process.platform === 'win32') app.setAppUserModelId('com.davidlam.krolllabel')
     buildMenu()
     registerLabelIpc()
+    registerCheatSheetIpc(() => mainWindow)
     setUpAutoUpdates()
     createWindow()
     app.on('activate', () => {
-      if (BrowserWindow.getAllWindows().length === 0) createWindow()
+      if (!mainWindow) createWindow()
     })
   })
   app.on('window-all-closed', () => {

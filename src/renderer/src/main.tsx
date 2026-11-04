@@ -23,8 +23,19 @@ const page = hash.startsWith('#render?') ? (
   <LabelRenderPage params={new URLSearchParams(hash.slice('#render?'.length))} />
 ) : hash === '#cheatsheet' ? (
   <CheatSheet standalone />
+) : hash === '#cheatsheet-window' ? (
+  <CheatSheet
+    onLoad={(language, sig) => window.kroll?.loadScenario(language, sig)}
+    onSavePdf={() => window.kroll?.saveCheatSheetPdf()}
+    onClose={() => window.close()}
+  />
 ) : (
   <App />
 )
+
+if (hash === '#cheatsheet-window') document.title = 'Telus Kroll Translation Demo — Cheat Sheet'
+
+// The app window lets macOS draw the presenter sidebar's material (vibrancy).
+if (page.type === App) document.documentElement.dataset.platform = window.kroll?.platform ?? ''
 
 createRoot(document.getElementById('root')!).render(<StrictMode>{page}</StrictMode>)

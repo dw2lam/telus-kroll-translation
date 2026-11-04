@@ -1,5 +1,5 @@
 appId: com.davidlam.krolllabel
-productName: Kroll Label
+productName: Telus Kroll Translation Demo
 copyright: © 2026 David Lam
 directories:
   output: dist
@@ -14,7 +14,7 @@ publish:
   repo: telus-kroll-translation
   releaseType: release
 # No spaces: GitHub renames spaces in asset names, which would break latest*.yml.
-artifactName: Kroll-Label-${version}-${os}-${arch}.${ext}
+artifactName: Telus-Kroll-Translation-Demo-${version}-${os}-${arch}.${ext}
 
 # macOS — Apple Silicon only. The zip is what the update feed (latest-mac.yml) lists.
 mac:
@@ -26,7 +26,7 @@ mac:
       arch: [arm64]
   identity: null
 dmg:
-  title: Kroll Label ${version}
+  title: Telus Kroll Translation Demo ${version}
 
 # Windows — x64 installer only; latest.yml points at it for auto-updates.
 win:
@@ -37,4 +37,4 @@ nsis:
   oneClick: false
   perMachine: false
   allowToChangeInstallationDirectory: true
-  artifactName: Kroll-Label-${version}-win-setup-x64.${ext}
+  artifactName: Telus-Kroll-Translation-Demo-${version}-win-setup-x64.${ext}

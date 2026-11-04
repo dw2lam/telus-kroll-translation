@@ -7,7 +7,7 @@ import type { LabelRequest } from '../shared/api'
 const PANEL_CSS_WIDTH = 576
 const PANEL_INCHES = 4
 
-function loadPage(win: BrowserWindow, hash: string): Promise<void> {
+export function loadPage(win: BrowserWindow, hash: string): Promise<void> {
   if (process.env.ELECTRON_RENDERER_URL) return win.loadURL(`${process.env.ELECTRON_RENDERER_URL}#${hash}`)
   return win.loadFile(join(__dirname, '../renderer/index.html'), { hash })
 }
@@ -38,7 +38,7 @@ async function askForPdfPath(owner: BrowserWindow | null, name: string): Promise
 
 export function registerLabelIpc(): void {
   ipcMain.handle('cheatsheet:savePdf', async (event) => {
-    const filePath = await askForPdfPath(BrowserWindow.fromWebContents(event.sender), 'Kroll Label cheat sheet')
+    const filePath = await askForPdfPath(BrowserWindow.fromWebContents(event.sender), 'Telus Kroll Translation Demo cheat sheet')
     if (!filePath) return null
     const win = new BrowserWindow({ show: false, width: 1400, height: 1000, webPreferences: { sandbox: true, contextIsolation: true } })
     try {

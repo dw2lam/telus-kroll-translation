@@ -84,7 +84,7 @@ export function CheatSheet({ onLoad, onClose, onSavePdf, standalone }: Props) {
     <div className={'cs' + (standalone ? ' is-standalone' : '')} data-testid="cheatsheet">
       <header className="cs-head">
         <div>
-          <h1>Kroll Label — cheat sheet</h1>
+          <h1>Telus Kroll Translation Demo — cheat sheet</h1>
           <p>
             Every sig code and patient language, and the Translated Sig state each one reaches. Generated live from the demo provider.
             {onLoad && ' Click any cell to load it into F12 Fill Rx.'} All non-English wording is illustrative, not verified.

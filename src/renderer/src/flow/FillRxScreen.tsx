@@ -154,9 +154,9 @@ export function FillRxScreen({ language, sigInput, translated, dialogOpen, onSig
           <div className="k-row"><Label width={44}>Prod Sel</Label><Field value="None" width={84} caret /></div>
           <div className="k-row"><Label width={44}>O/W</Label><Field value="Written" width={84} caret /></div>
           <div className="k-row">
-            <span className="k-label" style={{ width: 44, fontWeight: 700, color: 'var(--accent-paneltitle)' }}>Labels</span>
-            <Field value="1" width={34} style={{ border: '2px solid var(--accent-paneltitle)' }} />
-            <Btn width={22} onClick={onPreview} title="Preview labels">F2</Btn>
+            <Label width={44}>Labels</Label>
+            <Field value="1" width={34} />
+            <Btn width={22} onClick={onPreview} title="Preview labels" testId="btn-labels-f2">F2</Btn>
           </div>
         </div>
         <div className="k-panel k-form" style={{ flex: '1 0 0', gap: 2 }}>

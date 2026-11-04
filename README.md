@@ -1,4 +1,4 @@
-# Kroll Label — translated prescription labels for TELUS Health Kroll
+# Telus Kroll Translation Demo — translated prescription labels for TELUS Health Kroll
 
 A clickable demo of the **GBDA 402 capstone** concept for TELUS Health **Kroll**. The pharmacist records the patient's language, fills an Rx, and confirms a translated sig. Kroll then prints a **two-panel peel label**: English on the front and the patient's language underneath. A 3D printer prints it onto a pill vial.
 
@@ -15,14 +15,14 @@ Get the latest build from **[Releases](https://github.com/dw2lam/telus-kroll-tra
 
 | Platform | File |
 |---|---|
-| macOS · Apple Silicon | `Kroll-Label-<version>-mac-arm64.dmg` |
-| Windows · x64 | `Kroll-Label-<version>-win-setup-x64.exe` |
+| macOS · Apple Silicon | `Telus-Kroll-Translation-Demo-<version>-mac-arm64.dmg` |
+| Windows · x64 | `Telus-Kroll-Translation-Demo-<version>-win-setup-x64.exe` |
 
 The builds are **unsigned**, so each OS will warn you the first time:
 
-- **macOS:** drag *Kroll Label* to Applications, then open it.
+- **macOS:** drag *Telus Kroll Translation Demo* to Applications, then open it.
   - If macOS says it "can't be opened" or "is damaged", go to *System Settings → Privacy & Security* and click **Open Anyway**.
-  - Or run this in Terminal: `xattr -dr com.apple.quarantine "/Applications/Kroll Label.app"`
+  - Or run this in Terminal: `xattr -dr com.apple.quarantine "/Applications/Telus Kroll Translation Demo.app"`
 - **Windows:** SmartScreen shows "Windows protected your PC". Click **More info → Run anyway**.
 
 ### Auto-updates
@@ -59,18 +59,26 @@ The Translated Sig pop-up has six states:
 
 ## Presenter tools
 
-The dark top bar is demo chrome, not part of Kroll.
+Presenter controls live in a sidebar on the right, styled like a macOS inspector (on macOS it uses the system's own translucent sidebar material and follows light/dark mode). None of it is part of Kroll. Hide it with the sidebar button or **Ctrl/⌘ + ,**; bring it back with the round button in the corner, the same shortcut, or **Demo → Show or Hide Presenter**.
 
-- **3D print view** switches between the 3D printer → vial view and labels shown inside Kroll. The setting is remembered between launches.
-- **Load a scenario…** jumps straight into each branch:
-  - Hindi `*1C` and Hindi free text
-  - Tagalog
-  - Arabic (right-to-left)
-  - Chinese (Traditional)
-  - Punjabi (Shahmukhi)
-- **Cheat sheet** (or **F1**) covers every sig code × patient language, plus free-text examples, the pharmacist moves and the keys. It is computed live from the provider, so it always matches what the app does.
-  - **Click any cell** to load that sig into Fill Rx and run it.
-  - **Save as PDF** gives you a printable copy.
+- **Walkthroughs** step through the flow. Each step explains what Kroll is doing and rings the control it is about. Press the blue button to have the step done for you, or use Kroll yourself and the walkthrough follows. Click any step to jump straight to it. **PageDown / PageUp** step forward and back, so a presentation clicker works.
+  1. **The core flow:** Hindi `*1C` → exact match → two-panel label on the vial.
+  2. **No exact match:** free-text sig → closest match → top 5 → phrasing guide → English only.
+  3. **Language not supported yet:** Tagalog → captured, not yet translatable → English label.
+
+  ![Walkthrough in the presenter sidebar](docs/screenshots/08-walkthrough.jpg)
+
+- **Scenarios** and the settings at the bottom of the sidebar:
+  - **3D print view** switches between the 3D printer → vial view and labels shown inside Kroll. The setting is remembered between launches.
+  - **Load a scenario** jumps straight into each branch:
+    - Hindi `*1C` and Hindi free text
+    - Tagalog
+    - Arabic (right-to-left)
+    - Chinese (Traditional)
+    - Punjabi (Shahmukhi)
+  - **Cheat sheet** (or **F1**) opens in its own window, so it can sit beside Kroll or on a second screen. It covers every sig code × patient language, plus free-text examples, the pharmacist moves and the keys. It is computed live from the provider, so it always matches what the app does.
+    - **Click any cell** to load that sig into Fill Rx in the main window and run it.
+    - **Save as PDF** gives you a printable copy.
 
 ![Cheat sheet](docs/screenshots/07-cheat-sheet.jpg)
 
@@ -82,7 +90,9 @@ The dark top bar is demo chrome, not part of Kroll.
 | F3 / F12 | Patient / Fill Rx (F12 again prints) |
 | Ctrl/⌘ + L | Preview labels inside Kroll |
 | F1 | Cheat sheet |
-| Esc | Close the pop-up |
+| Ctrl/⌘ + , | Show or hide the presenter sidebar |
+| PageDown / PageUp | Next / previous walkthrough step |
+| Esc | Close the pop-up or cheat sheet |
 
 ## Sig codes and languages
 
@@ -157,6 +167,7 @@ src/renderer/    React app
   labels/        panel 1 / panel 2 label layouts + the offscreen render page
   print/         Print view + the three.js printer → vial scene
   cheatsheet/    the live cheat sheet
+  demo/          presenter sidebar, walkthrough steps, focus ring
   data/          languages, phrase bank, demo provider, demo Rx
 build/           app icon
 tests/           vitest unit tests + Playwright end-to-end

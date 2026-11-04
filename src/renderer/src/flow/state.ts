@@ -68,6 +68,8 @@ export type Action =
   | { type: 'show3d' }
   | { type: 'scenario'; language: LanguageCode; sig: string; submit?: boolean }
   | { type: 'reset' }
+  /** Replaces the whole state (the guided demo jumping to a step). */
+  | { type: 'load'; state: FlowState }
 
 /** The English sig Kroll prints: a code's expansion, or the free text as typed. */
 export function krollSigText(input: string): string {
@@ -159,5 +161,7 @@ export function reducer(state: FlowState, action: Action): FlowState {
     }
     case 'reset':
       return { ...initialState }
+    case 'load':
+      return action.state
   }
 }

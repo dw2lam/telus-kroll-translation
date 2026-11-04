@@ -1,4 +1,4 @@
-.print-view { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) 460px; background: #eef1f4; }
+.print-view { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) clamp(330px, 34%, 460px); background: #eef1f4; }
 .print-stage { position: relative; min-width: 0; }
 .print-loading { height: 100%; display: grid; place-items: center; color: #5b6573; font-size: 14px; }
 .print-status {

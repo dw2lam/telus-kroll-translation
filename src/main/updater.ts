@@ -48,8 +48,8 @@ async function downloadDmg(info: UpdateInfo): Promise<void> {
   await shell.openPath(target)
   await message({
     type: 'info',
-    message: `Kroll Label ${info.version} downloaded`,
-    detail: 'The installer is open. Quit Kroll Label, then drag the new version into Applications to replace this one.',
+    message: `Telus Kroll Translation Demo ${info.version} downloaded`,
+    detail: 'The installer is open. Quit Telus Kroll Translation Demo, then drag the new version into Applications to replace this one.',
   })
 }
 
@@ -60,7 +60,7 @@ async function onAvailable(info: UpdateInfo): Promise<void> {
     buttons: ['Download', 'Later'],
     defaultId: 0,
     cancelId: 1,
-    message: `Kroll Label ${info.version} is available`,
+    message: `Telus Kroll Translation Demo ${info.version} is available`,
     detail: `You have ${app.getVersion()}. Download the new version now?`,
   })
   if (response !== 0) return
@@ -82,7 +82,7 @@ export function setUpAutoUpdates(): void {
     void onAvailable(info)
   })
   autoUpdater.on('update-not-available', () => {
-    if (manualCheck) void message({ type: 'info', message: 'Kroll Label is up to date', detail: `Version ${app.getVersion()}` })
+    if (manualCheck) void message({ type: 'info', message: 'Telus Kroll Translation Demo is up to date', detail: `Version ${app.getVersion()}` })
     manualCheck = false
   })
   autoUpdater.on('update-downloaded', async (info) => {
@@ -91,7 +91,7 @@ export function setUpAutoUpdates(): void {
       buttons: ['Restart now', 'Later'],
       defaultId: 0,
       cancelId: 1,
-      message: `Kroll Label ${info.version} is ready`,
+      message: `Telus Kroll Translation Demo ${info.version} is ready`,
       detail: 'Restart to finish updating. Otherwise it installs the next time you quit.',
     })
     if (response === 0) autoUpdater.quitAndInstall()

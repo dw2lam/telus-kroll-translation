@@ -46,7 +46,7 @@ export function PatientScreen({ language, onLanguage, onOk, onNewRx }: { languag
           <Label width={48}>Salutation</Label>
           <Field value={PATIENT.salutation} width={66} h17 caret />
           <span style={{ flex: 1 }} />
-          <Btn width={60} ok bold onClick={onOk}>
+          <Btn width={60} ok bold onClick={onOk} testId="btn-patient-ok">
             OK
           </Btn>
           <Btn width={62}>✓ Select</Btn>

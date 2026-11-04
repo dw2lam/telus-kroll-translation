@@ -46,7 +46,7 @@ jobs:
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'
       - uses: actions/upload-artifact@v4
         with:
-          name: kroll-label-${{ runner.os }}
+          name: telus-kroll-translation-demo-${{ runner.os }}
           path: |
             dist/*.dmg
             dist/*.zip

@@ -1,21 +1,16 @@
-import { useCallback, useEffect, useLayoutEffect, useReducer, useState } from 'react'
-import { CheatSheet } from './cheatsheet/CheatSheet'
+import { useCallback, useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState } from 'react'
 import { SCENARIOS } from './data/demo'
-import { languageByCode } from './data/languages'
+import { Highlight } from './demo/Highlight'
+import { Icon, MOD, Presenter, type GuideProgress } from './demo/Presenter'
+import { stateAt, stepsFor, tourById } from './demo/tours'
 import { FillRxScreen } from './flow/FillRxScreen'
 import { LabelPreviewDialog } from './flow/LabelPreviewDialog'
 import { PatientScreen } from './flow/PatientScreen'
+import type { LanguageCode } from './data/types'
 import { initialState, reducer } from './flow/state'
 import { TranslatedSigDialog } from './flow/TranslatedSigDialog'
 import { PrintView } from './print/PrintView'
 import './print/print.css'
-
-const STEPS = [
-  { id: 'patient', label: 'F3 Patient · language' },
-  { id: 'fill', label: 'F12 Fill Rx · sig' },
-  { id: 'dialog', label: 'Translated Sig' },
-  { id: 'print', label: 'Print labels' },
-] as const
 
 interface Fit {
   zoom: number
@@ -48,33 +43,125 @@ function useFill(): [(el: HTMLDivElement | null) => void, Fit] {
 }
 
 const SHOW_3D_KEY = 'kroll-label.show3d'
+const PRESENTER_KEY = 'kroll-label.presenter'
 
-function readShow3d(): boolean {
+function readPref(key: string): boolean {
   try {
-    return localStorage.getItem(SHOW_3D_KEY) !== 'off'
+    return localStorage.getItem(key) !== 'off'
   } catch {
     return true
+  }
+}
+
+function writePref(key: string, on: boolean): void {
+  try {
+    localStorage.setItem(key, on ? 'on' : 'off')
+  } catch {
+    // Preference only; it still applies for this session.
   }
 }
 
 export default function App() {
   const [state, dispatch] = useReducer(reducer, initialState)
   const [stageRef, fit] = useFill()
-  const [show3d, setShow3d] = useState(readShow3d)
-  const [cheatSheet, setCheatSheet] = useState(false)
+  const [show3d, setShow3d] = useState(() => readPref(SHOW_3D_KEY))
+  const [presenter, setPresenter] = useState(() => readPref(PRESENTER_KEY))
+  const [guide, setGuide] = useState<{ tour: string; step: number } | null>(null)
+  const [ready, setReady] = useState(true)
   const printView = show3d ? '3d' : 'inline'
-  const language = languageByCode(state.language)
+
+  const tour = guide ? tourById(guide.tour) : undefined
+  const steps = useMemo(() => (tour ? stepsFor(tour, { view: printView }) : []), [tour, printView])
+  const current = guide ? steps[guide.step] : undefined
+
+  const showPresenter = useCallback((on: boolean): void => {
+    setPresenter(on)
+    writePref(PRESENTER_KEY, on)
+  }, [])
+
+  /** Puts Kroll exactly where step `index` of the walkthrough begins. */
+  const goToStep = useCallback(
+    (id: string, index: number): void => {
+      const t = tourById(id)
+      if (!t) return
+      dispatch({ type: 'load', state: stateAt(t, index, { view: printView }) })
+      setGuide({ tour: id, step: index })
+    },
+    [printView],
+  )
+  const startTour = useCallback((id: string): void => goToStep(id, 0), [goToStep])
+
+  const doStep = useCallback((): void => {
+    if (!guide || !current) return
+    if (current.done?.(state)) setGuide({ ...guide, step: guide.step + 1 })
+    else if (current.perform && 'click' in current.perform) document.querySelector<HTMLButtonElement>(current.perform.click)?.click()
+    else if (current.perform) goToStep(guide.tour, guide.step + 1)
+    else setGuide({ ...guide, step: guide.step + 1 })
+  }, [guide, current, state, goToStep])
+
+  const back = useCallback((): void => {
+    if (guide && guide.step > 0) goToStep(guide.tour, guide.step - 1)
+  }, [guide, goToStep])
+
+  // Doing the step in Kroll itself moves the walkthrough on. Some steps finish
+  // outside the flow state (the vial peel), so this also polls.
+  const latest = useRef({ state, guide, current })
+  latest.current = { state, guide, current }
+  useEffect(() => {
+    if (!guide) return
+    const check = (): void => {
+      const { state: s, guide: g, current: step } = latest.current
+      if (!g || !step) return
+      if (step.done?.(s)) setGuide({ ...g, step: g.step + 1 })
+      const click = step.perform && 'click' in step.perform ? document.querySelector<HTMLButtonElement>(step.perform.click) : null
+      setReady(!click || !click.disabled)
+    }
+    check()
+    const timer = window.setInterval(check, 200)
+    return () => window.clearInterval(timer)
+  }, [guide, state])
+
+  const loadScenario = (id: string): void => {
+    const scenario = SCENARIOS.find((s) => s.id === id)
+    if (!scenario) return
+    dispatch({ type: 'scenario', language: scenario.language, sig: scenario.sig })
+    setGuide(null)
+  }
+  const restart = useCallback((): void => {
+    dispatch({ type: 'reset' })
+    setGuide(null)
+  }, [])
+
+  // The native Demo menu drives the same controls.
+  useEffect(
+    () =>
+      window.kroll?.onDemoCommand((command) => {
+        if (command === 'guide') {
+          showPresenter(true)
+          startTour('exact')
+        } else if (command === 'settings') setPresenter((p) => (writePref(PRESENTER_KEY, !p), !p))
+        else if (command === 'restart') restart()
+      }),
+    [startTour, restart, showPresenter],
+  )
+
+  // A cell clicked in the cheat-sheet window loads here and runs.
+  useEffect(
+    () =>
+      window.kroll?.onLoadScenario((language, sig) => {
+        dispatch({ type: 'scenario', language: language as LanguageCode, sig, submit: true })
+        setGuide(null)
+      }),
+    [],
+  )
 
   const toggle3d = (on: boolean): void => {
     setShow3d(on)
-    try {
-      localStorage.setItem(SHOW_3D_KEY, on ? 'on' : 'off')
-    } catch {
-      // Preference only; the toggle still works for this session.
-    }
+    writePref(SHOW_3D_KEY, on)
     if (!on && state.screen === 'print') dispatch({ type: 'previewLabels' })
+    // The steps differ between the two views; restart the walkthrough rather than land mid-step.
+    if (guide) setGuide(null)
   }
-  const step = state.screen === 'print' ? 'print' : state.dialog ? 'dialog' : state.screen
 
   // Once a translation is confirmed, it lands in the Rx (Figma B5) and the labels print.
   useEffect(() => {
@@ -95,7 +182,16 @@ export default function App() {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent): void => {
-      if (e.key === 'F3') {
+      if ((e.ctrlKey || e.metaKey) && e.key === ',') {
+        e.preventDefault()
+        showPresenter(!presenter)
+      } else if (guide && e.key === 'PageDown') {
+        e.preventDefault()
+        doStep()
+      } else if (guide && e.key === 'PageUp') {
+        e.preventDefault()
+        back()
+      } else if (e.key === 'F3') {
         e.preventDefault()
         dispatch({ type: 'go', screen: 'patient' })
       } else if (e.key === 'F12') {
@@ -106,7 +202,7 @@ export default function App() {
         dispatch({ type: 'previewLabels' })
       } else if (e.key === 'F1') {
         e.preventDefault()
-        setCheatSheet((c) => !c)
+        window.kroll?.openCheatSheet()
       } else if (e.key === 'Escape' && state.preview) {
         dispatch({ type: 'closePreview' })
       } else if (e.key === 'Escape' && state.dialog) {
@@ -115,112 +211,76 @@ export default function App() {
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [fillOrPrint, state.dialog, state.preview])
+  }, [fillOrPrint, state.dialog, state.preview, presenter, guide, doStep, back, showPresenter])
+
+  const progress: GuideProgress | null = tour && guide ? { tour, steps, step: guide.step, ready } : null
 
   return (
     <div className="app">
-      <header className="demo-bar">
-        <div className="demo-brand">
-          <span className="demo-leaf" />
-          Kroll Label <span className="demo-tag">Demo</span>
-        </div>
-        <ol className="demo-steps">
-          {STEPS.map((s, i) => (
-            <li key={s.id} className={s.id === step ? 'is-current' : STEPS.findIndex((x) => x.id === step) > i ? 'is-done' : undefined}>
-              {s.label}
-            </li>
-          ))}
-        </ol>
-        <div className="demo-controls">
-          <span className="demo-lang" title="Patient language">
-            {language.name}
-          </span>
-          <label className="demo-switch" title="Print to the 3D printer and vial, or show the labels inside Kroll">
-            <input type="checkbox" checked={show3d} onChange={(e) => toggle3d(e.target.checked)} data-testid="toggle-3d" />
-            <span className="demo-switch-track" />
-            3D print view
-          </label>
-          <select
-            aria-label="Scenario"
-            data-testid="scenario"
-            value=""
-            onChange={(e) => {
-              const scenario = SCENARIOS.find((s) => s.id === e.target.value)
-              if (scenario) dispatch({ type: 'scenario', language: scenario.language, sig: scenario.sig })
-              setCheatSheet(false)
-            }}
-          >
-            <option value="" disabled>
-              Load a scenario…
-            </option>
-            {SCENARIOS.map((s) => (
-              <option key={s.id} value={s.id}>
-                {s.title} — {s.detail}
-              </option>
-            ))}
-          </select>
-          <button type="button" onClick={() => setCheatSheet((c) => !c)} className={cheatSheet ? 'is-on' : undefined} data-testid="btn-cheatsheet">
-            Cheat sheet
+      <main className="app-main">
+        {state.screen === 'print' && state.job ? (
+          <PrintView key={state.job.id} job={state.job} onBack={() => dispatch({ type: 'go', screen: 'fill' })} onNewRx={() => dispatch({ type: 'reset' })} />
+        ) : (
+          <div className="kroll-stage" ref={stageRef}>
+            <div className="kroll-window" style={{ zoom: fit.zoom, width: fit.width, height: fit.height }} data-testid={`screen-${state.screen}`}>
+              {state.screen === 'patient' ? (
+                <PatientScreen
+                  language={state.language}
+                  onLanguage={(l) => dispatch({ type: 'setLanguage', language: l })}
+                  onOk={() => dispatch({ type: 'go', screen: 'fill' })}
+                  onNewRx={() => dispatch({ type: 'go', screen: 'fill' })}
+                />
+              ) : (
+                <FillRxScreen
+                  language={state.language}
+                  sigInput={state.sigInput}
+                  translated={state.confirmed?.text ?? null}
+                  dialogOpen={state.dialog !== null}
+                  onSig={(sig) => dispatch({ type: 'setSig', sig })}
+                  onSubmit={() => dispatch({ type: 'submitSig' })}
+                  onPatient={() => dispatch({ type: 'go', screen: 'patient' })}
+                  onFill={fillOrPrint}
+                  onPreview={() => dispatch({ type: 'previewLabels' })}
+                />
+              )}
+              {state.dialog && (
+                <TranslatedSigDialog dialog={state.dialog} printView={printView} language={state.language} sigEntered={state.sigEntered} dispatch={dispatch} />
+              )}
+              {state.preview && state.job && (
+                <LabelPreviewDialog
+                  job={state.job}
+                  reason={state.preview}
+                  untranslated={state.language !== 'en' && !state.confirmed}
+                  show3d={show3d}
+                  onShow3d={() => dispatch({ type: 'show3d' })}
+                  onClose={() => dispatch({ type: 'closePreview' })}
+                />
+              )}
+            </div>
+          </div>
+        )}
+        {!presenter && (
+          <button type="button" className="pz-reveal" onClick={() => showPresenter(true)} title={`Show presenter (${MOD},)`} data-testid="pz-reveal">
+            <Icon name="sidebar" size={16} />
           </button>
-          <button type="button" onClick={() => dispatch({ type: 'reset' })} data-testid="btn-restart">
-            Restart
-          </button>
-        </div>
-      </header>
-
-      <div className="app-body">
-      {cheatSheet && (
-        <CheatSheet
-          onLoad={(language, sig) => {
-            dispatch({ type: 'scenario', language, sig, submit: true })
-            setCheatSheet(false)
-          }}
-          onSavePdf={() => window.kroll?.saveCheatSheetPdf()}
-          onClose={() => setCheatSheet(false)}
+        )}
+      </main>
+      {presenter && (
+        <Presenter
+          guide={progress}
+          show3d={show3d}
+          onShow3d={toggle3d}
+          onStartTour={startTour}
+          onStep={(i) => guide && goToStep(guide.tour, i)}
+          onDoStep={doStep}
+          onExitTour={() => setGuide(null)}
+          onScenario={loadScenario}
+          onCheatSheet={() => window.kroll?.openCheatSheet()}
+          onRestart={restart}
+          onCollapse={() => showPresenter(false)}
         />
       )}
-      {state.screen === 'print' && state.job ? (
-        <PrintView job={state.job} onBack={() => dispatch({ type: 'go', screen: 'fill' })} onNewRx={() => dispatch({ type: 'reset' })} />
-      ) : (
-        <div className="kroll-stage" ref={stageRef}>
-          <div className="kroll-window" style={{ zoom: fit.zoom, width: fit.width, height: fit.height }} data-testid={`screen-${state.screen}`}>
-            {state.screen === 'patient' ? (
-              <PatientScreen
-                language={state.language}
-                onLanguage={(l) => dispatch({ type: 'setLanguage', language: l })}
-                onOk={() => dispatch({ type: 'go', screen: 'fill' })}
-                onNewRx={() => dispatch({ type: 'go', screen: 'fill' })}
-              />
-            ) : (
-              <FillRxScreen
-                language={state.language}
-                sigInput={state.sigInput}
-                translated={state.confirmed?.text ?? null}
-                dialogOpen={state.dialog !== null}
-                onSig={(sig) => dispatch({ type: 'setSig', sig })}
-                onSubmit={() => dispatch({ type: 'submitSig' })}
-                onPatient={() => dispatch({ type: 'go', screen: 'patient' })}
-                onFill={fillOrPrint}
-                onPreview={() => dispatch({ type: 'previewLabels' })}
-              />
-            )}
-            {state.dialog && (
-              <TranslatedSigDialog dialog={state.dialog} printView={printView} language={state.language} sigEntered={state.sigEntered} dispatch={dispatch} />
-            )}
-            {state.preview && state.job && (
-              <LabelPreviewDialog
-                job={state.job}
-                reason={state.preview}
-                untranslated={state.language !== 'en' && !state.confirmed}
-                show3d={show3d}
-                onShow3d={() => dispatch({ type: 'show3d' })}
-                onClose={() => dispatch({ type: 'closePreview' })}
-              />
-            )}
-          </div>
-        </div>
-      )}
-      </div>
+      {current && <Highlight selector={current.highlight?.(state)} />}
     </div>
   )
 }

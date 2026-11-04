@@ -21,7 +21,7 @@
   flex: 1 0 0; min-width: 0; height: 20px; display: flex; align-items: center; justify-content: center;
   background: var(--surface-control); border: 1px solid var(--border-control); font-size: 10px; cursor: pointer; padding: 0;
 }
-.k-fkey.is-current { background: var(--surface-field); border: 2px solid var(--accent-warning); }
+.k-fkey.is-current { background: var(--surface-field); font-weight: 700; }
 .k-fkey:hover { filter: brightness(0.97); }
 
 .k-tabs { display: flex; gap: 2px; padding: 4px 6px 0; flex-shrink: 0; }
@@ -125,7 +125,7 @@
 .k-sigtext { height: 44px; flex-shrink: 0; width: 100%; display: flex; align-items: center; padding: 0 6px; background: var(--surface-field); border: 1px solid var(--border-field); font-size: 11px; overflow: hidden; }
 .k-sigtext[lang='hi'] { font-size: 11px; }
 .k-sig-input { cursor: text; transition: width 80ms ease; }
-.k-sig-input:focus-within { outline: 2px solid var(--accent-paneltitle); outline-offset: -1px; }
+.k-sig-input:focus-within { background: var(--accent-focus); }
 .k-sig-hint { margin-left: auto; color: var(--text-muted); font-size: 8px; }
 .k-patient, .k-patient-body, .k-col.is-open, .k-row.is-open { overflow: visible; }
 .k-patient { position: relative; z-index: 2; }

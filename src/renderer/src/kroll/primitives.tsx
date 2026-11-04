@@ -30,9 +30,9 @@ export function Label({ children, width }: { children: ReactNode; width?: number
   )
 }
 
-export function Btn({ children, width, ok, bold, onClick, title }: { children: ReactNode; width?: number; ok?: boolean; bold?: boolean; onClick?: () => void; title?: string }) {
+export function Btn({ children, width, ok, bold, onClick, title, testId }: { children: ReactNode; width?: number; ok?: boolean; bold?: boolean; onClick?: () => void; title?: string; testId?: string }) {
   return (
-    <button type="button" className={['k-btn', ok && 'is-ok', bold && 'is-bold'].filter(Boolean).join(' ')} style={{ width }} onClick={onClick} title={title}>
+    <button type="button" className={['k-btn', ok && 'is-ok', bold && 'is-bold'].filter(Boolean).join(' ')} style={{ width }} onClick={onClick} title={title} data-testid={testId}>
       {children}
     </button>
   )
@@ -47,7 +47,7 @@ export function MenuBar({ variant, onLabels }: { variant: 'patient' | 'rx'; onLa
     <div className="k-menubar">
       {items.map((m) =>
         variant === 'rx' && m === 'Labels' ? (
-          <span key={m} className="is-active is-link" role="button" title="Preview labels (Ctrl+L)" onClick={onLabels} data-testid="menu-labels">
+          <span key={m} className="is-link" role="button" title="Preview labels (Ctrl+L)" onClick={onLabels} data-testid="menu-labels">
             {m}
           </span>
         ) : (
