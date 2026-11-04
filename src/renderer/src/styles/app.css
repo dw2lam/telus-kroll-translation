@@ -1,0 +1,60 @@
+/* Kroll tokens, named as in the Figma file's variables. */
+:root {
+  --surface-chrome: #f1f1f1;
+  --surface-menubar: #ffffff;
+  --surface-control: #e2e2e2;
+  --surface-field: #ffffff;
+  --border-control: #d2d2d2;
+  --border-field: #c8c8c8;
+  --field-patient: #ffffb9;
+  --field-patientbox: #feffd7;
+  --field-drug: #8cffc6;
+  --field-doctor: #f0b3ff;
+  --field-form: #f0f0f0;
+  --text-primary: #000000;
+  --text-muted: #404040;
+  --text-ontoolbar: #ffffff;
+  --accent-paneltitle: #4b286d;
+  --accent-warning: #c12335;
+  --accent-ok: #00a94f;
+  --accent-focus: #00ffff;
+  --accent-highlight: #ffff00;
+  --accent-select: #0078d7;
+
+  /* Demo chrome around the Kroll window (not part of Kroll). */
+  --demo-bg: #1d1f24;
+  --demo-surface: #2a2d34;
+  --demo-text: #e9ebef;
+  --demo-muted: #9aa1ad;
+  --demo-accent: #66cc00;
+
+  --font-ui: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  --font-deva: 'Noto Sans Devanagari', 'Inter', sans-serif;
+  --font-arab: 'Noto Sans Arabic', 'Inter', sans-serif;
+  --font-hant: 'Noto Sans TC', 'Inter', sans-serif;
+}
+
+* { box-sizing: border-box; }
+html, body, #root { margin: 0; height: 100%; }
+body {
+  background: var(--demo-bg);
+  color: var(--text-primary);
+  font-family: var(--font-ui);
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+  user-select: none;
+}
+button { font: inherit; color: inherit; }
+input { font: inherit; }
+:focus-visible { outline: none; }
+
+/* Script-specific runs inside otherwise-Latin UI. */
+[lang='hi'] { font-family: var(--font-deva); }
+[lang='ar'], [lang='pa'], [lang='ur'] { font-family: var(--font-arab); }
+[lang='zh-Hant'] { font-family: var(--font-hant); }
+
+/* Offscreen label rendering (main process captures or prints this page). */
+body:has(.label-render) { background: #fff; overflow: hidden; }
+.label-render { width: max-content; background: #fff; }
+.label-render-page { width: max-content; }
+.label-render.is-pdf .label-render-page { break-after: page; }

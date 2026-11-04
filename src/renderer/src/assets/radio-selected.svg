@@ -1,0 +1,7 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="radio">
+<rect x="0.5" y="0.5" width="9" height="9" rx="4.5" fill="white"/>
+<rect x="0.5" y="0.5" width="9" height="9" rx="4.5" stroke="#808080"/>
+<circle id="Ellipse" cx="5" cy="5" r="2" fill="black"/>
+</g>
+</svg>

@@ -1,0 +1,30 @@
+/* Presenter chrome around the Kroll window. Not part of Kroll. */
+.app { height: 100%; display: flex; flex-direction: column; }
+.demo-bar {
+  height: 44px; flex-shrink: 0; display: flex; align-items: center; gap: 18px; padding: 0 14px;
+  background: var(--demo-bg); color: var(--demo-text); font-size: 12.5px; border-bottom: 1px solid #000;
+}
+.demo-brand { display: flex; align-items: center; gap: 8px; font-weight: 700; white-space: nowrap; }
+.demo-leaf { width: 12px; height: 12px; background: url('../assets/leaf.svg') center / contain no-repeat; }
+.demo-tag { font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 2px 6px; border-radius: 4px; background: var(--demo-surface); color: var(--demo-muted); }
+.demo-steps { flex: 1; display: flex; gap: 6px; list-style: none; margin: 0; padding: 0; min-width: 0; overflow: hidden; }
+.demo-steps li { padding: 4px 10px; border-radius: 999px; color: var(--demo-muted); white-space: nowrap; }
+.demo-steps li.is-done { color: var(--demo-text); }
+.demo-steps li.is-done::before { content: '✓ '; color: var(--demo-accent); }
+.demo-steps li.is-current { background: var(--demo-surface); color: #fff; font-weight: 600; }
+.demo-controls { display: flex; align-items: center; gap: 8px; }
+.demo-lang { color: var(--demo-muted); white-space: nowrap; }
+.demo-controls select, .demo-controls button {
+  height: 28px; border-radius: 6px; border: 1px solid #3a3e47; background: var(--demo-surface); color: var(--demo-text); padding: 0 10px; font-size: 12.5px; cursor: pointer;
+}
+.demo-controls select { max-width: 230px; }
+.demo-controls button:hover, .demo-controls select:hover { background: #343841; }
+.demo-switch { display: flex; align-items: center; gap: 8px; color: var(--demo-text); white-space: nowrap; cursor: pointer; }
+.demo-switch input { position: absolute; opacity: 0; pointer-events: none; }
+.demo-switch-track { position: relative; width: 30px; height: 18px; border-radius: 9px; background: #4a4f59; transition: background 120ms ease; }
+.demo-switch-track::after { content: ''; position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; border-radius: 7px; background: #fff; transition: transform 120ms ease; }
+.demo-switch input:checked + .demo-switch-track { background: var(--demo-accent); }
+.demo-switch input:checked + .demo-switch-track::after { transform: translateX(12px); }
+.demo-switch input:focus-visible + .demo-switch-track { outline: 2px solid #fff; outline-offset: 2px; }
+.app-body { position: relative; flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.demo-controls button.is-on { background: var(--accent-paneltitle); border-color: var(--accent-paneltitle); }

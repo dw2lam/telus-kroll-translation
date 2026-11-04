@@ -2,27 +2,16 @@
 .idea/
 .vscode/
 
-# Xcode
-DerivedData/
-build/
-*.xcodeproj/
-*.xcworkspace/xcuserdata/
-*.xcuserdatad/
-*.xcuserstate
-
-# Swift Package Manager
-.build/
-.swiftpm/
-Packages/
-Package.resolved
+node_modules/
+out/
+dist/
+output/
 
 # Local tooling artifacts
 .claude/
 CLAUDE.md
 CLAUDE.local.md
-output/
 
-# Logs and temp files
 *.log
 *.tmp
 .worktrees/

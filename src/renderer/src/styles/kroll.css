@@ -1,0 +1,143 @@
+/* The Kroll window, drawn at the Figma frame's 1024 × 700 and scaled to fit. */
+.kroll-stage { flex: 1; min-height: 0; position: relative; overflow: hidden; background: var(--surface-chrome); }
+/* Fills the stage; its size is set in logical px so CSS zoom brings it back to the stage size. */
+.kroll-window {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: var(--surface-chrome);
+  display: flex;
+  flex-direction: column;
+  font-size: 9px;
+  line-height: 1.25;
+  overflow: hidden;
+}
+
+.k-menubar { display: flex; gap: 13px; align-items: center; height: 22px; padding: 0 8px; background: var(--surface-menubar); font-size: 10px; flex-shrink: 0; }
+.k-menubar .is-active { color: var(--accent-paneltitle); font-weight: 700; }
+
+.k-fkeys { display: flex; gap: 3px; padding: 2px 4px; background: var(--surface-chrome); flex-shrink: 0; }
+.k-fkey {
+  flex: 1 0 0; min-width: 0; height: 20px; display: flex; align-items: center; justify-content: center;
+  background: var(--surface-control); border: 1px solid var(--border-control); font-size: 10px; cursor: pointer; padding: 0;
+}
+.k-fkey.is-current { background: var(--surface-field); border: 2px solid var(--accent-warning); }
+.k-fkey:hover { filter: brightness(0.97); }
+
+.k-tabs { display: flex; gap: 2px; padding: 4px 6px 0; flex-shrink: 0; }
+.k-tab { width: 62px; height: 18px; display: grid; place-items: center; background: var(--surface-control); border: 1px solid var(--border-control); border-bottom: none; font-size: 9px; }
+.k-tab.is-current { background: var(--surface-field); font-weight: 700; }
+
+.k-bar { display: flex; align-items: center; gap: 6px; padding: 4px 6px; background: var(--surface-chrome); border: 1px solid var(--border-field); flex-shrink: 0; }
+
+.k-field {
+  height: 16px; display: flex; align-items: center; justify-content: space-between; padding-left: 4px;
+  background: var(--surface-field); border: 1px solid var(--border-field); white-space: nowrap; overflow: hidden; flex-shrink: 0;
+}
+.k-field.is-grow { flex: 1 0 0; min-width: 0; }
+.k-field.is-right { justify-content: flex-end; padding: 0 4px; }
+.k-field.is-total { border-color: var(--text-primary); }
+.k-field.is-focus { background: var(--accent-focus); }
+.k-field.h17 { height: 17px; }
+.k-field input { all: unset; width: 100%; height: 100%; font-size: 9px; }
+.k-caret { width: 11px; height: 14px; display: grid; place-items: center; font-size: 7px; background: var(--surface-control); border: 1px solid var(--border-control); flex-shrink: 0; }
+.k-field.h17 .k-caret { width: 12px; height: 15px; }
+.k-label { flex-shrink: 0; }
+
+.k-btn {
+  height: 16px; display: inline-flex; align-items: center; justify-content: center; padding: 0 6px;
+  background: var(--surface-control); border: 1px solid var(--border-control); font-size: 9px; flex-shrink: 0; cursor: pointer; white-space: nowrap;
+}
+.k-btn.is-ok { background: var(--accent-ok); color: var(--text-ontoolbar); }
+.k-btn.is-bold { font-weight: 700; }
+.k-btn:hover { filter: brightness(0.96); }
+
+.k-row { display: flex; align-items: center; gap: 4px; width: 100%; overflow: hidden; flex-shrink: 0; }
+.k-col { display: flex; flex-direction: column; gap: 3px; overflow: hidden; }
+.k-panel { border: 1px solid var(--border-field); padding: 4px 5px 5px; display: flex; flex-direction: column; gap: 3px; overflow: hidden; }
+.k-box { background: var(--field-patientbox); border: 1px solid var(--border-field); padding: 3px 5px; height: 46px; flex-shrink: 0; width: 100%; }
+
+.k-status { height: 20px; display: flex; align-items: center; justify-content: space-between; padding: 0 8px; background: var(--surface-control); border-top: 1px solid var(--border-control); font-size: 9px; flex-shrink: 0; margin-top: auto; }
+
+/* Dropdown list (Figma B1). */
+.k-list { position: absolute; z-index: 5; background: #fff; border: 1px solid var(--border-field); box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18); padding: 1px 0; }
+.k-list button { all: unset; display: flex; align-items: center; justify-content: space-between; gap: 8px; height: 16px; padding: 0 5px; width: 100%; box-sizing: border-box; font-size: 9px; cursor: pointer; }
+.k-list button .k-avail { font-size: 7px; color: var(--accent-ok); }
+.k-list button:hover, .k-list button.is-selected { background: var(--accent-select); color: #fff; }
+.k-list button:hover .k-avail, .k-list button.is-selected .k-avail { color: #fff; }
+
+/* Dialog (Figma "Dialog / Translated Sig"). */
+.k-scrim { position: absolute; inset: 0; display: grid; place-items: center; z-index: 10; }
+.k-dialog { background: var(--surface-chrome); border: 1px solid var(--border-control); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.28); display: flex; flex-direction: column; }
+.k-dialog-title { height: 22px; display: flex; align-items: center; justify-content: space-between; padding: 0 8px; background: #fff; font-size: 10px; font-weight: 500; }
+.k-dialog-title .k-title { display: flex; align-items: center; gap: 6px; }
+.k-dialog-title .k-x { all: unset; cursor: pointer; color: var(--text-muted); font-size: 10px; font-weight: 400; }
+.k-dialog-body { background: #fff; display: flex; flex-direction: column; gap: 8px; padding: 12px; }
+.k-dialog-row { display: flex; align-items: center; gap: 8px; }
+.k-dialog-row > .k-dlabel { width: 96px; flex-shrink: 0; color: var(--text-muted); font-size: 9px; }
+.k-dfield { flex: 1; min-width: 0; border: 1px solid var(--border-field); padding: 4px 6px; background: #fff; display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 11px; }
+.k-dfield .k-strong { font-weight: 700; }
+.k-dfield .k-match { font-size: 9px; white-space: nowrap; }
+.k-dfield .k-match.is-ok { color: var(--accent-ok); }
+.k-dfield .k-match.is-muted { color: var(--text-muted); }
+.k-dfield .k-translation { line-height: 1.5; width: 100%; }
+.k-dialog-footer { background: #fff; display: flex; justify-content: flex-end; gap: 8px; padding: 8px 12px 10px; }
+.k-dbtn { all: unset; height: 18px; display: inline-flex; align-items: center; padding: 0 10px; background: var(--surface-control); border: 1px solid var(--border-control); font-size: 9px; cursor: pointer; }
+.k-dbtn.is-primary { background: var(--accent-ok); color: #fff; }
+.k-dbtn:hover { filter: brightness(0.95); }
+.k-dnote { font-size: 10px; }
+.k-dnote.is-warning { color: var(--accent-warning); }
+.k-hint { font-size: 9px; color: var(--text-muted); }
+.k-choices { border: 1px solid var(--border-field); padding: 2px 0; }
+.k-choice { all: unset; box-sizing: border-box; display: flex; align-items: center; gap: 10px; padding: 4px 8px; width: 100%; cursor: pointer; }
+.k-choice.is-compact { padding: 3px 8px; cursor: default; }
+.k-choice .k-code { width: 66px; flex-shrink: 0; font-weight: 700; font-size: 9px; }
+.k-choice .k-en { flex: 1; min-width: 0; font-size: 11px; }
+.k-choice.is-compact .k-en { font-size: 9px; }
+.k-choice .k-tr { width: 250px; flex-shrink: 0; font-size: 12px; line-height: 1.5; }
+.k-choice.is-compact .k-tr { font-size: 11px; }
+.k-radio { width: 10px; height: 10px; border-radius: 5px; border: 1px solid #808080; background: #fff; flex-shrink: 0; display: grid; place-items: center; }
+
+
+/* F3 Patient (Figma B2). */
+.k-patient { height: 185px; flex-shrink: 0; background: var(--field-patient); border: 1px solid var(--border-field); padding: 8px; display: flex; flex-direction: column; gap: 6px; }
+.k-patient-body { display: flex; gap: 10px; align-items: flex-start; }
+.k-select > .k-field { cursor: pointer; padding-right: 0; font-size: 9px; text-align: left; }
+.k-phones { width: 100%; background: var(--surface-field); border: 1px solid var(--border-field); }
+.k-phones-head { display: flex; justify-content: space-between; align-items: center; padding: 2px 4px; background: var(--surface-control); }
+.k-phones-row { display: flex; height: 18px; align-items: center; border-top: 1px solid var(--border-field); }
+.k-phones-row.is-head { background: var(--surface-control); }
+.k-phones-row span { padding-left: 4px; }
+.k-phones-row span:first-child { width: 110px; }
+.k-mini { width: 22px; height: 14px; display: grid; place-items: center; font-size: 8px; background: var(--surface-control); border: 1px solid var(--border-control); flex-shrink: 0; }
+.k-mini.is-16 { height: 16px; }
+.k-photo { width: 140px; height: 92px; display: grid; place-items: center; background: var(--surface-field); border: 1px solid var(--border-field); color: var(--text-muted); }
+.k-comments { flex: 1 1 0; min-height: 0; display: flex; flex-direction: column; background: #fff; border: 1px solid var(--border-field); }
+.k-comments-head { height: 22px; display: flex; justify-content: space-between; align-items: center; padding: 0 6px; background: var(--surface-chrome); border-bottom: 1px solid var(--border-field); }
+.k-comments-cols { height: 16px; display: flex; align-items: center; padding: 0 6px; background: var(--surface-control); border-bottom: 1px solid var(--border-field); }
+
+/* F12 Fill Rx (Figma B3). */
+.k-search { height: 219px; flex-shrink: 0; display: flex; gap: 4px; align-items: flex-start; padding: 4px 4px 0; }
+.k-search > .k-panel { min-width: 0; }
+.k-drugimg { height: 40px; width: 100%; flex-shrink: 0; display: grid; place-items: center; background: var(--surface-field); border: 1px solid var(--border-field); color: var(--text-muted); font-size: 8px; }
+.k-dispensing { flex: 1 0 0; min-height: 0; display: flex; gap: 4px; padding: 4px; }
+.k-form { background: var(--field-form); height: 100%; padding: 5px 6px 6px; flex-shrink: 0; }
+.k-sigtext { height: 44px; flex-shrink: 0; width: 100%; display: flex; align-items: center; padding: 0 6px; background: var(--surface-field); border: 1px solid var(--border-field); font-size: 11px; overflow: hidden; }
+.k-sigtext[lang='hi'] { font-size: 11px; }
+.k-sig-input { cursor: text; transition: width 80ms ease; }
+.k-sig-input:focus-within { outline: 2px solid var(--accent-paneltitle); outline-offset: -1px; }
+.k-sig-hint { margin-left: auto; color: var(--text-muted); font-size: 8px; }
+.k-patient, .k-patient-body, .k-col.is-open, .k-row.is-open { overflow: visible; }
+.k-patient { position: relative; z-index: 2; }
+
+/* Label preview inside Kroll. */
+.k-preview-panels { display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-start; max-height: calc(100vh - 160px); overflow: auto; }
+.k-preview-panels figure { margin: 0; }
+.k-preview-panels figcaption { font-size: 8px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px; }
+.k-preview-frame { zoom: 0.76; width: max-content; box-shadow: 0 3px 10px rgba(0, 0, 0, 0.16); }
+.k-saved { margin-right: auto; align-self: center; max-width: 420px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.k-menubar .is-link { cursor: pointer; }
+.k-menubar .is-link:hover { text-decoration: underline; }
+.k-form-sig { flex: 0 0 37%; min-width: 300px; }
+.k-form-dispense { flex: 0 0 24%; min-width: 220px; }
+.k-sigtext { min-height: 44px; height: auto; padding: 6px; }
