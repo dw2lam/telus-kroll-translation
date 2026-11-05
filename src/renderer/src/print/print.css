@@ -23,10 +23,11 @@
 .print-side header { padding: 20px 22px 8px; }
 .print-side h1 { margin: 0; font-size: 17px; font-weight: 700; color: #1d1f24; }
 .print-side header p { margin: 4px 0 0; font-size: 12.5px; color: #5b6573; }
-.print-panels { flex: 1; min-height: 0; overflow: auto; padding: 8px 22px 16px; display: flex; flex-direction: column; gap: 16px; }
+.print-panels { flex: 1; min-height: 0; overflow: auto; padding: 8px 22px 16px; display: flex; flex-direction: column; gap: 16px; container-type: inline-size; }
 .print-panels figure { margin: 0; }
 .print-panels figcaption { font-size: 10px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: #5b6573; margin-bottom: 6px; }
-.print-panel-frame { zoom: 0.72; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18); width: max-content; }
+/* Panels are 578px wide with their border: scale them to the column, so nothing is cut off. */
+.print-panel-frame { zoom: min(0.72, calc(100cqw / 578px)); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18); width: max-content; }
 .print-side footer { padding: 12px 22px 18px; border-top: 1px solid #eceff2; }
 .print-buttons { display: flex; gap: 8px; justify-content: flex-end; }
 .print-buttons .is-primary { background: var(--accent-ok); border-color: var(--accent-ok); color: #fff; }

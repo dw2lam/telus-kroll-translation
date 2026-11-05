@@ -21,7 +21,7 @@ try {
     localStorage.setItem('kroll-label.presenter', 'on')
   })
   await page.reload()
-  // Hindi, Kroll code *1C: patient language → Fill Rx → exact → B5 → print → peel.
+  // Hindi, sig code QD: patient language → Fill Rx → exact → B5 → print → peel.
   await page.click('[data-testid=language-field]')
   await page.click('[data-testid=language-list] button:has-text("Hindi")')
   await page.click('button:has-text("OK")')
@@ -31,6 +31,7 @@ try {
   assert.equal(await text('[data-testid=translated-sig]'), 'दिन में एक बार 1 कैप्सूल मुँह से लें')
   await printed()
   assert.equal(await text('[data-testid=label-english-sig]'), 'TAKE 1 CAPSULE ONCE A DAY')
+  assert.match(await text('[data-testid=label-dispensing]'), /मात्रा: 30 कैप्सूल.*रिफ़िल: 6.*Dr\. McGraw, Phil/s)
   await page.click('[data-testid=btn-peel]')
   console.log('✓ exact match prints both panels')
 

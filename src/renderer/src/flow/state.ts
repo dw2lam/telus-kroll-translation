@@ -1,6 +1,6 @@
 import { languageByCode } from '@/data/languages'
 import { provider } from '@/data/demoProvider'
-import { fillDose, KROLL_ALIASES, KROLL_EXPANSIONS } from '@/data/phrasebook'
+import { fillDose, KROLL_EXPANSIONS, parseSigCode } from '@/data/phrasebook'
 import type { Candidate, LanguageCode, VerifiedSig } from '@/data/types'
 
 export type Screen = 'patient' | 'fill' | 'print'
@@ -43,7 +43,7 @@ export interface FlowState {
 export const initialState: FlowState = {
   screen: 'patient',
   language: 'hi',
-  sigInput: '*1C',
+  sigInput: 'QD',
   sigEntered: '',
   dialog: null,
   confirmed: null,
@@ -73,14 +73,9 @@ export type Action =
 
 /** The English sig Kroll prints: a code's expansion, or the free text as typed. */
 export function krollSigText(input: string): string {
-  const text = input.trim().toUpperCase().replace(/\s+/g, ' ')
-  if (!text) return ''
-  const alias = KROLL_ALIASES[text]
-  if (alias) return fillDose(KROLL_EXPANSIONS[alias.code], alias.dose)
-  const coded = text.match(/^(?:(\d+(?:\.\d+)?)\s+)?(.+)$/)
-  const expansion = coded && KROLL_EXPANSIONS[coded[2]]
-  if (expansion) return fillDose(expansion, coded[1] ?? '1')
-  return text
+  const coded = parseSigCode(input)
+  if (coded) return fillDose(KROLL_EXPANSIONS[coded.code], coded.dose)
+  return input.trim().toUpperCase().replace(/\s+/g, ' ')
 }
 
 let jobs = 0

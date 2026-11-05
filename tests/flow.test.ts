@@ -7,6 +7,7 @@ describe('fill flow', () => {
   it('expands Kroll codes for the English label and keeps free text as typed', () => {
     expect(krollSigText('*1C')).toBe('TAKE 1 CAPSULE ONCE A DAY')
     expect(krollSigText('2 BID')).toBe('TAKE 2 CAPSULES TWICE A DAY')
+    expect(krollSigText('2 CAP PO BID')).toBe('TAKE 2 CAPSULES TWICE A DAY')
     expect(krollSigText('1 cap qhs prn dizziness')).toBe('1 CAP QHS PRN DIZZINESS')
   })
 

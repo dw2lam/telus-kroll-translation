@@ -90,11 +90,11 @@ export interface Scenario {
 }
 
 export const SCENARIOS: Scenario[] = [
-  { id: 'exact-code', title: 'Hindi · Kroll code *1C', detail: 'Exact match (B3 → B4 → B5)', language: 'hi', sig: '*1C' },
+  { id: 'exact-code', title: 'Hindi · QD', detail: 'Exact match (B3 → B4 → B5)', language: 'hi', sig: 'QD' },
   { id: 'closest', title: 'Hindi · free-text sig', detail: 'Closest → top 5 → phrasing guide → can’t translate (B6 → B10)', language: 'hi', sig: '1 CAP QHS PRN DIZZINESS' },
   { id: 'exact-text', title: 'Hindi · free text, exact', detail: 'Free text that matches a verified sig exactly', language: 'hi', sig: 'take 2 capsules by mouth twice daily' },
-  { id: 'tagalog', title: 'Tagalog · *1C', detail: 'Captured, not yet translatable (B3t → B4t)', language: 'tl', sig: '*1C' },
-  { id: 'arabic', title: 'Arabic · *1C', detail: 'Right-to-left under-panel (label 12)', language: 'ar', sig: '*1C' },
-  { id: 'chinese', title: 'Chinese (Traditional) · *1C', detail: 'Traditional script label (label 17)', language: 'zh-Hant', sig: '*1C' },
-  { id: 'punjabi', title: 'Punjabi (Shahmukhi) · *1C', detail: 'Dual-script case (label 16)', language: 'pa', sig: '*1C' },
+  { id: 'tagalog', title: 'Tagalog · QD', detail: 'Captured, not yet translatable (B3t → B4t)', language: 'tl', sig: 'QD' },
+  { id: 'arabic', title: 'Arabic · QD', detail: 'Right-to-left under-panel (label 12)', language: 'ar', sig: 'QD' },
+  { id: 'chinese', title: 'Chinese (Traditional) · QD', detail: 'Traditional script label (label 17)', language: 'zh-Hant', sig: 'QD' },
+  { id: 'punjabi', title: 'Punjabi (Shahmukhi) · QD', detail: 'Dual-script case (label 16)', language: 'pa', sig: 'QD' },
 ]

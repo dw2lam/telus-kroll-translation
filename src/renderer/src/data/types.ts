@@ -12,6 +12,14 @@ export interface LabelStrings {
   tag: string
   /** Panel 2 footer lines (patient language · English gloss). */
   footer: string[]
+  /** Panel 2 dispensing line. `{}` marks where the English value goes. */
+  dispensing: {
+    quantity: string
+    refills: string
+    date: string
+    expiry: string
+    prescriber: string
+  }
 }
 
 export interface Language {
@@ -29,6 +37,8 @@ export interface VerifiedSig {
   code: string
   english: string
   translations: Partial<Record<LanguageCode, string>>
+  /** Unverified sentences drafted to fill the code list. Only an exact code reaches these; free text never does. */
+  drafts?: Partial<Record<LanguageCode, string>>
   /** Doses a translation is verified for, when the sentence spells the dose out (Punjabi). */
   verifiedDoses?: Partial<Record<LanguageCode, string[]>>
   /** A separately verified sentence for one exact dose, e.g. Arabic "one capsule" in words. */

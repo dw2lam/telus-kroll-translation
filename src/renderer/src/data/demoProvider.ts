@@ -1,4 +1,4 @@
-import { fillDose, KROLL_ALIASES, PHRASEBOOK } from './phrasebook'
+import { fillDose, parseSigCode, PHRASEBOOK } from './phrasebook'
 import type { Candidate, Language, TranslationProvider, TranslationResult, VerifiedSig } from './types'
 
 // A stand-in for the verified translation platform the team has yet to choose.
@@ -140,7 +140,7 @@ export class DemoProvider implements TranslationProvider {
   render(sig: VerifiedSig, language: Language, dose: string): string | null {
     const exact = sig.byDose?.[language.code]?.[dose]
     if (exact !== undefined) return language.rtl ? exact.replace(/\d+/g, (d) => `\u2068${d}\u2069`) : exact
-    const template = sig.translations[language.code]
+    const template = sig.translations[language.code] ?? sig.drafts?.[language.code]
     if (template === undefined) return null
     const doses = sig.verifiedDoses?.[language.code]
     if (doses && !doses.includes(dose)) return null
@@ -151,16 +151,11 @@ export class DemoProvider implements TranslationProvider {
   translate(raw: string, language: Language): TranslationResult {
     if (!language.label) return { kind: 'notYetTranslatable' }
     const guide = this.phrasingGuide(language)
-    const text = raw.trim().toUpperCase().replace(/\s+/g, ' ')
-
-    // A Kroll sig code, optionally led by a dose ("2 BID").
-    const coded = text.match(/^(?:(\d+(?:\.\d+)?)\s+)?(.+)$/)
-    const alias = KROLL_ALIASES[coded?.[2] ?? '']
-    const code = alias?.code ?? coded?.[2]
-    const byCode = PHRASEBOOK.find((s) => s.code === code)
-    if (byCode) {
-      const dose = alias?.dose ?? coded?.[1] ?? '1'
-      if (this.render(byCode, language, dose) !== null) return { kind: 'exact', candidate: { sig: byCode, dose, confidence: 1 } }
+    // A Kroll sig code, optionally with a dose ("2 BID", "2 CAP PO BID").
+    const coded = parseSigCode(raw)
+    const byCode = coded && PHRASEBOOK.find((s) => s.code === coded.code)
+    if (coded && byCode) {
+      if (this.render(byCode, language, coded.dose) !== null) return { kind: 'exact', candidate: { sig: byCode, dose: coded.dose, confidence: 1 } }
       // A real Kroll code, but nothing verified for this language (or this dose).
       return { kind: 'noVerified' }
     }

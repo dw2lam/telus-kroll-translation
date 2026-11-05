@@ -33,23 +33,17 @@
 .lbl-peel span { font-size: 14px; font-weight: 700; line-height: 1.25; }
 
 .lbl-p2 { border: 1.5px solid #000; display: flex; flex-direction: column; }
-.lbl-p2-head { display: flex; align-items: center; justify-content: space-between; padding: 7px 14px; background: #000; color: #fff; white-space: nowrap; }
+.lbl-p2-head { display: flex; align-items: center; justify-content: space-between; padding: 5px 14px; background: #000; color: #fff; white-space: nowrap; }
 .lbl-p2-title { font-size: 18px; font-weight: 700; }
-.lbl-p2-body { display: flex; flex-direction: column; gap: 12px; padding: 14px 16px; }
-.lbl-rule { height: 1px; background: var(--border-field); }
-.lbl-translated { display: flex; flex-direction: column; gap: 6px; }
-.lbl-translated-main { font-size: 30px; font-weight: 700; }
-.lbl-translated-main:lang(hi) { font-size: 28px; }
+.lbl-p2-body { display: flex; flex-direction: column; gap: 5px; padding: 7px 16px 6px; }
+.lbl-rule { height: 1px; flex-shrink: 0; background: var(--border-field); }
+.lbl-translated { display: flex; flex-direction: column; gap: 4px; }
+.lbl-translated-main { font-weight: 700; white-space: nowrap; }
 .lbl-gloss { font-size: 10px; color: var(--text-muted); }
+.lbl-dispensing { font-size: 10px; white-space: pre-wrap; }
 .lbl-footer { display: flex; flex-direction: column; gap: 3px; font-size: 9.5px; color: var(--text-muted); }
 .lbl-demo { font-size: 7px; font-weight: 700; letter-spacing: 0.04em; color: var(--accent-warning); }
 
-/* Under-panel with translated warnings: sig on the left, warnings on the right, as on panel 1. */
-.lbl-p2-cols { display: flex; gap: 14px; align-items: flex-start; }
-.lbl-p2-main { display: flex; flex-direction: column; gap: 10px; }
-.lbl-p2-cols .lbl-p2-main { width: 290px; flex-shrink: 0; }
-.lbl-p2-cols .lbl-line { white-space: normal; }
-.lbl-p2.has-warnings .lbl-p2-body { gap: 8px; padding: 10px 14px 9px; }
-.lbl-p2.has-warnings .lbl-translated-main { font-size: 22px; line-height: 1.3; }
-.lbl-p2-warnings { flex: 1; min-width: 0; margin: 0; padding: 0 0 0 1.2em; display: flex; flex-direction: column; gap: 3px; font-size: 9px; line-height: 1.3; }
-.lbl-p2-warnings[dir='rtl'] { padding: 0 1.2em 0 0; }
+/* Translated warnings in two columns: 1–2, then 3–5. */
+.lbl-p2-warnings { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 9px; line-height: 1.3; }
+.lbl-p2-warnings ol { margin: 0; padding-inline-start: 1.3em; display: flex; flex-direction: column; gap: 3px; }

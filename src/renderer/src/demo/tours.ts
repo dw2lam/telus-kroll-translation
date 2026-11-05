@@ -41,7 +41,7 @@ export const TOURS: Tour[] = [
   {
     id: 'exact',
     title: 'The core flow',
-    summary: 'A Hindi patient, Kroll code *1C, an exact match, and a two-panel label on the vial.',
+    summary: 'A Hindi patient, sig code QD, an exact match, and a two-panel label on the vial.',
     setup: { type: 'reset' },
     next: 'free-text',
     steps: [
@@ -60,7 +60,7 @@ export const TOURS: Tour[] = [
       },
       {
         title: 'Enter the sig',
-        body: 'The Kroll code *1C expands to English as usual. Pressing Enter now also looks up a verified Hindi sentence for it.',
+        body: 'The sig code QD expands to English as usual. Pressing Enter now also looks up a verified Hindi sentence for it.',
         highlight: () => '[data-testid=sig-input]',
         doLabel: 'Press Enter',
         perform: () => [{ type: 'submitSig' }],
@@ -151,7 +151,7 @@ export const TOURS: Tour[] = [
     id: 'not-yet',
     title: 'Language not supported yet',
     summary: 'A Tagalog patient. The language is recorded, but there are no verified sentences yet.',
-    setup: { type: 'scenario', language: 'tl', sig: '*1C' },
+    setup: { type: 'scenario', language: 'tl', sig: 'QD' },
     steps: [
       {
         title: 'Enter the sig',

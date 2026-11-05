@@ -1,10 +1,24 @@
 import peelOff from '@/assets/peel-off.svg'
 import { RX, RX_WARNINGS } from '@/data/demo'
 import { languageByCode } from '@/data/languages'
+import type { Language, LanguageCode } from '@/data/types'
 import type { PrintJob } from '@/flow/state'
 import './labels.css'
 
 export const PANEL_WIDTH = 576
+/** Width of panel 2's text column. */
+const SIG_WIDTH = 541
+
+/**
+ * The largest size that keeps a translated sig on one line, so panel 2 stays shorter than
+ * panel 1, which covers it on the vial. Chinese characters are about 1em wide; the other
+ * scripts average under half that per character.
+ */
+function sigSize(text: string, language: LanguageCode): number {
+  const base = language === 'ar' ? 26 : language === 'hi' || language === 'pa' ? 28 : 30
+  const perCharacter = language === 'zh-Hant' ? 1 : 0.45
+  return Math.min(base, Math.floor(SIG_WIDTH / (text.length * perCharacter)))
+}
 
 /** Panel 1 — Kroll's English vial label, plus the pointer strip when a translation is under it (Figma label 10). */
 export function Panel1({ job }: { job: PrintJob }) {
@@ -61,52 +75,89 @@ export function Panel1({ job }: { job: PrintJob }) {
   )
 }
 
-/** Panel 2 — the under-panel in the patient's language, revealed when panel 1 is peeled (Figma label 10 / 12). */
+/** Quantity, refills, dates and prescriber in the patient's language. The values stay as dispensed. */
+function Dispensing({ language }: { language: Language }) {
+  const d = language.label!.dispensing
+  const fields: [string, string][] = [
+    [d.quantity, RX.quantity],
+    [d.refills, RX.refills],
+    [d.date, RX.date],
+    [d.expiry, RX.expiry],
+    [d.prescriber, RX.doctor],
+  ]
+  return (
+    <p className="lbl-dispensing" lang={language.code} dir={language.rtl ? 'rtl' : 'ltr'} data-testid="label-dispensing">
+      {fields.map(([template, value], i) => {
+        const [before, after] = template.split('{}')
+        return (
+          <span key={template}>
+            {i > 0 && '  ·  '}
+            {before}
+            <bdi dir="ltr">{value}</bdi>
+            {after}
+          </span>
+        )
+      })}
+    </p>
+  )
+}
+
+/** Panel 2 — the under-panel in the patient's language, revealed when panel 1 is peeled (Figma C2). */
 export function Panel2({ job }: { job: PrintJob }) {
   const t = job.translation
   if (!t) return null
   const language = languageByCode(t.language)
   const strings = language.label!
   const warnings = RX_WARNINGS[t.language]
+  const dir = language.rtl ? 'rtl' : 'ltr'
   return (
-    <div className={'lbl lbl-p2' + (warnings ? ' has-warnings' : '')} data-panel="2">
-      <div className="lbl-p2-head" dir={language.rtl ? 'rtl' : 'ltr'}>
+    <div className="lbl lbl-p2" data-panel="2">
+      <div className="lbl-p2-head" dir={dir}>
         <span lang={t.language} className="lbl-p2-title">{strings.header}</span>
         <span className="lbl-9b" dir="ltr">{strings.tag}</span>
       </div>
       <div className="lbl-p2-body">
-        <div className={warnings ? 'lbl-p2-cols' : undefined} dir={warnings && language.rtl ? 'rtl' : undefined}>
-          <div className="lbl-p2-main" dir="ltr">
-            <div className="lbl-line">
-              <div className="lbl-stack">
-                <span className="lbl-16b">Shah, Rohan</span>
-                <span className="lbl-11b">{`${RX.brand}  ${RX.strength}  ·  ${RX.generic}`}</span>
-              </div>
-              <div className="lbl-stack is-end">
-                <span className="lbl-11b">Rx:{RX.number}</span>
-                <span className="lbl-9">DIN: {RX.din}</span>
-              </div>
-            </div>
-            <div className="lbl-rule" />
-            <div className="lbl-translated" dir={language.rtl ? 'rtl' : 'ltr'}>
-              <p className="lbl-translated-main" lang={t.language} data-testid="label-translated-sig">{t.text}</p>
-              <p className="lbl-gloss" dir="ltr">{t.gloss}</p>
-            </div>
+        <div className="lbl-line" dir={dir}>
+          <div className="lbl-stack" dir="ltr">
+            <span className="lbl-16b">Shah, Rohan</span>
+            <span className="lbl-11b">{`${RX.brand}  ${RX.strength}  ·  ${RX.generic}`}</span>
           </div>
-          {warnings && (
-            <ol className="lbl-p2-warnings" lang={t.language} dir={language.rtl ? 'rtl' : 'ltr'} data-testid="label-translated-warnings">
-              {warnings.map((w) => (
-                <li key={w}>{w}</li>
-              ))}
-            </ol>
-          )}
+          <div className="lbl-stack is-end" dir="ltr">
+            <span className="lbl-11b">Rx:{RX.number}</span>
+            <span className="lbl-9">DIN: {RX.din}</span>
+          </div>
         </div>
-        <div className="lbl-footer">
+        <div className="lbl-rule" />
+        <div className="lbl-translated" dir={dir}>
+          <p className="lbl-translated-main" lang={t.language} style={{ fontSize: sigSize(t.text, t.language) }} data-testid="label-translated-sig">
+            {t.text}
+          </p>
+          <p className="lbl-gloss" dir="ltr">{t.gloss}</p>
+          <Dispensing language={language} />
+        </div>
+        <div className="lbl-footer" dir={dir}>
           {strings.footer.map((line) => (
             <p key={line} lang={t.language}>{line}</p>
           ))}
-          <p className="lbl-demo" dir="ltr">DEMO — illustrative wording, not a verified translation</p>
         </div>
+        {warnings && (
+          <>
+            <div className="lbl-rule" />
+            <div className="lbl-p2-warnings" lang={t.language} dir={dir} data-testid="label-translated-warnings">
+              <ol>
+                {warnings.slice(0, 2).map((w) => (
+                  <li key={w}>{w}</li>
+                ))}
+              </ol>
+              <ol start={3}>
+                {warnings.slice(2).map((w) => (
+                  <li key={w}>{w}</li>
+                ))}
+              </ol>
+            </div>
+          </>
+        )}
+        <p className="lbl-demo" dir="ltr">DEMO — illustrative wording, not a verified translation</p>
       </div>
     </div>
   )

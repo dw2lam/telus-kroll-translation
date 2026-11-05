@@ -45,7 +45,7 @@ The screens are rebuilt from the team's Figma file *GBDA 402 Capstone*: section 
 | Step | Screen |
 |---|---|
 | 1. **F3 Patient**: record the patient's language. Languages with verified sigs show *(Translation Available)*. | ![F3 Patient language list](docs/screenshots/01-patient-language.jpg) |
-| 2. **F12 Fill Rx**: type a Kroll sig code (`*1C`, `BID`, `2 QHS`) or free text and press ↵. The **Translated Sig** pop-up shows the matching state. | ![Closest match](docs/screenshots/03-closest-match.jpg) |
+| 2. **F12 Fill Rx**: type a sig code (`QD`, `BID`, `2 CAP PO QHS`) or free text and press ↵. The **Translated Sig** pop-up shows the matching state. | ![Closest match](docs/screenshots/03-closest-match.jpg) |
 | 3. Free text that isn't exact goes **Closest → Not this one → Top 5 → None of these → Phrasing guide → None of these fit → Can't translate** (English label only). | ![Top 5 candidates](docs/screenshots/04-top-five.jpg) |
 | 4. Once confirmed, the translation lands in the Rx and the labels print: a 3D printer feeds both panels onto an amber vial. **Peel panel 1** reveals the patient's language underneath. | ![3D printer and vial, panel peeled](docs/screenshots/05-print-3d-peeled.jpg) |
 | 5. With **3D print view** off, or on request via the **Labels** menu, **Labels F2** or **Ctrl/⌘+L**, the labels open right inside Kroll. **Save label PDF** prints them 4 in wide. | ![Label preview inside Kroll](docs/screenshots/06-label-preview-in-kroll.jpg) |
@@ -66,7 +66,7 @@ The Translated Sig pop-up has six states:
 Presenter controls live in a sidebar on the right, styled like a macOS inspector (on macOS it uses the system's own translucent sidebar material and follows light/dark mode). None of it is part of Kroll. Hide it with the sidebar button or **Ctrl/⌘ + ,**; bring it back with the round button in the corner, the same shortcut, or **Demo → Show or Hide Presenter**.
 
 - **Walkthroughs** step through the flow. Each step explains what Kroll is doing and rings the control it is about. Press the blue button to have the step done for you, or use Kroll yourself and the walkthrough follows. Click any step to jump straight to it. **PageDown / PageUp** step forward and back, so a presentation clicker works.
-  1. **The core flow:** Hindi `*1C` → exact match → two-panel label on the vial.
+  1. **The core flow:** Hindi `QD` → exact match → two-panel label on the vial.
   2. **No exact match:** free-text sig → closest match → top 5 → phrasing guide → English only.
   3. **Language not supported yet:** Tagalog → captured, not yet translatable → English label.
 
@@ -75,7 +75,7 @@ Presenter controls live in a sidebar on the right, styled like a macOS inspector
 - **Scenarios** and the settings at the bottom of the sidebar:
   - **3D print view** switches between the 3D printer → vial view and labels shown inside Kroll. The setting is remembered between launches.
   - **Load a scenario** jumps straight into each branch:
-    - Hindi `*1C` and Hindi free text
+    - Hindi `QD` and Hindi free text
     - Tagalog
     - Arabic (right-to-left)
     - Chinese (Traditional)
@@ -102,18 +102,15 @@ Presenter controls live in a sidebar on the right, styled like a macOS inspector
 
 **Codes:** QD, BID, TID, QID, QHS, QAM, QPM, Q4H, Q6H, Q8H, Q12H, QHS PRN, QD PRN, QHS PRN SLP, PRN, Q4-6H PRN, AC, PC, CF, QD CF, BID CF, UD.
 
-- Shorthand `*1C` / `1C` = 1 × QD and `*2C` = 2 × QD.
-- A leading dose also works, e.g. `2 BID`.
+- A dose can lead the code, written short or in full: `2 BID`, `2 CAP PO BID`.
+- `OD` reads as QD and `HS` as QHS. The Figma frames' shorthand also works: `*1C` / `1C` = 1 × QD, `*2C` = 2 × QD.
 
 **Languages:**
 
-- **Hindi:** the full flow.
-- **Arabic:** QD, BID, QHS, UD (right-to-left).
-- **Chinese (Traditional):** QD, BID, QD CF.
-- **Punjabi (Shahmukhi):** `*1C`.
+- **Hindi, Arabic (right-to-left), Chinese (Traditional), Punjabi (Shahmukhi):** every code above. Punjabi QD only has a sentence for a dose of 1.
 - **French, Spanish, Tagalog, Urdu:** recorded on the patient but not yet translatable.
 
-A code with no sentence for the patient's language goes straight to the phrasing guide, which is the correct, safe behaviour. To add a sentence, put it in [`src/renderer/src/data/phrasebook.ts`](src/renderer/src/data/phrasebook.ts). The app and the cheat sheet pick it up.
+Sentences the team didn't write are in `DRAFTS` in the phrasebook and marked **Draft** on the cheat sheet. Nobody has verified them, and only the exact code reaches them; free text is only ever matched to team sentences. A code with no sentence for the patient's language or dose goes straight to the phrasing guide, which is the correct, safe behaviour. To add a sentence, put it in [`src/renderer/src/data/phrasebook.ts`](src/renderer/src/data/phrasebook.ts). The app and the cheat sheet pick it up.
 
 ## Translation provider
 

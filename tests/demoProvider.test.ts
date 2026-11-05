@@ -1,17 +1,19 @@
 import { describe, expect, it } from 'vitest'
 import { provider } from '@/data/demoProvider'
 import { languageByCode } from '@/data/languages'
+import { PHRASEBOOK } from '@/data/phrasebook'
 
 const hindi = languageByCode('hi')
 
 describe('demo provider', () => {
   it('matches Kroll codes exactly, with implied or leading doses', () => {
-    const star = provider.translate('*1C', hindi)
-    expect(star.kind).toBe('exact')
-    if (star.kind === 'exact') {
-      expect(star.candidate.sig.code).toBe('QD')
-      expect(provider.render(star.candidate.sig, hindi, star.candidate.dose)).toBe('दिन में एक बार 1 कैप्सूल मुँह से लें')
+    const qd = provider.translate('QD', hindi)
+    expect(qd.kind).toBe('exact')
+    if (qd.kind === 'exact') {
+      expect(qd.candidate.sig.code).toBe('QD')
+      expect(provider.render(qd.candidate.sig, hindi, qd.candidate.dose)).toBe('दिन में एक बार 1 कैप्सूल मुँह से लें')
     }
+    expect(provider.translate('*1C', hindi).kind).toBe('exact')
     const bid = provider.translate('2 bid', hindi)
     expect(bid.kind === 'exact' && bid.candidate.dose).toBe('2')
   })
@@ -49,9 +51,30 @@ describe('demo provider', () => {
 
   it('knows the wider Kroll code list, and sends untranslated codes to the phrasing guide', () => {
     expect(provider.translate('QID', hindi).kind).toBe('exact')
-    expect(provider.translate('QAM', hindi).kind).toBe('noVerified')
+    expect(provider.translate('QAM', hindi).kind).toBe('exact')
     expect(provider.translate('BID', languageByCode('zh-Hant')).kind).toBe('exact')
     const r = provider.translate('take 1 capsule every 4 to 6 hours as needed', hindi)
+    expect(r.kind).not.toBe('exact')
+  })
+
+  it('reads real codes written out in full, in every translated language', () => {
+    for (const code of ['ar', 'zh-Hant', 'hi', 'pa'] as const) {
+      const language = languageByCode(code)
+      for (const sig of PHRASEBOOK) {
+        const kind = provider.translate(sig.code, language).kind
+        expect(`${code} ${sig.code} ${kind}`).toBe(`${code} ${sig.code} exact`)
+      }
+      const written = provider.translate('2 CAP PO TID', language)
+      expect(written.kind === 'exact' && [written.candidate.sig.code, written.candidate.dose]).toEqual(['TID', '2'])
+    }
+    expect(provider.translate('OD', hindi).kind).toBe('exact')
+    expect(provider.translate('1 CAP PO HS', hindi).kind).toBe('exact')
+  })
+
+  it('never offers an unverified draft for free text', () => {
+    const arabic = languageByCode('ar')
+    expect(provider.phrasingGuide(arabic).map((s) => s.code)).toEqual(['QD', 'BID', 'QHS', 'UD'])
+    const r = provider.translate('take 1 capsule three times a day', arabic)
     expect(r.kind).not.toBe('exact')
   })
 })

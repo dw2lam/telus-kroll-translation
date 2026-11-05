@@ -25,6 +25,7 @@
 .cs-table td.is-clickable:hover, .cs-table tr.is-clickable:hover td, .cs-langs li.is-clickable:hover { background: #f3eef9; }
 .cs-badge { display: inline-flex; align-items: center; gap: 4px; padding: 1px 7px; border-radius: 999px; font-size: 10.5px; font-weight: 600; white-space: nowrap; }
 .cs-badge em { font-style: normal; font-weight: 500; opacity: 0.65; }
+.cs-draft { margin-left: 4px; padding: 1px 6px; border-radius: 999px; font-size: 10px; font-weight: 600; background: #eceff2; color: #5b6573; }
 .cs-badge.is-ok { background: #e3f6ea; color: #0b7a3b; }
 .cs-badge.is-near { background: #fff3d6; color: #8a5a00; }
 .cs-badge.is-guide { background: #e8eefc; color: #2f4fa8; }

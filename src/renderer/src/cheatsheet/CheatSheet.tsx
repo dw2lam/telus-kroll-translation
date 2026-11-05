@@ -117,9 +117,10 @@ export function CheatSheet({ onLoad, onClose, onSavePdf, standalone }: Props) {
       <section>
         <h2>Sig codes × patient language</h2>
         <p className="cs-note">
-          Type the code in the Sig field (a leading dose works: <code>2 BID</code>). Shorthand: {Object.entries(KROLL_ALIASES).map(([a, { code, dose }], i) => (
-            <span key={a}>{i > 0 && ', '}<code>{a}</code> = {dose} × {code}</span>
-          ))}.
+          Type the code in the Sig field with or without a dose: <code>BID</code>, <code>2 BID</code>, <code>2 CAP PO BID</code>. Also read:{' '}
+          {Object.entries(KROLL_ALIASES).map(([a, { code, dose }], i) => (
+            <span key={a}>{i > 0 && ', '}<code>{a}</code> = {dose ? `${dose} × ` : ''}{code}</span>
+          ))}. <b>Draft</b> marks a sentence nobody on the team has written or checked yet.
         </p>
         <table className="cs-table">
           <thead>
@@ -143,6 +144,7 @@ export function CheatSheet({ onLoad, onClose, onSavePdf, standalone }: Props) {
                   return (
                     <td key={l.code} className={'cs-cell' + (onLoad ? ' is-clickable' : '')} onClick={load(l.code, sig.code)} title={onLoad ? `Load ${sig.code} for a ${l.name} patient` : undefined}>
                       <Badge outcome={result.kind} />
+                      {sig.drafts?.[l.code] && result.kind === 'exact' && <span className="cs-draft">Draft</span>}
                       {text && (
                         <span className="cs-tr" lang={l.code} dir={l.rtl ? 'rtl' : 'ltr'}>
                           {text}
@@ -199,7 +201,7 @@ export function CheatSheet({ onLoad, onClose, onSavePdf, standalone }: Props) {
           <h2>Patient languages (F3 → Language)</h2>
           <ul className="cs-langs">
             {LANGUAGES.filter((l) => l.code !== 'en').map((l) => (
-              <li key={l.code} className={onLoad ? 'is-clickable' : undefined} onClick={load(l.code, '*1C')}>
+              <li key={l.code} className={onLoad ? 'is-clickable' : undefined} onClick={load(l.code, 'QD')}>
                 <span>{l.name}</span>
                 <Badge outcome={hasTranslation(l) ? 'exact' : 'notYetTranslatable'} />
                 {l.rtl && hasTranslation(l) && <span className="cs-rtl">right-to-left</span>}

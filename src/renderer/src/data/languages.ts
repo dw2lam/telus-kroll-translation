@@ -1,7 +1,10 @@
 import type { Language, LanguageCode } from './types'
 
 // Kroll's Language list, in its order (Figma B1). Label strings come from the
-// "C · Labels — printed output" designs and are illustrative, not verified.
+// "C2 · Labels — full translation" designs and are illustrative, not verified. The
+// `dispensing` wording is a draft in every language, Hindi included: the team still
+// has to verify it. Values stay in English (see Panel2): drug, patient and prescriber
+// names and Rx numbers can't be translated under DPRA s. 156(3).
 export const LANGUAGES: Language[] = [
   { code: 'en', name: 'English', rtl: false },
   { code: 'fr', name: 'French', rtl: false },
@@ -15,6 +18,13 @@ export const LANGUAGES: Language[] = [
       header: 'التعليمات',
       tag: 'INSTRUCTIONS · العربية',
       footer: ['اسم الدواء مكتوب بالحروف اللاتينية  ·  The medicine name is in English'],
+      dispensing: {
+        quantity: 'الكمية: {} كبسولة',
+        refills: 'إعادة الصرف: {}',
+        date: 'التاريخ: {}',
+        expiry: 'تاريخ الانتهاء: {}',
+        prescriber: 'الطبيب: {}',
+      },
     },
   },
   {
@@ -27,6 +37,13 @@ export const LANGUAGES: Language[] = [
       header: '用藥說明',
       tag: 'TRADITIONAL · 繁體',
       footer: ['The medicine name is in English'],
+      dispensing: {
+        quantity: '數量：{} 粒',
+        refills: '續配：{} 次',
+        date: '日期：{}',
+        expiry: '有效期至：{}',
+        prescriber: '醫生：{}',
+      },
     },
   },
   {
@@ -38,10 +55,14 @@ export const LANGUAGES: Language[] = [
       peel: 'छीलें',
       header: 'निर्देश',
       tag: 'INSTRUCTIONS · हिन्दी',
-      footer: [
-        'दवा का नाम अंग्रेज़ी में है  ·  The medicine name is in English',
-        'अनुवाद: सत्यापित वाक्यांश बैंक  ·  Translated from a human-verified phrase bank, not machine translation.',
-      ],
+      footer: ['दवा का नाम अंग्रेज़ी में है  ·  The medicine name is in English'],
+      dispensing: {
+        quantity: 'मात्रा: {} कैप्सूल',
+        refills: 'रिफ़िल: {}',
+        date: 'तिथि: {}',
+        expiry: 'समाप्ति तिथि: {}',
+        prescriber: 'डॉक्टर: {}',
+      },
     },
   },
   {
@@ -52,8 +73,15 @@ export const LANGUAGES: Language[] = [
       pointer: 'ہدایتاں لئی پچھے ویکھو',
       peel: 'کھچو',
       header: 'ہدایتاں',
-      tag: 'INSTRUCTIONS · PUNJABI (SHAHMUKHI)',
+      tag: 'INSTRUCTIONS · SHAHMUKHI',
       footer: ['The medicine name is in English'],
+      dispensing: {
+        quantity: 'مقدار: {} کیپسول',
+        refills: 'ریفل: {}',
+        date: 'تاریخ: {}',
+        expiry: 'میعاد ختم: {}',
+        prescriber: 'ڈاکٹر: {}',
+      },
     },
   },
   { code: 'es', name: 'Spanish', rtl: false },
