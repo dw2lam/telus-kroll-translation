@@ -1,4 +1,4 @@
-import { app, BrowserWindow, dialog, net, shell } from 'electron'
+import { app, BrowserWindow, dialog, ipcMain, net, shell } from 'electron'
 import { execFile, spawn } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import { accessSync, constants, createReadStream, createWriteStream } from 'node:fs'
@@ -242,6 +242,7 @@ async function check(manual: boolean): Promise<void> {
 }
 
 export function setUpAutoUpdates(): void {
+  ipcMain.on('updates:check', () => checkForUpdatesNow())
   if (!app.isPackaged) return
   app.on('will-quit', () => {
     pending?.apply(false)

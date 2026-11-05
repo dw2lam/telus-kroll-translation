@@ -1,6 +1,7 @@
 // End-to-end smoke test: drives the built app (hidden) through every branch of
 // the flow to the printed vial. Run with `npm run test:e2e`.
 import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
 import { _electron } from 'playwright-core'
 
 const app = await _electron.launch({ args: ['out/main/index.js'], env: { ...process.env, KROLL_SILENT: '1' } })
@@ -21,6 +22,16 @@ try {
     localStorage.setItem('kroll-label.presenter', 'on')
   })
   await page.reload()
+  // The sidebar shows the version, and slides shut and open.
+  const { version } = JSON.parse(readFileSync('package.json', 'utf8'))
+  assert.equal(await text('[data-testid=app-version]'), `Version ${version}`)
+  const slotWidth = () => page.evaluate(() => document.querySelector('.pz-slot').getBoundingClientRect().width)
+  await page.click('[data-testid=pz-collapse]')
+  await page.waitForTimeout(500)
+  assert.equal(await slotWidth(), 0)
+  await page.click('[data-testid=pz-reveal]')
+  await page.waitForTimeout(500)
+  assert.equal(await slotWidth(), 300)
   // Hindi, sig code QD: patient language → Fill Rx → exact → B5 → print → peel.
   await page.click('[data-testid=language-field]')
   await page.click('[data-testid=language-list] button:has-text("Hindi")')

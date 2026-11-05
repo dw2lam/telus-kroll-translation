@@ -23,6 +23,8 @@ export interface KrollBridge {
   loadScenario(language: string, sig: string): void
   /** In the Kroll window: a cheat-sheet cell was clicked. Returns the unsubscribe function. */
   onLoadScenario(listener: (language: string, sig: string) => void): () => void
+  /** Same as Help › Check for Updates…: the main process shows the result. */
+  checkForUpdates(): void
   /** Saves the cheat sheet as a landscape Letter PDF. Resolves to the path, or null if cancelled. */
   saveCheatSheetPdf(): Promise<string | null>
 }

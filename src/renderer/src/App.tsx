@@ -265,7 +265,7 @@ export default function App() {
           </button>
         )}
       </main>
-      {presenter && (
+      <div className={'pz-slot' + (presenter ? '' : ' is-collapsed')} inert={!presenter}>
         <Presenter
           guide={progress}
           show3d={show3d}
@@ -279,7 +279,7 @@ export default function App() {
           onRestart={restart}
           onCollapse={() => showPresenter(false)}
         />
-      )}
+      </div>
       {current && <Highlight selector={current.highlight?.(state)} />}
     </div>
   )

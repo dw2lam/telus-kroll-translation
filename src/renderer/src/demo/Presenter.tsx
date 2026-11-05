@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { useState } from 'react'
+import { version } from '../../../../package.json'
 import { SCENARIOS } from '@/data/demo'
 import { type Tour, TOURS, type TourStep } from './tours'
 
@@ -37,6 +38,7 @@ const ICONS = {
   cube: 'M12 2.8 20 7.2v9.6L12 21.2 4 16.8V7.2L12 2.8Zm0 0v0M4 7.2l8 4.4 8-4.4M12 11.6v9.6',
   doc: 'M7 2.8h7l5 5v12.4a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V3.8a1 1 0 0 1 1-1Zm7 0v5h5M9 13h7M9 17h7',
   restart: 'M4.5 12a7.5 7.5 0 1 0 2.2-5.3M4.5 4v4.5H9',
+  update: 'M12 3.5v12m0 0-4.5-4.5m4.5 4.5 4.5-4.5M4.5 20.5h15',
   popout: 'M14 4h6v6M20 4l-8.5 8.5M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5',
 }
 
@@ -102,6 +104,13 @@ export function Presenter(props: Props) {
             <kbd>F1</kbd>
             <span className="pz-chevron" title="Opens in its own window"><Icon name="popout" size={13} /></span>
           </button>
+          <div className="pz-row is-static">
+            <span className="pz-row-icon"><Icon name="update" /></span>
+            <span className="pz-row-text" data-testid="app-version">Version {version}</span>
+            <button type="button" className="pz-btn" onClick={() => window.kroll?.checkForUpdates()} title="Check for updates" data-testid="btn-update">
+              Update
+            </button>
+          </div>
           <button type="button" className="pz-row" onClick={onRestart} data-testid="btn-restart">
             <span className="pz-row-icon"><Icon name="restart" /></span>
             <span className="pz-row-text">Restart demo</span>
