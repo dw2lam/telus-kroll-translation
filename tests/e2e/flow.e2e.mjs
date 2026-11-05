@@ -62,7 +62,7 @@ try {
   console.log('✓ free-text refusal path prints English only')
 
   // Every other scenario reaches a printed vial.
-  for (const id of ['tagalog', 'arabic', 'chinese', 'punjabi', 'exact-text']) {
+  for (const id of ['tagalog', 'chinese', 'exact-text']) {
     await scenario(id)
     await page.press('[data-testid=sig-input]', 'Enter')
     await page.locator('[role=dialog] .k-dbtn.is-primary').click()

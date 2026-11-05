@@ -171,7 +171,7 @@ export const TOURS: Tour[] = [
       },
       {
         title: 'English label',
-        body: 'You’ve now seen every path. Scenarios has the other languages, including Arabic right-to-left and Chinese.',
+        body: 'You’ve now seen every path. Scenarios has Chinese (Simplified), the other translated language.',
         highlight: printOutput,
       },
     ],

@@ -11,12 +11,12 @@ const SIG_WIDTH = 541
 
 /**
  * The largest size that keeps a translated sig on one line, so panel 2 stays shorter than
- * panel 1, which covers it on the vial. Chinese characters are about 1em wide; the other
- * scripts average under half that per character.
+ * panel 1, which covers it on the vial. Chinese characters are about 1em wide; Devanagari
+ * averages under half that per character.
  */
 function sigSize(text: string, language: LanguageCode): number {
-  const base = language === 'ar' ? 26 : language === 'hi' || language === 'pa' ? 28 : 30
-  const perCharacter = language === 'zh-Hant' ? 1 : 0.45
+  const base = language === 'hi' ? 28 : 30
+  const perCharacter = language === 'zh-Hans' ? 1 : 0.45
   return Math.min(base, Math.floor(SIG_WIDTH / (text.length * perCharacter)))
 }
 

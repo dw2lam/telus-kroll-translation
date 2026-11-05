@@ -1,4 +1,4 @@
-export type LanguageCode = 'en' | 'fr' | 'ar' | 'zh-Hant' | 'hi' | 'pa' | 'es' | 'tl' | 'ur'
+export type LanguageCode = 'en' | 'fr' | 'ar' | 'zh-Hans' | 'zh-Hant' | 'hi' | 'pa' | 'es' | 'tl' | 'ur'
 
 /** Label chrome in the patient's language, taken from the Figma label designs. */
 export interface LabelStrings {
@@ -39,10 +39,6 @@ export interface VerifiedSig {
   translations: Partial<Record<LanguageCode, string>>
   /** Unverified sentences drafted to fill the code list. Only an exact code reaches these; free text never does. */
   drafts?: Partial<Record<LanguageCode, string>>
-  /** Doses a translation is verified for, when the sentence spells the dose out (Punjabi). */
-  verifiedDoses?: Partial<Record<LanguageCode, string[]>>
-  /** A separately verified sentence for one exact dose, e.g. Arabic "one capsule" in words. */
-  byDose?: Partial<Record<LanguageCode, Record<string, string>>>
 }
 
 export interface Candidate {

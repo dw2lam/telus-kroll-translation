@@ -11,21 +11,15 @@ const TEAM_SENTENCES: VerifiedSig[] = [
     english: 'Take [N] capsule(s) by mouth once daily',
     translations: {
       hi: 'दिन में एक बार [N] कैप्सूल मुँह से लें',
-      ar: 'تناول [N] كبسولة عن طريق الفم مرة واحدة يومياً',
-      'zh-Hant': '每天 1 次，每次 [N] 粒膠囊',
-      pa: 'دن وچ اک وار (1) اک کیپسول ([N]) لؤ',
+      'zh-Hans': '每天 1 次，每次 [N] 粒胶囊',
     },
-    // Label 12 spells "one capsule" out in Arabic; Punjabi (label 16) only exists for one capsule.
-    byDose: { ar: { '1': 'تناول كبسولة واحدة (1) مرة واحدة (1) يومياً' } },
-    verifiedDoses: { pa: ['1'] },
   },
   {
     code: 'BID',
     english: 'Take [N] capsule(s) by mouth twice daily',
     translations: {
       hi: 'दिन में दो बार [N] कैप्सूल मुँह से लें',
-      ar: 'تناول [N] كبسولة عن طريق الفم مرتين يومياً',
-      'zh-Hant': '每日兩次，每次[N]粒，口服',
+      'zh-Hans': '每日两次，每次[N]粒，口服',
     },
   },
   { code: 'TID', english: 'Take [N] capsule(s) by mouth three times daily', translations: { hi: 'दिन में तीन बार [N] कैप्सूल मुँह से लें' } },
@@ -33,7 +27,7 @@ const TEAM_SENTENCES: VerifiedSig[] = [
   {
     code: 'QHS',
     english: 'Take [N] capsule(s) by mouth at bedtime',
-    translations: { hi: 'सोते समय [N] कैप्सूल मुँह से लें', ar: 'تناول [N] كبسولة عن طريق الفم عند النوم' },
+    translations: { hi: 'सोते समय [N] कैप्सूल मुँह से लें' },
   },
   { code: 'QAM', english: 'Take [N] capsule(s) by mouth every morning', translations: {} },
   { code: 'QPM', english: 'Take [N] capsule(s) by mouth every evening', translations: {} },
@@ -64,37 +58,36 @@ const TEAM_SENTENCES: VerifiedSig[] = [
   {
     code: 'QD CF',
     english: 'Take [N] capsule(s) by mouth once daily with food',
-    translations: { 'zh-Hant': '隨餐服用，每日一次，每次[N]粒，口服' },
+    translations: { 'zh-Hans': '随餐服用，每日一次，每次[N]粒，口服' },
   },
   { code: 'BID CF', english: 'Take [N] capsule(s) by mouth twice daily with food', translations: {} },
-  { code: 'UD', english: 'Use as directed', translations: { hi: 'निर्देशानुसार लें', ar: 'استخدم حسب التوجيهات' } },
+  { code: 'UD', english: 'Use as directed', translations: { hi: 'निर्देशानुसार लें' } },
 ]
 
 // Sentences drafted to cover the code list in the demo's languages. These are NOT team
 // wording and nobody has verified them: the team must check every one. They stay separate
 // so that's easy, the cheat sheet marks them, and only the exact code reaches them.
 const DRAFTS: Record<string, Partial<Record<LanguageCode, string>>> = {
-  BID: { pa: 'دن وچ دو وار [N] کیپسول لؤ' },
-  TID: { ar: 'تناول [N] كبسولة عن طريق الفم ثلاث مرات يومياً', 'zh-Hant': '每日三次，每次[N]粒，口服', pa: 'دن وچ تن وار [N] کیپسول لؤ' },
-  QID: { ar: 'تناول [N] كبسولة عن طريق الفم أربع مرات يومياً', 'zh-Hant': '每日四次，每次[N]粒，口服', pa: 'دن وچ چار وار [N] کیپسول لؤ' },
-  QHS: { 'zh-Hant': '睡前服用，每次[N]粒，口服', pa: 'سون ویلے [N] کیپسول لؤ' },
-  QAM: { hi: 'हर सुबह [N] कैप्सूल मुँह से लें', ar: 'تناول [N] كبسولة عن طريق الفم كل صباح', 'zh-Hant': '每日早上一次，每次[N]粒，口服', pa: 'ہر سویرے [N] کیپسول لؤ' },
-  QPM: { hi: 'हर शाम [N] कैप्सूल मुँह से लें', ar: 'تناول [N] كبسولة عن طريق الفم كل مساء', 'zh-Hant': '每日晚上一次，每次[N]粒，口服', pa: 'ہر شام [N] کیپسول لؤ' },
-  Q4H: { hi: 'हर 4 घंटे में [N] कैप्सूल मुँह से लें', ar: 'تناول [N] كبسولة عن طريق الفم كل 4 ساعات', 'zh-Hant': '每4小時一次，每次[N]粒，口服', pa: 'ہر 4 گھنٹے بعد [N] کیپسول لؤ' },
-  Q6H: { hi: 'हर 6 घंटे में [N] कैप्सूल मुँह से लें', ar: 'تناول [N] كبسولة عن طريق الفم كل 6 ساعات', 'zh-Hant': '每6小時一次，每次[N]粒，口服', pa: 'ہر 6 گھنٹے بعد [N] کیپسول لؤ' },
-  Q8H: { hi: 'हर 8 घंटे में [N] कैप्सूल मुँह से लें', ar: 'تناول [N] كبسولة عن طريق الفم كل 8 ساعات', 'zh-Hant': '每8小時一次，每次[N]粒，口服', pa: 'ہر 8 گھنٹے بعد [N] کیپسول لؤ' },
-  Q12H: { hi: 'हर 12 घंटे में [N] कैप्सूल मुँह से लें', ar: 'تناول [N] كبسولة عن طريق الفم كل 12 ساعة', 'zh-Hant': '每12小時一次，每次[N]粒，口服', pa: 'ہر 12 گھنٹے بعد [N] کیپسول لؤ' },
-  'QHS PRN': { ar: 'تناول [N] كبسولة عن طريق الفم عند النوم عند الحاجة', 'zh-Hant': '需要時於睡前服用，每次[N]粒，口服', pa: 'لوڑ پین تے سون ویلے [N] کیپسول لؤ' },
-  'QD PRN': { ar: 'تناول [N] كبسولة عن طريق الفم مرة واحدة يومياً عند الحاجة', 'zh-Hant': '需要時服用，每日一次，每次[N]粒，口服', pa: 'لوڑ پین تے دن وچ اک وار [N] کیپسول لؤ' },
-  'QHS PRN SLP': { ar: 'تناول [N] كبسولة عن طريق الفم عند النوم عند الحاجة للمساعدة على النوم', 'zh-Hant': '需要時於睡前服用以助眠，每次[N]粒，口服', pa: 'نیندر لئی لوڑ پین تے سون ویلے [N] کیپسول لؤ' },
-  PRN: { ar: 'تناول [N] كبسولة عن طريق الفم عند الحاجة', 'zh-Hant': '需要時服用，每次[N]粒，口服', pa: 'لوڑ پین تے [N] کیپسول لؤ' },
-  'Q4-6H PRN': { hi: 'ज़रूरत पड़ने पर हर 4 से 6 घंटे में [N] कैप्सूल मुँह से लें', ar: 'تناول [N] كبسولة عن طريق الفم كل 4 إلى 6 ساعات عند الحاجة', 'zh-Hant': '需要時每4至6小時服用一次，每次[N]粒，口服', pa: 'لوڑ پین تے ہر 4 توں 6 گھنٹے بعد [N] کیپسول لؤ' },
-  AC: { ar: 'تناول [N] كبسولة عن طريق الفم قبل الوجبات', 'zh-Hant': '飯前服用，每次[N]粒，口服', pa: 'کھانے توں پہلاں [N] کیپسول لؤ' },
-  PC: { ar: 'تناول [N] كبسولة عن طريق الفم بعد الوجبات', 'zh-Hant': '飯後服用，每次[N]粒，口服', pa: 'کھانے توں بعد [N] کیپسول لؤ' },
-  CF: { ar: 'تناول [N] كبسولة عن طريق الفم مع الطعام', 'zh-Hant': '隨餐服用，每次[N]粒，口服', pa: 'کھانے نال [N] کیپسول لؤ' },
-  'QD CF': { hi: 'दिन में एक बार भोजन के साथ [N] कैप्सूल मुँह से लें', ar: 'تناول [N] كبسولة عن طريق الفم مرة واحدة يومياً مع الطعام', pa: 'دن وچ اک وار کھانے نال [N] کیپسول لؤ' },
-  'BID CF': { hi: 'दिन में दो बार भोजन के साथ [N] कैप्सूल मुँह से लें', ar: 'تناول [N] كبسولة عن طريق الفم مرتين يومياً مع الطعام', 'zh-Hant': '隨餐服用，每日兩次，每次[N]粒，口服', pa: 'دن وچ دو وار کھانے نال [N] کیپسول لؤ' },
-  UD: { 'zh-Hant': '請按指示使用', pa: 'ہدایت مطابق ورتو' },
+  TID: { 'zh-Hans': '每日三次，每次[N]粒，口服' },
+  QID: { 'zh-Hans': '每日四次，每次[N]粒，口服' },
+  QHS: { 'zh-Hans': '睡前服用，每次[N]粒，口服' },
+  QAM: { hi: 'हर सुबह [N] कैप्सूल मुँह से लें', 'zh-Hans': '每日早上一次，每次[N]粒，口服' },
+  QPM: { hi: 'हर शाम [N] कैप्सूल मुँह से लें', 'zh-Hans': '每日晚上一次，每次[N]粒，口服' },
+  Q4H: { hi: 'हर 4 घंटे में [N] कैप्सूल मुँह से लें', 'zh-Hans': '每4小时一次，每次[N]粒，口服' },
+  Q6H: { hi: 'हर 6 घंटे में [N] कैप्सूल मुँह से लें', 'zh-Hans': '每6小时一次，每次[N]粒，口服' },
+  Q8H: { hi: 'हर 8 घंटे में [N] कैप्सूल मुँह से लें', 'zh-Hans': '每8小时一次，每次[N]粒，口服' },
+  Q12H: { hi: 'हर 12 घंटे में [N] कैप्सूल मुँह से लें', 'zh-Hans': '每12小时一次，每次[N]粒，口服' },
+  'QHS PRN': { 'zh-Hans': '需要时于睡前服用，每次[N]粒，口服' },
+  'QD PRN': { 'zh-Hans': '需要时服用，每日一次，每次[N]粒，口服' },
+  'QHS PRN SLP': { 'zh-Hans': '需要时于睡前服用以助眠，每次[N]粒，口服' },
+  PRN: { 'zh-Hans': '需要时服用，每次[N]粒，口服' },
+  'Q4-6H PRN': { hi: 'ज़रूरत पड़ने पर हर 4 से 6 घंटे में [N] कैप्सूल मुँह से लें', 'zh-Hans': '需要时每4至6小时服用一次，每次[N]粒，口服' },
+  AC: { 'zh-Hans': '饭前服用，每次[N]粒，口服' },
+  PC: { 'zh-Hans': '饭后服用，每次[N]粒，口服' },
+  CF: { 'zh-Hans': '随餐服用，每次[N]粒，口服' },
+  'QD CF': { hi: 'दिन में एक बार भोजन के साथ [N] कैप्सूल मुँह से लें' },
+  'BID CF': { hi: 'दिन में दो बार भोजन के साथ [N] कैप्सूल मुँह से लें', 'zh-Hans': '随餐服用，每日两次，每次[N]粒，口服' },
+  UD: { 'zh-Hans': '请按指示使用' },
 }
 
 export const PHRASEBOOK: VerifiedSig[] = TEAM_SENTENCES.map((sig) => ({ ...sig, drafts: DRAFTS[sig.code] }))

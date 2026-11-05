@@ -77,9 +77,7 @@ Presenter controls live in a sidebar on the right, styled like a macOS inspector
   - **Load a scenario** jumps straight into each branch:
     - Hindi `QD` and Hindi free text
     - Tagalog
-    - Arabic (right-to-left)
-    - Chinese (Traditional)
-    - Punjabi (Shahmukhi)
+    - Chinese (Simplified)
   - **Cheat sheet** (or **F1**) opens in its own window, so it can sit beside Kroll or on a second screen. It covers every sig code × patient language, plus free-text examples, the pharmacist moves and the keys. It is computed live from the provider, so it always matches what the app does.
     - **Click any cell** to load that sig into Fill Rx in the main window and run it.
     - **Save as PDF** gives you a printable copy.
@@ -107,8 +105,8 @@ Presenter controls live in a sidebar on the right, styled like a macOS inspector
 
 **Languages:**
 
-- **Hindi, Arabic (right-to-left), Chinese (Traditional), Punjabi (Shahmukhi):** every code above. Punjabi QD only has a sentence for a dose of 1.
-- **French, Spanish, Tagalog, Urdu:** recorded on the patient but not yet translatable.
+- **Hindi and Chinese (Simplified):** every code above.
+- **French, Arabic, Chinese (Traditional), Punjabi, Spanish, Tagalog, Urdu:** recorded on the patient but not yet translatable.
 
 Sentences the team didn't write are in `DRAFTS` in the phrasebook and marked **Draft** on the cheat sheet. Nobody has verified them, and only the exact code reaches them; free text is only ever matched to team sentences. A code with no sentence for the patient's language or dose goes straight to the phrasing guide, which is the correct, safe behaviour. To add a sentence, put it in [`src/renderer/src/data/phrasebook.ts`](src/renderer/src/data/phrasebook.ts). The app and the cheat sheet pick it up.
 

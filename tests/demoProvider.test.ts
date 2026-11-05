@@ -38,27 +38,19 @@ describe('demo provider', () => {
     expect(provider.translate('1 cap bid tid', hindi).kind).toBe('cannotTranslate')
     expect(provider.translate('*1C', languageByCode('tl')).kind).toBe('notYetTranslatable')
     expect(provider.translate('*1C', languageByCode('fr')).kind).toBe('notYetTranslatable')
-  })
-
-  it('uses the dose-specific sentence when one exists, and refuses doses that were never verified', () => {
-    const arabic = languageByCode('ar')
-    const one = provider.translate('*1C', arabic)
-    expect(one.kind === 'exact' && provider.render(one.candidate.sig, arabic, '1')).toContain('كبسولة واحدة')
-    const two = provider.translate('2 QD', arabic)
-    expect(two.kind === 'exact' && provider.render(two.candidate.sig, arabic, '2')).toContain('\u20682\u2069')
-    expect(provider.translate('2 QD', languageByCode('pa')).kind).toBe('noVerified')
+    for (const code of ['ar', 'pa', 'zh-Hant'] as const) expect(provider.translate('QD', languageByCode(code)).kind).toBe('notYetTranslatable')
   })
 
   it('knows the wider Kroll code list, and sends untranslated codes to the phrasing guide', () => {
     expect(provider.translate('QID', hindi).kind).toBe('exact')
     expect(provider.translate('QAM', hindi).kind).toBe('exact')
-    expect(provider.translate('BID', languageByCode('zh-Hant')).kind).toBe('exact')
+    expect(provider.translate('BID', languageByCode('zh-Hans')).kind).toBe('exact')
     const r = provider.translate('take 1 capsule every 4 to 6 hours as needed', hindi)
     expect(r.kind).not.toBe('exact')
   })
 
   it('reads real codes written out in full, in every translated language', () => {
-    for (const code of ['ar', 'zh-Hant', 'hi', 'pa'] as const) {
+    for (const code of ['zh-Hans', 'hi'] as const) {
       const language = languageByCode(code)
       for (const sig of PHRASEBOOK) {
         const kind = provider.translate(sig.code, language).kind
@@ -72,9 +64,8 @@ describe('demo provider', () => {
   })
 
   it('never offers an unverified draft for free text', () => {
-    const arabic = languageByCode('ar')
-    expect(provider.phrasingGuide(arabic).map((s) => s.code)).toEqual(['QD', 'BID', 'QHS', 'UD'])
-    const r = provider.translate('take 1 capsule three times a day', arabic)
-    expect(r.kind).not.toBe('exact')
+    const chinese = languageByCode('zh-Hans')
+    expect(provider.phrasingGuide(chinese).map((s) => s.code)).toEqual(['QD', 'BID', 'QD CF'])
+    expect(provider.translate('take 1 capsule three times a day', chinese).kind).not.toBe('exact')
   })
 })

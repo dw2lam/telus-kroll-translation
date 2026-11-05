@@ -30,8 +30,7 @@
 
   --font-ui: 'Inter', 'Segoe UI', system-ui, sans-serif;
   --font-deva: 'Noto Sans Devanagari', 'Inter', sans-serif;
-  --font-arab: 'Noto Sans Arabic', 'Inter', sans-serif;
-  --font-hant: 'Noto Sans TC', 'Inter', sans-serif;
+  --font-hans: 'Noto Sans SC', 'Inter', sans-serif;
 }
 
 * { box-sizing: border-box; }
@@ -50,8 +49,7 @@ input { font: inherit; }
 
 /* Script-specific runs inside otherwise-Latin UI. */
 [lang='hi'] { font-family: var(--font-deva); }
-[lang='ar'], [lang='pa'], [lang='ur'] { font-family: var(--font-arab); }
-[lang='zh-Hant'] { font-family: var(--font-hant); }
+[lang='zh-Hans'] { font-family: var(--font-hans); }
 
 /* Offscreen label rendering (main process captures or prints this page). */
 body:has(.label-render) { background: #fff; overflow: hidden; }

@@ -138,12 +138,8 @@ export class DemoProvider implements TranslationProvider {
   }
 
   render(sig: VerifiedSig, language: Language, dose: string): string | null {
-    const exact = sig.byDose?.[language.code]?.[dose]
-    if (exact !== undefined) return language.rtl ? exact.replace(/\d+/g, (d) => `\u2068${d}\u2069`) : exact
     const template = sig.translations[language.code] ?? sig.drafts?.[language.code]
     if (template === undefined) return null
-    const doses = sig.verifiedDoses?.[language.code]
-    if (doses && !doses.includes(dose)) return null
     // Keep the ASCII dose upright inside right-to-left text.
     return fillDose(template, language.rtl ? `⁨${dose}⁩` : dose)
   }

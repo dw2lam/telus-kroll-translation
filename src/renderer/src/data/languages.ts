@@ -1,6 +1,7 @@
 import type { Language, LanguageCode } from './types'
 
-// Kroll's Language list, in its order (Figma B1). Label strings come from the
+// Kroll's Language list, in its order (Figma B1). Kroll records any of them, but the demo
+// only translates Hindi and Chinese (Simplified). Label strings come from the
 // "C2 · Labels — full translation" designs and are illustrative, not verified. The
 // `dispensing` wording is a draft in every language, Hindi included: the team still
 // has to verify it. Values stay in English (see Panel2): drug, patient and prescriber
@@ -8,44 +9,27 @@ import type { Language, LanguageCode } from './types'
 export const LANGUAGES: Language[] = [
   { code: 'en', name: 'English', rtl: false },
   { code: 'fr', name: 'French', rtl: false },
+  { code: 'ar', name: 'Arabic', rtl: true },
   {
-    code: 'ar',
-    name: 'Arabic',
-    rtl: true,
-    label: {
-      pointer: 'اقلب الملصق لقراءة التعليمات',
-      peel: 'اسحب',
-      header: 'التعليمات',
-      tag: 'INSTRUCTIONS · العربية',
-      footer: ['اسم الدواء مكتوب بالحروف اللاتينية  ·  The medicine name is in English'],
-      dispensing: {
-        quantity: 'الكمية: {} كبسولة',
-        refills: 'إعادة الصرف: {}',
-        date: 'التاريخ: {}',
-        expiry: 'تاريخ الانتهاء: {}',
-        prescriber: 'الطبيب: {}',
-      },
-    },
-  },
-  {
-    code: 'zh-Hant',
-    name: 'Chinese (Traditional)',
+    code: 'zh-Hans',
+    name: 'Chinese (Simplified)',
     rtl: false,
     label: {
-      pointer: '請翻到背面查看用藥說明',
-      peel: '撕開',
-      header: '用藥說明',
-      tag: 'TRADITIONAL · 繁體',
+      pointer: '请翻到背面查看用药说明',
+      peel: '撕开',
+      header: '用药说明',
+      tag: 'SIMPLIFIED · 简体',
       footer: ['The medicine name is in English'],
       dispensing: {
-        quantity: '數量：{} 粒',
-        refills: '續配：{} 次',
+        quantity: '数量：{} 粒',
+        refills: '续配：{} 次',
         date: '日期：{}',
         expiry: '有效期至：{}',
-        prescriber: '醫生：{}',
+        prescriber: '医生：{}',
       },
     },
   },
+  { code: 'zh-Hant', name: 'Chinese (Traditional)', rtl: false },
   {
     code: 'hi',
     name: 'Hindi',
@@ -65,25 +49,7 @@ export const LANGUAGES: Language[] = [
       },
     },
   },
-  {
-    code: 'pa',
-    name: 'Punjabi',
-    rtl: true,
-    label: {
-      pointer: 'ہدایتاں لئی پچھے ویکھو',
-      peel: 'کھچو',
-      header: 'ہدایتاں',
-      tag: 'INSTRUCTIONS · SHAHMUKHI',
-      footer: ['The medicine name is in English'],
-      dispensing: {
-        quantity: 'مقدار: {} کیپسول',
-        refills: 'ریفل: {}',
-        date: 'تاریخ: {}',
-        expiry: 'میعاد ختم: {}',
-        prescriber: 'ڈاکٹر: {}',
-      },
-    },
-  },
+  { code: 'pa', name: 'Punjabi', rtl: true },
   { code: 'es', name: 'Spanish', rtl: false },
   { code: 'tl', name: 'Tagalog', rtl: false },
   { code: 'ur', name: 'Urdu', rtl: true },
