@@ -30,15 +30,13 @@ The builds are **unsigned**, so each OS will warn you the first time:
 
 The installed app checks this repo's Releases on launch, every 4 hours, and from **Help → Check for Updates…**.
 
-When a newer release is out, the app offers **Download** and fetches the matching installer into Downloads:
+When a newer release is out, the app downloads it in the background, checks it against the SHA-256 GitHub lists for the file, and asks to restart. **Restart Now** updates straight away; **Later** updates the next time you quit.
 
-- **Windows installer:** the setup opens and the app closes so it can update in place.
-- **Windows portable:** the new portable exe is shown in Downloads; run it instead of the old one.
-- **macOS:** the new `.dmg` opens. Drag the new version over the old one. An unsigned Mac app can't replace itself; signing with an Apple Developer ID would make this automatic.
+- **macOS:** the new app is copied out of the `.dmg` beside the installed one and swapped in after the app exits. This needs no Apple signing. A copy running from the mounted `.dmg` or another read-only place can't replace itself, so it offers the `.dmg` instead; drag it to Applications once and it updates itself from then on.
+- **Windows installer:** the setup runs silently once the app has closed.
+- **Windows portable:** it can't replace itself, so it offers **Download** and shows the new exe in Downloads; run it instead of the old one.
 
-Releases hold only the installers, no update feeds: the app reads the latest release's tag from the GitHub API and picks its file by name.
-
-**While this repo is private, installed copies can't see new releases**, and background checks fail silently. Either make the repo public, or build with a **read-only** fine-grained token (Contents: Read on this repo only) in `MAIN_VITE_UPDATE_TOKEN` (`.env.local` locally, the `UPDATE_TOKEN` secret in CI). Either way, nothing else changes.
+Releases hold only the installers, no update feeds: the app reads the latest release's tag from the GitHub API and picks its file by name. The repo is public, so no token is needed.
 
 ## The flow
 
