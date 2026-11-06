@@ -7,7 +7,7 @@ import { FillRxScreen } from './flow/FillRxScreen'
 import { LabelPreviewDialog } from './flow/LabelPreviewDialog'
 import { PatientScreen } from './flow/PatientScreen'
 import type { LanguageCode } from './data/types'
-import { initialState, reducer } from './flow/state'
+import { detailsOf, initialState, reducer } from './flow/state'
 import { TranslatedSigDialog } from './flow/TranslatedSigDialog'
 import { PrintView } from './print/PrintView'
 import './print/print.css'
@@ -124,7 +124,7 @@ export default function App() {
   const loadScenario = (id: string): void => {
     const scenario = SCENARIOS.find((s) => s.id === id)
     if (!scenario) return
-    dispatch({ type: 'scenario', language: scenario.language, sig: scenario.sig })
+    dispatch({ type: 'scenario', language: scenario.language, sig: scenario.sig, persona: scenario.persona })
     setGuide(null)
   }
   const restart = useCallback((): void => {
@@ -226,6 +226,8 @@ export default function App() {
               {state.screen === 'patient' ? (
                 <PatientScreen
                   language={state.language}
+                  details={detailsOf(state)}
+                  onEdit={(changes) => dispatch({ type: 'edit', changes })}
                   onLanguage={(l) => dispatch({ type: 'setLanguage', language: l })}
                   onOk={() => dispatch({ type: 'go', screen: 'fill' })}
                   onNewRx={() => dispatch({ type: 'go', screen: 'fill' })}
@@ -233,6 +235,8 @@ export default function App() {
               ) : (
                 <FillRxScreen
                   language={state.language}
+                  details={detailsOf(state)}
+                  onEdit={(changes) => dispatch({ type: 'edit', changes })}
                   sigInput={state.sigInput}
                   translated={state.confirmed?.text ?? null}
                   dialogOpen={state.dialog !== null}
@@ -277,6 +281,8 @@ export default function App() {
           onScenario={loadScenario}
           onCheatSheet={() => window.kroll?.openCheatSheet()}
           onRestart={restart}
+          edited={Object.keys(state.edits).length}
+          onResetEdits={() => dispatch({ type: 'resetEdits' })}
           onCollapse={() => showPresenter(false)}
         />
       </div>

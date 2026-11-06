@@ -42,6 +42,55 @@ export const RX = {
   ],
 }
 
+/** Everything the presenter can edit on screen. These flow through to the printed labels. */
+export interface Details {
+  lastName: string
+  firstName: string
+  salutation: string
+  address: string
+  city: string
+  postal: string
+  email: string
+  phone: string
+  birthdate: string
+  age: string
+  gender: string
+  height: string
+  weight: string
+  doctor: string
+  brand: string
+  strength: string
+  generic: string
+  quantity: string
+  refills: string
+}
+
+export type PersonaId = 'rohan' | 'leung'
+
+const RX_DETAILS = { doctor: RX.doctor, brand: RX.brand, strength: RX.strength, generic: RX.generic, quantity: RX.quantity, refills: RX.refills }
+
+/** Mrs. Leung is the persona from the journey map: 78, reads Mandarin. Her first name isn't in the research, so it's blank. */
+export const PERSONAS: Record<PersonaId, Details> = {
+  rohan: { ...PATIENT, ...RX_DETAILS },
+  leung: {
+    ...PATIENT,
+    ...RX_DETAILS,
+    lastName: 'Leung',
+    firstName: '',
+    salutation: 'Mrs.',
+    city: 'Toronto',
+    age: '78 years',
+    gender: 'Female',
+    email: '',
+    birthdate: '',
+    height: '',
+    weight: '',
+  },
+}
+
+/** `Last, First` as Kroll prints it. */
+export const patientName = (d: Details): string => (d.firstName ? `${d.lastName}, ${d.firstName}` : d.lastName)
+
 /**
  * RX.warnings in the patient's language, in the same order, for the under-panel, matching
  * the Figma labels (section C2). A language without an entry keeps its warnings in English.
@@ -72,9 +121,11 @@ export interface Scenario {
   detail: string
   language: LanguageCode
   sig: string
+  persona?: PersonaId
 }
 
 export const SCENARIOS: Scenario[] = [
+  { id: 'leung', title: 'Mrs. Leung · 1C PO BID', detail: 'Chinese (Simplified), the presentation scenario', language: 'zh-Hans', sig: '1C PO BID', persona: 'leung' },
   { id: 'exact-code', title: 'Hindi · QD', detail: 'Exact match (B3 → B4 → B5)', language: 'hi', sig: 'QD' },
   { id: 'closest', title: 'Hindi · free-text sig', detail: 'Closest → top 5 → phrasing guide → can’t translate (B6 → B10)', language: 'hi', sig: '1 CAP QHS PRN DIZZINESS' },
   { id: 'exact-text', title: 'Hindi · free text, exact', detail: 'Free text that matches a verified sig exactly', language: 'hi', sig: 'take 2 capsules by mouth twice daily' },

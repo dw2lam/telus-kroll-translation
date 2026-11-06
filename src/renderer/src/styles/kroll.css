@@ -35,11 +35,14 @@
   background: var(--surface-field); border: 1px solid var(--border-field); white-space: nowrap; overflow: hidden; flex-shrink: 0;
 }
 .k-field.is-grow { flex: 1 0 0; min-width: 0; }
+.k-grow { flex: 1 0 0; min-width: 0; display: flex; }
 .k-field.is-right { justify-content: flex-end; padding: 0 4px; }
 .k-field.is-total { border-color: var(--text-primary); }
 .k-field.is-focus { background: var(--accent-focus); }
 .k-field.h17 { height: 17px; }
 .k-field input { all: unset; width: 100%; height: 100%; font-size: 9px; }
+.k-field.is-editable { cursor: text; }
+.k-field.is-editable:focus-within { background: var(--accent-focus); }
 .k-caret { width: 11px; height: 14px; display: grid; place-items: center; font-size: 7px; background: var(--surface-control); border: 1px solid var(--border-control); flex-shrink: 0; }
 .k-field.h17 .k-caret { width: 12px; height: 15px; }
 .k-label { flex-shrink: 0; }

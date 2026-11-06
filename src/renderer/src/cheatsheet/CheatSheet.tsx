@@ -117,7 +117,9 @@ export function CheatSheet({ onLoad, onClose, onSavePdf, standalone }: Props) {
       <section>
         <h2>Sig codes × patient language</h2>
         <p className="cs-note">
-          Type the code in the Sig field with or without a dose: <code>BID</code>, <code>2 BID</code>, <code>2 CAP PO BID</code>. Also read:{' '}
+          Type the code in the Sig field with or without a dose: <code>BID</code>, <code>2 BID</code>, <code>1C PO BID</code>, <code>1T PO BID</code>,{' '}
+          <code>2 CAP PO BID</code>. <code>T</code> swaps capsule for tablet on the sig and the label, and that tablet wording is a draft. Mrs. Leung’s
+          walkthrough uses <code>1C PO BID</code> in Chinese (Simplified). Also read:{' '}
           {Object.entries(KROLL_ALIASES).map(([a, { code, dose }], i) => (
             <span key={a}>{i > 0 && ', '}<code>{a}</code> = {dose ? `${dose} × ` : ''}{code}</span>
           ))}. <b>Draft</b> marks a sentence nobody on the team has written or checked yet.

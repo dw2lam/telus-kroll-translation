@@ -24,6 +24,9 @@ interface Props {
   onScenario: (id: string) => void
   onCheatSheet: () => void
   onRestart: () => void
+  /** How many fields have been changed on screen. */
+  edited: number
+  onResetEdits: () => void
   onCollapse: () => void
 }
 
@@ -38,6 +41,7 @@ const ICONS = {
   cube: 'M12 2.8 20 7.2v9.6L12 21.2 4 16.8V7.2L12 2.8Zm0 0v0M4 7.2l8 4.4 8-4.4M12 11.6v9.6',
   doc: 'M7 2.8h7l5 5v12.4a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V3.8a1 1 0 0 1 1-1Zm7 0v5h5M9 13h7M9 17h7',
   restart: 'M4.5 12a7.5 7.5 0 1 0 2.2-5.3M4.5 4v4.5H9',
+  undo: 'M9 5 4.5 9.5 9 14M4.5 9.5H15a4.5 4.5 0 0 1 0 9h-3',
   update: 'M12 3.5v12m0 0-4.5-4.5m4.5 4.5 4.5-4.5M4.5 20.5h15',
   popout: 'M14 4h6v6M20 4l-8.5 8.5M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5',
 }
@@ -61,7 +65,7 @@ function Group({ children, label }: { children: ReactNode; label?: string }) {
 
 /** Presenter sidebar, styled like a macOS inspector. Everything here sits outside Kroll. */
 export function Presenter(props: Props) {
-  const { guide, show3d, onShow3d, onCheatSheet, onRestart, onCollapse } = props
+  const { guide, show3d, onShow3d, onCheatSheet, onRestart, edited, onResetEdits, onCollapse } = props
   const [tab, setTab] = useState<'walkthroughs' | 'scenarios'>('walkthroughs')
 
   return (
@@ -103,6 +107,11 @@ export function Presenter(props: Props) {
             <span className="pz-row-text">Cheat sheet</span>
             <kbd>F1</kbd>
             <span className="pz-chevron" title="Opens in its own window"><Icon name="popout" size={13} /></span>
+          </button>
+          <button type="button" className="pz-row" onClick={onResetEdits} disabled={edited === 0} data-testid="btn-reset-edits">
+            <span className="pz-row-icon"><Icon name="undo" /></span>
+            <span className="pz-row-text">Reset names and details</span>
+            {edited > 0 && <kbd data-testid="edit-count">{edited}</kbd>}
           </button>
           <div className="pz-row is-static">
             <span className="pz-row-icon"><Icon name="update" /></span>

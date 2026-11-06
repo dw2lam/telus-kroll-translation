@@ -1,12 +1,15 @@
-import { useEffect, useRef } from 'react'
-import { RX } from '@/data/demo'
+import { useEffect, useRef, useState } from 'react'
+import { type Details, patientName, RX } from '@/data/demo'
 import { languageByCode } from '@/data/languages'
 import type { LanguageCode } from '@/data/types'
 import { Btn, Field, FKeyBar, Label, MenuBar } from '@/kroll/primitives'
+import { parseSigCode } from '@/data/phrasebook'
 import { krollSigText } from './state'
 
 interface Props {
   language: LanguageCode
+  details: Details
+  onEdit: (changes: Partial<Details>) => void
   sigInput: string
   translated: string | null
   dialogOpen: boolean
@@ -18,10 +21,19 @@ interface Props {
 }
 
 /** F12 Fill Rx (Figma B3 / B5 / B6), the screen the Translated Sig pop-up opens over. */
-export function FillRxScreen({ language, sigInput, translated, dialogOpen, onSig, onSubmit, onPatient, onFill, onPreview }: Props) {
+export function FillRxScreen({ language, details, onEdit, sigInput, translated, dialogOpen, onSig, onSubmit, onPatient, onFill, onPreview }: Props) {
   const input = useRef<HTMLInputElement>(null)
   const lang = languageByCode(language)
   const sigText = krollSigText(sigInput)
+  const form = parseSigCode(sigInput)?.form ?? 'capsule'
+  const edit = (key: keyof Details) => ({ value: details[key], onEdit: (value: string) => onEdit({ [key]: value }), testId: `edit-${key}` })
+  // Keeps what's being typed exactly as typed; `Last, First` is only split into the two fields.
+  const [nameDraft, setNameDraft] = useState<string | null>(null)
+  const editName = (value: string): void => {
+    setNameDraft(value)
+    const comma = value.indexOf(',')
+    onEdit(comma < 0 ? { lastName: value, firstName: '' } : { lastName: value.slice(0, comma).trim(), firstName: value.slice(comma + 1).trim() })
+  }
 
   useEffect(() => {
     if (!dialogOpen) input.current?.focus()
@@ -78,10 +90,10 @@ export function FillRxScreen({ language, sigInput, translated, dialogOpen, onSig
       <div className="k-search">
         <div className="k-panel" style={{ background: 'var(--field-patient)', flex: '1 0 0' }}>
           <span>Patient Search</span>
-          <div className="k-row"><Label width={40}>Name</Label><Field value="Shah, Rohan" grow /><Label width={20}>Age</Label><Field value="39" width={28} /></div>
-          <div className="k-row"><Label width={40}>Address</Label><Field value="1691 Concession Road" grow /><Field value="Male" width={44} /></div>
-          <div className="k-row"><Label width={40}>City</Label><Field value="Milton" grow /><Label width={24}>Prov</Label><Field value="ON" width={30} /></div>
-          <div className="k-row"><Label width={40}>Phone</Label><Field value="Home" width={52} /><Field value="(123) 456-7890" grow /></div>
+          <div className="k-row"><Label width={40}>Name</Label><span className="k-grow" onBlur={() => setNameDraft(null)}><Field value={nameDraft ?? patientName(details)} onEdit={editName} testId="edit-name" grow /></span><Label width={20}>Age</Label><Field value={details.age.split(' ')[0]} onEdit={(age) => onEdit({ age: `${age} years` })} width={28} testId="edit-age" /></div>
+          <div className="k-row"><Label width={40}>Address</Label><Field {...edit('address')} grow /><Field {...edit('gender')} width={44} /></div>
+          <div className="k-row"><Label width={40}>City</Label><Field {...edit('city')} grow /><Label width={24}>Prov</Label><Field value="ON" width={30} /></div>
+          <div className="k-row"><Label width={40}>Phone</Label><Field value="Home" width={52} /><Field {...edit('phone')} grow /></div>
           <div className="k-row"><Label width={40}>Plan</Label><Field width={60} /><Label width={42}>Client ID</Label><Field grow /></div>
           <div className="k-box">Allergies</div>
           <div className="k-box">Conditions</div>
@@ -89,11 +101,11 @@ export function FillRxScreen({ language, sigInput, translated, dialogOpen, onSig
         <div className="k-panel" style={{ background: 'var(--field-drug)', flex: '1 0 0' }}>
           <span>Drug Search</span>
           <div className="k-row"><Field value="Pack 500" grow caret /></div>
-          <div className="k-row"><Label width={38}>Brand</Label><Field value={RX.brand} grow /><Field value={RX.strength} width={48} /></div>
-          <div className="k-row"><Label width={38}>Generic</Label><Field value={RX.generic} grow /><Field value="EUC (Eur" width={48} /></div>
+          <div className="k-row"><Label width={38}>Brand</Label><Field {...edit('brand')} grow /><Field {...edit('strength')} width={48} /></div>
+          <div className="k-row"><Label width={38}>Generic</Label><Field {...edit('generic')} grow /><Field value="EUC (Eur" width={48} /></div>
           <div className="k-row">
             <Label width={38}>Pack</Label><Field value="500" width={40} />
-            <Label width={26}>Form</Label><Field value={RX.form} width={34} />
+            <Label width={26}>Form</Label><Field value={form === 'tablet' ? 'TAB' : RX.form} width={34} />
             <Label width={30}>Sched</Label><Field value="3" width={24} />
           </div>
           <div className="k-row"><Label width={38}>Purch</Label><Field value="$66.83" width={54} /><Label width={38}>OnHand</Label><Field value="-190" width={40} /></div>
@@ -103,7 +115,7 @@ export function FillRxScreen({ language, sigInput, translated, dialogOpen, onSig
         <div className="k-panel" style={{ background: 'var(--field-doctor)', flex: '1 0 0', alignSelf: 'flex-start' }}>
           <span>Doc Search</span>
           <div className="k-row"><Label width={38}>Loc</Label><Field value="Office" grow caret /></div>
-          <div className="k-row"><Label width={38}>Name</Label><Field value={RX.doctor} grow /></div>
+          <div className="k-row"><Label width={38}>Name</Label><Field {...edit('doctor')} grow /></div>
           <div className="k-row"><Label width={38}>Address</Label><Field value="220 Duncan Mill Road Suite 202" grow /></div>
           <div className="k-row"><Label width={38}>City</Label><Field value="Toronto" grow /><Label width={24}>Prov</Label><Field value="ON" width={30} /></div>
           <div className="k-row"><Label width={38}>Phone</Label><Field value="(416) 383-1010" grow /></div>
@@ -137,7 +149,7 @@ export function FillRxScreen({ language, sigInput, translated, dialogOpen, onSig
             <b>{sigText}</b>
           </div>
           <div className="k-row"><Label width={74}>Route of Admin</Label><Field value="Oral" grow caret /></div>
-          <div className="k-row"><Label width={74}>Dosage Form</Label><Field value="Capsule" grow caret /></div>
+          <div className="k-row"><Label width={74}>Dosage Form</Label><Field value={form === 'tablet' ? 'Tablet' : 'Capsule'} grow caret /></div>
           {translated && (
             <>
               <span style={{ marginTop: 14 }}>Translated</span>
@@ -149,7 +161,7 @@ export function FillRxScreen({ language, sigInput, translated, dialogOpen, onSig
         </div>
         <div className="k-panel k-form k-form-dispense">
           <div className="k-row"><Label width={44}>Init</Label><Field value="SB" width={40} /><Field value="SB" width={40} /></div>
-          <div className="k-row"><Label width={44}>Disp Qty</Label><Field value={RX.quantity} width={40} /><Btn width={56}>Refills(+)</Btn></div>
+          <div className="k-row"><Label width={44}>Disp Qty</Label><Field {...edit('quantity')} width={40} /><Btn width={56}>Refills(+)</Btn><Field {...edit('refills')} width={24} /></div>
           <div className="k-row"><Label width={44}>Days</Label><Field value="30" width={40} /></div>
           <div className="k-row"><Label width={44}>Prod Sel</Label><Field value="None" width={84} caret /></div>
           <div className="k-row"><Label width={44}>O/W</Label><Field value="Written" width={84} caret /></div>

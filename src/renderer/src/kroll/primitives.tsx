@@ -1,9 +1,11 @@
 import type { CSSProperties, ReactNode } from 'react'
 import leaf from '@/assets/leaf.svg'
 
-/** A read-only Kroll text box. */
-export function Field({ value, width, grow, right, total, h17, focus, caret, style }: {
+/** A Kroll text box, read-only unless it has `onEdit`. */
+export function Field({ value, width, grow, right, total, h17, focus, caret, style, onEdit, testId }: {
   value?: ReactNode
+  onEdit?: (value: string) => void
+  testId?: string
   width?: number
   grow?: boolean
   right?: boolean
@@ -14,6 +16,14 @@ export function Field({ value, width, grow, right, total, h17, focus, caret, sty
   style?: CSSProperties
 }) {
   const cls = ['k-field', grow && 'is-grow', right && 'is-right', total && 'is-total', h17 && 'h17', focus && 'is-focus'].filter(Boolean).join(' ')
+  if (onEdit) {
+    return (
+      <label className={cls + ' is-editable'} style={{ width, ...style }}>
+        <input value={typeof value === 'string' ? value : ''} spellCheck={false} onChange={(e) => onEdit(e.target.value)} data-testid={testId} />
+        {caret && <span className="k-caret">▾</span>}
+      </label>
+    )
+  }
   return (
     <div className={cls} style={{ width, ...style }}>
       <span>{value ?? '​'}</span>

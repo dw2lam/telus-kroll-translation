@@ -127,15 +127,29 @@ export const KROLL_ALIASES: Record<string, { code: string; dose?: string }> = {
   '*2C': { code: 'QD', dose: '2' },
 }
 
-/** Reads a sig as a code: `BID`, `2 BID`, or written out, `2 CAP PO BID`. Null when it's free text. */
-export function parseSigCode(input: string): { code: string; dose: string } | null {
+export type DoseForm = 'capsule' | 'tablet'
+
+/** Reads a sig as a code: `BID`, `2 BID`, `1T PO BID`, or written out, `2 CAP PO BID`. Null when it's free text. */
+export function parseSigCode(input: string): { code: string; dose: string; form: DoseForm } | null {
   const text = input.trim().toUpperCase().replace(/\s+/g, ' ')
   const whole = KROLL_ALIASES[text]
-  if (whole) return { code: whole.code, dose: whole.dose ?? '1' }
-  const match = text.match(/^(?:(\d+(?:\.\d+)?)\s+)?(?:(?:CAPS?|CAPSULES?)\s+)?(?:PO\s+)?(.+)$/)
+  if (whole) return { code: whole.code, dose: whole.dose ?? '1', form: 'capsule' }
+  const match = text.match(/^(?:(\d+(?:\.\d+)?)\s*(C|T|CAPS?|CAPSULES?|TABS?|TABLETS?)?\s+)?(?:PO\s+)?(.+)$/)
   if (!match) return null
-  const code = KROLL_ALIASES[match[2]]?.code ?? match[2]
-  return code in KROLL_EXPANSIONS ? { code, dose: match[1] ?? '1' } : null
+  const code = KROLL_ALIASES[match[3]]?.code ?? match[3]
+  if (!(code in KROLL_EXPANSIONS)) return null
+  return { code, dose: match[1] ?? '1', form: match[2]?.startsWith('T') ? 'tablet' : 'capsule' }
+}
+
+/** The same sentence for a tablet: every sentence is written for capsules. The tablet words are drafts too. */
+export function forForm(text: string, form: DoseForm): string {
+  if (form === 'capsule') return text
+  return text
+    .replaceAll('capsule', 'tablet')
+    .replaceAll('CAPSULE', 'TABLET')
+    .replaceAll('कैप्सूल', 'गोली')
+    .replaceAll('粒胶囊', '片')
+    .replaceAll('粒', '片')
 }
 
 /** Fills `[N]` and resolves `(s)` / `(S)` plurals against the dose. */

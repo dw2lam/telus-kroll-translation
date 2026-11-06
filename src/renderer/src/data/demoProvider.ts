@@ -1,4 +1,4 @@
-import { fillDose, parseSigCode, PHRASEBOOK } from './phrasebook'
+import { type DoseForm, fillDose, forForm, parseSigCode, PHRASEBOOK } from './phrasebook'
 import type { Candidate, Language, TranslationProvider, TranslationResult, VerifiedSig } from './types'
 
 // A stand-in for the verified translation platform the team has yet to choose.
@@ -137,11 +137,11 @@ export class DemoProvider implements TranslationProvider {
     return PHRASEBOOK.filter((s) => s.translations[language.code] !== undefined)
   }
 
-  render(sig: VerifiedSig, language: Language, dose: string): string | null {
+  render(sig: VerifiedSig, language: Language, dose: string, form: DoseForm = 'capsule'): string | null {
     const template = sig.translations[language.code] ?? sig.drafts?.[language.code]
     if (template === undefined) return null
     // Keep the ASCII dose upright inside right-to-left text.
-    return fillDose(template, language.rtl ? `⁨${dose}⁩` : dose)
+    return fillDose(forForm(template, form), language.rtl ? `⁨${dose}⁩` : dose)
   }
 
   translate(raw: string, language: Language): TranslationResult {
@@ -151,7 +151,7 @@ export class DemoProvider implements TranslationProvider {
     const coded = parseSigCode(raw)
     const byCode = coded && PHRASEBOOK.find((s) => s.code === coded.code)
     if (coded && byCode) {
-      if (this.render(byCode, language, coded.dose) !== null) return { kind: 'exact', candidate: { sig: byCode, dose: coded.dose, confidence: 1 } }
+      if (this.render(byCode, language, coded.dose, coded.form) !== null) return { kind: 'exact', candidate: { sig: byCode, dose: coded.dose, form: coded.form, confidence: 1 } }
       // A real Kroll code, but nothing verified for this language (or this dose).
       return { kind: 'noVerified' }
     }

@@ -39,6 +39,94 @@ const printOutput = (s: FlowState): string =>
 
 export const TOURS: Tour[] = [
   {
+    id: 'leung',
+    title: 'Mrs. Leung at the pharmacy',
+    summary: 'A 78-year-old Mandarin reader: language at intake, sig code, verified translation, peel-back label.',
+    setup: { type: 'scenario', persona: 'leung', language: 'en', sig: '1C PO BID', screen: 'patient' },
+    next: 'not-yet',
+    steps: [
+      {
+        title: 'Record her language at intake',
+        body: 'Mrs. Leung is 78 and reads Mandarin. Her preferred language goes in the Language field on F3 Patient, the same field Kroll has today. That’s what turns translation on.',
+        highlight: () => '[data-testid=language-field]',
+        doLabel: 'Set Chinese (Simplified)',
+        perform: () => [{ type: 'setLanguage', language: 'zh-Hans' }],
+        done: (s) => s.language === 'zh-Hans',
+      },
+      {
+        title: 'Open the prescription',
+        body: 'F12 Fill Rx is where the pharmacist enters the directions, the same as for any patient.',
+        highlight: () => '[data-testid=btn-patient-ok]',
+        doLabel: 'Click OK',
+        perform: () => [{ type: 'go', screen: 'fill' }],
+        done: (s) => s.screen === 'fill',
+      },
+      {
+        title: 'Enter the sig code',
+        body: '1C PO BID is one capsule by mouth, twice a day. It expands to the English label as usual, and Enter now also pulls up its verified Chinese sentence.',
+        highlight: () => '[data-testid=sig-input]',
+        doLabel: 'Press Enter',
+        perform: () => [{ type: 'submitSig' }],
+        done: (s) => s.dialog?.kind === 'exact',
+      },
+      {
+        title: 'A pre-verified translation',
+        body: 'Nothing is translated on the fly. In the product, AI drafts each sentence, two professional translators review it independently, and every approval is logged. The pharmacist only confirms.',
+        highlight: () => '[data-testid=btn-print-translation]',
+        doLabel: 'Print with translation',
+        perform: (s, ctx) =>
+          s.dialog?.kind === 'exact'
+            ? [{ type: 'confirm', candidate: s.dialog.candidate }, { type: 'print', englishOnly: false, view: ctx.view }]
+            : [],
+        done: (s) => s.confirmed !== null,
+      },
+      {
+        title: 'Two labels print',
+        body: 'The standard English label stays intact, with the translated directions and warnings on a peel-back panel underneath. No new hardware.',
+        highlight: printOutput,
+      },
+      {
+        title: 'Peel to read it',
+        body: 'Mrs. Leung peels the English panel back and reads her directions in Chinese, without needing anyone to interpret.',
+        highlight: () => '[data-testid=btn-peel]',
+        doLabel: 'Peel panel 1',
+        perform: { click: '[data-testid=btn-peel]' },
+        done: () => document.querySelector('[data-testid=btn-peel][data-peeled=true]') !== null,
+        only3d: true,
+      },
+    ],
+  },
+  {
+    id: 'not-yet',
+    title: 'No translation: English label',
+    summary: 'A Tagalog patient. The language is recorded, but there are no verified sentences yet.',
+    setup: { type: 'scenario', language: 'tl', sig: 'QD' },
+    next: 'exact',
+    steps: [
+      {
+        title: 'Enter the sig',
+        body: 'Kroll can record any language. Translations appear only once verified sentences exist for it. Tagalog has none yet.',
+        highlight: () => '[data-testid=sig-input]',
+        doLabel: 'Press Enter',
+        perform: () => [{ type: 'submitSig' }],
+        done: (s) => s.dialog?.kind === 'notYetTranslatable',
+      },
+      {
+        title: 'Not yet translatable',
+        body: 'Kroll tells the pharmacist the language is recorded but can’t be translated yet, and prints English as it does today.',
+        highlight: () => '[data-testid=btn-print-english]',
+        doLabel: 'Print English label',
+        perform: (_s, ctx) => [{ type: 'print', englishOnly: true, view: ctx.view }],
+        done: printed,
+      },
+      {
+        title: 'English label',
+        body: 'If no verified translation exists, the English label prints, exactly as it does today.',
+        highlight: printOutput,
+      },
+    ],
+  },
+  {
     id: 'exact',
     title: 'The core flow',
     summary: 'A Hindi patient, sig code QD, an exact match, and a two-panel label on the vial.',
@@ -98,7 +186,6 @@ export const TOURS: Tour[] = [
     title: 'No exact match',
     summary: 'A free-text sig with no verified sentence. Kroll refuses to guess and prints English only.',
     setup: { type: 'scenario', language: 'hi', sig: '1 CAP QHS PRN DIZZINESS' },
-    next: 'not-yet',
     steps: [
       {
         title: 'Enter a free-text sig',
@@ -143,35 +230,6 @@ export const TOURS: Tour[] = [
       {
         title: 'English label only',
         body: 'Just today’s English label. There’s no under-panel, because nothing verified was confirmed.',
-        highlight: printOutput,
-      },
-    ],
-  },
-  {
-    id: 'not-yet',
-    title: 'Language not supported yet',
-    summary: 'A Tagalog patient. The language is recorded, but there are no verified sentences yet.',
-    setup: { type: 'scenario', language: 'tl', sig: 'QD' },
-    steps: [
-      {
-        title: 'Enter the sig',
-        body: 'Kroll can record any language. Translations appear only once verified sentences exist for it. Tagalog has none yet.',
-        highlight: () => '[data-testid=sig-input]',
-        doLabel: 'Press Enter',
-        perform: () => [{ type: 'submitSig' }],
-        done: (s) => s.dialog?.kind === 'notYetTranslatable',
-      },
-      {
-        title: 'Not yet translatable',
-        body: 'Kroll tells the pharmacist the language is recorded but can’t be translated yet, and prints English as it does today.',
-        highlight: () => '[data-testid=btn-print-english]',
-        doLabel: 'Print English label',
-        perform: (_s, ctx) => [{ type: 'print', englishOnly: true, view: ctx.view }],
-        done: printed,
-      },
-      {
-        title: 'English label',
-        body: 'You’ve now seen every path. Scenarios has Chinese (Simplified), the other translated language.',
         highlight: printOutput,
       },
     ],

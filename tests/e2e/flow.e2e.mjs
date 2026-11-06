@@ -32,6 +32,20 @@ try {
   await page.click('[data-testid=pz-reveal]')
   await page.waitForTimeout(500)
   assert.equal(await slotWidth(), 300)
+  // Mrs. Leung: language at intake, sig code, verified translation, peel-back label.
+  await page.click('[data-testid=tour-leung]')
+  assert.equal(await page.inputValue('[data-testid=edit-lastName]'), 'Leung')
+  await page.fill('[data-testid=edit-firstName]', 'Mei')
+  for (let i = 0; i < 4; i++) await page.click('[data-testid=step-do]')
+  await printed()
+  assert.equal(await text('[data-testid=label-translated-sig]'), '每日两次，每次1粒，口服')
+  assert.match(await text('[data-panel="2"]'), /Leung, Mei/)
+  assert.equal(await text('[data-testid=edit-count]'), '1')
+  await page.click('[data-testid=btn-reset-edits]')
+  await page.click('[data-testid=tour-exit]')
+  await page.click('[data-testid=btn-restart]')
+  console.log('✓ Mrs. Leung walkthrough, with an edited name')
+
   // Hindi, sig code QD: patient language → Fill Rx → exact → B5 → print → peel.
   await page.click('[data-testid=language-field]')
   await page.click('[data-testid=language-list] button:has-text("Hindi")')

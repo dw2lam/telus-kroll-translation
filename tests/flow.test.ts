@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { initialState, krollSigText, reducer, type FlowState } from '@/flow/state'
+import { stateAt, tourById } from '@/demo/tours'
+import { detailsOf, initialState, krollSigText, reducer, type FlowState } from '@/flow/state'
 
 const run = (state: FlowState, ...actions: Parameters<typeof reducer>[1][]): FlowState => actions.reduce(reducer, state)
 
@@ -9,6 +10,42 @@ describe('fill flow', () => {
     expect(krollSigText('2 BID')).toBe('TAKE 2 CAPSULES TWICE A DAY')
     expect(krollSigText('2 CAP PO BID')).toBe('TAKE 2 CAPSULES TWICE A DAY')
     expect(krollSigText('1 cap qhs prn dizziness')).toBe('1 CAP QHS PRN DIZZINESS')
+    expect(krollSigText('1C PO BID')).toBe('TAKE 1 CAPSULE TWICE A DAY')
+    expect(krollSigText('1T PO BID')).toBe('TAKE 1 TABLET TWICE A DAY')
+  })
+
+  it('prints what was edited on screen, and the reset puts it back', () => {
+    const edited = run({ ...initialState, screen: 'fill' }, { type: 'edit', changes: { lastName: 'Chen', doctor: 'Dr. Lee' } }, { type: 'print', englishOnly: true, view: 'inline' })
+    expect(edited.job?.details.lastName).toBe('Chen')
+    expect(edited.job?.details.doctor).toBe('Dr. Lee')
+    expect(Object.keys(edited.edits)).toHaveLength(2)
+    expect(detailsOf(run(edited, { type: 'resetEdits' })).lastName).toBe('Shah')
+    // Typing a field back to its original value isn't an edit.
+    expect(run(edited, { type: 'edit', changes: { lastName: 'Shah' } }).edits).toEqual({ doctor: 'Dr. Lee' })
+  })
+
+  it('keeps edits while stepping through a walkthrough, and drops them for another patient', () => {
+    const edited = run(initialState, { type: 'edit', changes: { firstName: 'Mei' } })
+    expect(run(edited, { type: 'load', state: { ...initialState, screen: 'fill' } }).edits).toEqual({ firstName: 'Mei' })
+    expect(run(edited, { type: 'scenario', persona: 'leung', language: 'zh-Hans', sig: 'BID' }).edits).toEqual({})
+  })
+
+  it('walks Mrs. Leung from intake to a translated label', () => {
+    const tour = tourById('leung')!
+    const end = stateAt(tour, 5, { view: '3d' })
+    expect(detailsOf(end).lastName).toBe('Leung')
+    expect(detailsOf(end).age).toBe('78 years')
+    expect(end.language).toBe('zh-Hans')
+    expect(end.job?.englishSig).toBe('TAKE 1 CAPSULE TWICE A DAY')
+    expect(end.job?.translation?.text).toBe('每日两次，每次1粒，口服')
+  })
+
+  it('swaps the dose form when the sig is for tablets', () => {
+    const s = run({ ...initialState, screen: 'fill', language: 'zh-Hans', sigInput: '1T PO BID' }, { type: 'submitSig' })
+    const printed = run(s, { type: 'confirm', candidate: (s.dialog as { candidate: never }).candidate }, { type: 'print', englishOnly: false, view: '3d' })
+    expect(printed.job?.form).toBe('tablet')
+    expect(printed.job?.translation?.text).toBe('每日两次，每次1片，口服')
+    expect(printed.job?.translation?.gloss).toBe('TAKE 1 TABLET BY MOUTH TWICE DAILY')
   })
 
   it('exact match → confirm → prints both panels', () => {

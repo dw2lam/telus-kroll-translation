@@ -1,7 +1,7 @@
 import radioOn from '@/assets/radio-selected.svg'
 import { provider } from '@/data/demoProvider'
 import { languageByCode } from '@/data/languages'
-import { fillDose } from '@/data/phrasebook'
+import { fillDose, forForm } from '@/data/phrasebook'
 import type { Candidate, LanguageCode } from '@/data/types'
 import { DButton, Dialog as KDialog, DialogRow } from '@/kroll/primitives'
 import type { Action, Dialog } from './state'
@@ -39,7 +39,7 @@ export function TranslatedSigDialog({ dialog, printView, language, sigEntered, d
   const lang = languageByCode(language)
   const close = (): void => dispatch({ type: 'closeDialog' })
   const back = <DButton onClick={close} testId="btn-back">✗ Back to Rx</DButton>
-  const render = (c: Candidate): string => provider.render(c.sig, lang, c.dose) ?? ''
+  const render = (c: Candidate): string => provider.render(c.sig, lang, c.dose, c.form) ?? ''
   const title = `Translated Sig — ${lang.name}`
 
   switch (dialog.kind) {
@@ -51,7 +51,7 @@ export function TranslatedSigDialog({ dialog, printView, language, sigEntered, d
           <SigEntered sig={sigEntered} />
           <DialogRow label="Matched sig code">
             <div className="k-dfield" style={{ fontSize: 10 }}>
-              <span>{fillDose(c.sig.english, c.dose)}</span>
+              <span>{fillDose(forForm(c.sig.english, c.form ?? 'capsule'), c.dose)}</span>
               <span className="k-match is-ok">Exact match</span>
             </div>
           </DialogRow>
@@ -78,7 +78,7 @@ export function TranslatedSigDialog({ dialog, printView, language, sigEntered, d
           </DialogRow>
           <DialogRow label="Closest sig code">
             <div className="k-dfield">
-              <span>{c.sig.code} · {fillDose(c.sig.english, c.dose)}</span>
+              <span>{c.sig.code} · {fillDose(forForm(c.sig.english, c.form ?? 'capsule'), c.dose)}</span>
               <span className="k-match is-muted">Closest match · {Math.round(c.confidence * 100)}%</span>
             </div>
           </DialogRow>
@@ -104,7 +104,7 @@ export function TranslatedSigDialog({ dialog, printView, language, sigEntered, d
                 onClick={() => dispatch({ type: 'selectCandidate', index: i })}>
                 {i === dialog.selected ? <img src={radioOn} width={10} height={10} alt="" /> : <span className="k-radio" />}
                 <span className="k-code">{c.sig.code}</span>
-                <span className="k-en">{fillDose(c.sig.english, c.dose)}</span>
+                <span className="k-en">{fillDose(forForm(c.sig.english, c.form ?? 'capsule'), c.dose)}</span>
                 <span className="k-tr" lang={language} dir={lang.rtl ? 'rtl' : 'ltr'}>{render(c)}</span>
               </button>
             ))}

@@ -1,11 +1,19 @@
 import { useEffect, useRef, useState } from 'react'
-import { PATIENT } from '@/data/demo'
+import type { Details } from '@/data/demo'
 import { hasTranslation, LANGUAGES, languageByCode } from '@/data/languages'
 import type { LanguageCode } from '@/data/types'
 import { Btn, Field, FKeyBar, Label, MenuBar } from '@/kroll/primitives'
 
 /** F3 Patient (Figma B1 / B2): where the patient's language is captured. */
-export function PatientScreen({ language, onLanguage, onOk, onNewRx }: { language: LanguageCode; onLanguage: (l: LanguageCode) => void; onOk: () => void; onNewRx: () => void }) {
+export function PatientScreen({ language, details, onEdit, onLanguage, onOk, onNewRx }: {
+  language: LanguageCode
+  details: Details
+  onEdit: (changes: Partial<Details>) => void
+  onLanguage: (l: LanguageCode) => void
+  onOk: () => void
+  onNewRx: () => void
+}) {
+  const edit = (key: keyof Details) => ({ value: details[key], onEdit: (value: string) => onEdit({ [key]: value }), testId: `edit-${key}` })
   const [open, setOpen] = useState(false)
   const listRef = useRef<HTMLDivElement>(null)
 
@@ -40,11 +48,11 @@ export function PatientScreen({ language, onLanguage, onOk, onNewRx }: { languag
       <div className="k-patient">
         <div className="k-row" style={{ gap: 6 }}>
           <Label width={52}>Last Name</Label>
-          <Field value={PATIENT.lastName} width={150} h17 focus />
+          <Field {...edit('lastName')} width={150} h17 focus />
           <Label width={52}>First Name</Label>
-          <Field value={PATIENT.firstName} width={120} h17 />
+          <Field {...edit('firstName')} width={120} h17 />
           <Label width={48}>Salutation</Label>
-          <Field value={PATIENT.salutation} width={66} h17 caret />
+          <Field {...edit('salutation')} width={66} h17 caret />
           <span style={{ flex: 1 }} />
           <Btn width={60} ok bold onClick={onOk} testId="btn-patient-ok">
             OK
@@ -54,11 +62,11 @@ export function PatientScreen({ language, onLanguage, onOk, onNewRx }: { languag
         </div>
         <div className="k-patient-body">
           <div className="k-col" style={{ width: 250, gap: 4 }}>
-            <div className="k-row"><Label width={48}>Address 1</Label><Field value={PATIENT.address} width={190} h17 /></div>
+            <div className="k-row"><Label width={48}>Address 1</Label><Field {...edit('address')} width={190} h17 /></div>
             <div className="k-row"><Label width={48}>Address 2</Label><Field width={190} h17 /></div>
-            <div className="k-row"><Label width={48}>City</Label><Field value={<>{PATIENT.city}</>} width={110} h17 caret /></div>
-            <div className="k-row"><Label width={48}>Postal</Label><Field value={PATIENT.postal} width={110} h17 /></div>
-            <div className="k-row"><Label width={48}>Email</Label><Field value={PATIENT.email} width={145} h17 /></div>
+            <div className="k-row"><Label width={48}>City</Label><Field {...edit('city')} width={110} h17 caret /></div>
+            <div className="k-row"><Label width={48}>Postal</Label><Field {...edit('postal')} width={110} h17 /></div>
+            <div className="k-row"><Label width={48}>Email</Label><Field {...edit('email')} width={145} h17 /></div>
             <div className="k-row"><Label width={48}>Quick Code</Label><Field width={110} h17 /></div>
           </div>
           <div className="k-col" style={{ width: 300, gap: 6 }}>
@@ -72,7 +80,7 @@ export function PatientScreen({ language, onLanguage, onOk, onNewRx }: { languag
                 </span>
               </div>
               <div className="k-phones-row is-head"><span>Description</span><span>Phone</span></div>
-              <div className="k-phones-row"><span>Home</span><span>{PATIENT.phone}</span></div>
+              <div className="k-phones-row"><span>Home</span><span>{details.phone}</span></div>
             </div>
             <div className="k-row">
               <Label width={62}>Family Doctor</Label>
@@ -82,9 +90,9 @@ export function PatientScreen({ language, onLanguage, onOk, onNewRx }: { languag
             </div>
           </div>
           <div className="k-col is-open" style={{ width: 190, gap: 4 }}>
-            <div className="k-row"><Label width={48}>Birthdate</Label><Field value={PATIENT.birthdate} width={110} h17 /></div>
-            <div className="k-row"><Label width={48}>Age</Label><Field value={PATIENT.age} width={110} h17 /></div>
-            <div className="k-row"><Label width={48}>Gender</Label><Field value={PATIENT.gender} width={110} h17 caret /></div>
+            <div className="k-row"><Label width={48}>Birthdate</Label><Field {...edit('birthdate')} width={110} h17 /></div>
+            <div className="k-row"><Label width={48}>Age</Label><Field {...edit('age')} width={110} h17 /></div>
+            <div className="k-row"><Label width={48}>Gender</Label><Field {...edit('gender')} width={110} h17 caret /></div>
             <div className="k-row is-open">
               <Label width={48}>Language</Label>
               <div className="k-select" style={{ position: 'relative' }}>
@@ -112,8 +120,8 @@ export function PatientScreen({ language, onLanguage, onOk, onNewRx }: { languag
                 )}
               </div>
             </div>
-            <div className="k-row"><Label width={48}>Height</Label><Field value={PATIENT.height} width={110} h17 /></div>
-            <div className="k-row"><Label width={48}>Weight</Label><Field value={PATIENT.weight} width={110} h17 /></div>
+            <div className="k-row"><Label width={48}>Height</Label><Field {...edit('height')} width={110} h17 /></div>
+            <div className="k-row"><Label width={48}>Weight</Label><Field {...edit('weight')} width={110} h17 /></div>
             <div className="k-row"><Label width={48}>PHN</Label><Field width={110} h17 caret /></div>
           </div>
           <div className="k-col" style={{ flex: 1, alignItems: 'center', gap: 6 }}>

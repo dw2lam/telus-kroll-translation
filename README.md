@@ -49,6 +49,7 @@ The screens are rebuilt from the team's Figma file *GBDA 402 Capstone*: section 
 | 3. Free text that isn't exact goes **Closest → Not this one → Top 5 → None of these → Phrasing guide → None of these fit → Can't translate** (English label only). | ![Top 5 candidates](docs/screenshots/04-top-five.jpg) |
 | 4. Once confirmed, the translation lands in the Rx and the labels print: a 3D printer feeds both panels onto an amber vial. **Peel panel 1** reveals the patient's language underneath. | ![3D printer and vial, panel peeled](docs/screenshots/05-print-3d-peeled.jpg) |
 | 5. With **3D print view** off, or on request via the **Labels** menu, **Labels F2** or **Ctrl/⌘+L**, the labels open right inside Kroll. **Save label PDF** prints them 4 in wide. | ![Label preview inside Kroll](docs/screenshots/06-label-preview-in-kroll.jpg) |
+| 6. Chinese (Simplified) prints the same way. This is Mrs. Leung's label from the presentation walkthrough, sig `1C PO BID`. | ![Mrs. Leung's English and Chinese labels inside Kroll](docs/screenshots/09-mrs-leung-label.jpg) |
 
 The Translated Sig pop-up has six states:
 
@@ -66,15 +67,17 @@ The Translated Sig pop-up has six states:
 Presenter controls live in a sidebar on the right, styled like a macOS inspector (on macOS it uses the system's own translucent sidebar material and follows light/dark mode). None of it is part of Kroll. Hide it with the sidebar button or **Ctrl/⌘ + ,**; bring it back with the round button in the corner, the same shortcut, or **Demo → Show or Hide Presenter**.
 
 - **Walkthroughs** step through the flow. Each step explains what Kroll is doing and rings the control it is about. Press the blue button to have the step done for you, or use Kroll yourself and the walkthrough follows. Click any step to jump straight to it. **PageDown / PageUp** step forward and back, so a presentation clicker works.
-  1. **The core flow:** Hindi `QD` → exact match → two-panel label on the vial.
-  2. **No exact match:** free-text sig → closest match → top 5 → phrasing guide → English only.
-  3. **Language not supported yet:** Tagalog → captured, not yet translatable → English label.
+  1. **Mrs. Leung at the pharmacy:** the presentation scenario. Chinese (Simplified) at intake → `1C PO BID` → verified translation → peel-back label.
+  2. **No translation, English label:** a Tagalog patient, the fallback.
+  3. **The core flow:** Hindi `QD` → exact match → two-panel label on the vial.
+  4. **No exact match:** free-text sig → closest match → top 5 → phrasing guide → English only.
 
   ![Walkthrough in the presenter sidebar](docs/screenshots/08-walkthrough.jpg)
 
 - **Scenarios** and the settings at the bottom of the sidebar:
   - **3D print view** switches between the 3D printer → vial view and labels shown inside Kroll. The setting is remembered between launches.
   - **Load a scenario** jumps straight into each branch:
+    - Mrs. Leung, Chinese (Simplified) `1C PO BID`
     - Hindi `QD` and Hindi free text
     - Tagalog
     - Chinese (Simplified)
@@ -96,11 +99,15 @@ Presenter controls live in a sidebar on the right, styled like a macOS inspector
 | PageDown / PageUp | Next / previous walkthrough step |
 | Esc | Close the pop-up or cheat sheet |
 
+## Editing on screen
+
+Patient, doctor, drug, quantity and refill fields on F3 Patient and F12 Fill Rx can be typed into, and what you type prints on the labels. **Reset names and details** in the sidebar puts them back.
+
 ## Sig codes and languages
 
 **Codes:** QD, BID, TID, QID, QHS, QAM, QPM, Q4H, Q6H, Q8H, Q12H, QHS PRN, QD PRN, QHS PRN SLP, PRN, Q4-6H PRN, AC, PC, CF, QD CF, BID CF, UD.
 
-- A dose can lead the code, written short or in full: `2 BID`, `2 CAP PO BID`.
+- A dose can lead the code, written short or in full: `2 BID`, `1C PO BID`, `1T PO BID`, `2 CAP PO BID`. `T` swaps capsule for tablet on the sig and the label.
 - `OD` reads as QD and `HS` as QHS. The Figma frames' shorthand also works: `*1C` / `1C` = 1 × QD, `*2C` = 2 × QD.
 
 **Languages:**

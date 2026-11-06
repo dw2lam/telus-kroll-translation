@@ -1,3 +1,5 @@
+import type { DoseForm } from './phrasebook'
+
 export type LanguageCode = 'en' | 'fr' | 'ar' | 'zh-Hans' | 'zh-Hant' | 'hi' | 'pa' | 'es' | 'tl' | 'ur'
 
 /** Label chrome in the patient's language, taken from the Figma label designs. */
@@ -44,6 +46,8 @@ export interface VerifiedSig {
 export interface Candidate {
   sig: VerifiedSig
   dose: string
+  /** Capsule unless the sig said otherwise (`1T PO BID`). */
+  form?: DoseForm
   /** 0–1. */
   confidence: number
 }
@@ -65,5 +69,5 @@ export interface TranslationProvider {
   /** Every verified instruction for the language — the phrasing guide (state 4). */
   phrasingGuide(language: Language): VerifiedSig[]
   /** The verified sentence with the dose filled in, or null when it is not verified for that dose. */
-  render(sig: VerifiedSig, language: Language, dose: string): string | null
+  render(sig: VerifiedSig, language: Language, dose: string, form?: DoseForm): string | null
 }
