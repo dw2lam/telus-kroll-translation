@@ -1,5 +1,29 @@
 import type { LanguageCode } from './types'
 
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+const pad = (n: number): string => String(n).padStart(2, '0')
+
+/** Kroll's date format, `11-Nov-2026`. */
+export const krollDate = (d: Date): string => `${pad(d.getDate())}-${MONTHS[d.getMonth()]}-${d.getFullYear()}`
+
+/** Kroll's date and time, `11-Nov-2026 14:32`. */
+export const krollDateTime = (d: Date): string => `${krollDate(d)} ${pad(d.getHours())}:${pad(d.getMinutes())}`
+
+/** Kroll's short date on Fill Rx, `11/11/26` (day/month/year). */
+export const krollShortDate = (d: Date): string => `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${String(d.getFullYear()).slice(2)}`
+
+/** The demo fills today, so the label and the translation record agree. The Rx expires a year later. */
+const TODAY = new Date()
+const EXPIRY = new Date(TODAY.getFullYear() + 1, TODAY.getMonth(), TODAY.getDate())
+
+/** Whole years from `dd/mm/yyyy` to today. */
+function ageFrom(birthdate: string): string {
+  const [d, m, y] = birthdate.split('/').map(Number)
+  let age = TODAY.getFullYear() - y
+  if (TODAY.getMonth() + 1 < m || (TODAY.getMonth() + 1 === m && TODAY.getDate() < d)) age--
+  return `${age} years`
+}
+
 /** The prescription on screen in every Figma frame. */
 export const PATIENT = {
   lastName: 'Shah',
@@ -11,7 +35,7 @@ export const PATIENT = {
   email: 'rshah@email.com',
   phone: '(555) 555-5555',
   birthdate: '05/05/1980',
-  age: '34 years',
+  age: ageFrom('05/05/1980'),
   gender: 'Female',
   height: `5' 6"`,
   weight: '120',
@@ -23,8 +47,10 @@ export const RX = {
   pharmacyPhone: '416-383-1010',
   pharmacyAddress: '220 Duncan Mill Road, Toronto ON M3B 3J5',
   doctor: 'Dr. McGraw, Phil',
-  date: '06-Oct-2014',
-  expiry: '01-Jan-2015',
+  date: krollDate(TODAY),
+  /** Kroll's short form of `date`, for Fill Rx. */
+  firstFill: krollShortDate(TODAY),
+  expiry: krollDate(EXPIRY),
   quantity: '30',
   form: 'CAP',
   brand: 'Euro-Fer',
@@ -131,4 +157,30 @@ export const SCENARIOS: Scenario[] = [
   { id: 'exact-text', title: 'Hindi · free text, exact', detail: 'Free text that matches a verified sig exactly', language: 'hi', sig: 'take 2 capsules by mouth twice daily' },
   { id: 'tagalog', title: 'Tagalog · QD', detail: 'Captured, not yet translatable (B3t → B4t)', language: 'tl', sig: 'QD' },
   { id: 'chinese', title: 'Chinese (Simplified) · QD', detail: 'Simplified script label', language: 'zh-Hans', sig: 'QD' },
+]
+
+/** The pharmacist signed in to Kroll. Translation records name them as the one who confirmed the English. */
+export const PHARMACIST = 'RPh J. Lee'
+
+/** The verified library's release the demo pretends to read from. */
+export const LIBRARY_VERSION = 'v2026.11'
+
+/** A sig or language need logged from an English-only print, for the translation library team. */
+export interface TranslationRequest {
+  id: string
+  language: string
+  /** The sig as entered, or `(language)` when the whole language is missing. */
+  sig: string
+  rx: string
+  logged: string
+  status: 'Pending' | 'In review' | 'Verified'
+}
+
+/** Requests already in the queue when the demo starts (illustrative). */
+const daysAgo = (n: number): string => krollDate(new Date(TODAY.getFullYear(), TODAY.getMonth(), TODAY.getDate() - n))
+
+export const SEED_REQUESTS: TranslationRequest[] = [
+  { id: 'TR-0039', language: 'Punjabi', sig: '(language)', rx: '1000047', logged: daysAgo(7), status: 'Pending' },
+  { id: 'TR-0040', language: 'Hindi', sig: '1 CAP Q2D WITH MEALS', rx: '1000049', logged: daysAgo(4), status: 'In review' },
+  { id: 'TR-0041', language: 'Tagalog', sig: '(language)', rx: '1000050', logged: daysAgo(2), status: 'Pending' },
 ]

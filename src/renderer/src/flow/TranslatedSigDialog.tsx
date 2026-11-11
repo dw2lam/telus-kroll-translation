@@ -1,7 +1,8 @@
 import radioOn from '@/assets/radio-selected.svg'
 import { provider } from '@/data/demoProvider'
 import { languageByCode } from '@/data/languages'
-import { fillDose, forForm } from '@/data/phrasebook'
+import { LIBRARY_VERSION } from '@/data/demo'
+import { fillDose, forForm, phraseId } from '@/data/phrasebook'
 import type { Candidate, LanguageCode } from '@/data/types'
 import { DButton, Dialog as KDialog, DialogRow } from '@/kroll/primitives'
 import type { Action, Dialog } from './state'
@@ -12,6 +13,8 @@ interface Props {
   printView: '3d' | 'inline'
   language: LanguageCode
   sigEntered: string
+  /** The English-only pop-ups' request box. */
+  requestTranslation: boolean
   dispatch: (action: Action) => void
 }
 
@@ -34,8 +37,40 @@ function SigEntered({ sig }: { sig: string }) {
   )
 }
 
+/** Where the translation comes from, and who answers for it (hi-fi B3, the liability split). */
+function Source({ code, language }: { code: string; language: LanguageCode }) {
+  return (
+    <>
+      <DialogRow label="Source">
+        <div className="k-dfield" style={{ fontSize: 10 }} data-testid="source-row">
+          <span>{`Verified phrase library · Phrase ${phraseId(code, language)} · ${LIBRARY_VERSION}`}</span>
+          <span className="k-badge is-ok">Verified</span>
+        </div>
+      </DialogRow>
+      <span className="k-dnote k-responsibility" data-testid="responsibility-note">
+        You are confirming that the English matches the prescription. The translation itself comes from the verified library, so its accuracy is not on you.
+      </span>
+    </>
+  )
+}
+
+/** The English-only pop-ups' box: print English now, and tell the library team what's missing. */
+function RequestBox({ label, checked, dispatch }: { label: string; checked: boolean; dispatch: (action: Action) => void }) {
+  return (
+    <div className="k-request">
+      <label className="k-check">
+        <input type="checkbox" checked={checked} onChange={() => dispatch({ type: 'toggleRequest' })} data-testid="request-translation" />
+        <span>{label}</span>
+      </label>
+      <span className="k-hint">
+        The English label prints now. The request goes to the translation library team. Once a translation is verified, future fills can print it.
+      </span>
+    </div>
+  )
+}
+
 /** The Translated Sig pop-up in each of its states (Figma B4, B4t, B7, B8, B9, B10). */
-export function TranslatedSigDialog({ dialog, printView, language, sigEntered, dispatch }: Props) {
+export function TranslatedSigDialog({ dialog, printView, language, sigEntered, requestTranslation, dispatch }: Props) {
   const lang = languageByCode(language)
   const close = (): void => dispatch({ type: 'closeDialog' })
   const back = <DButton onClick={close} testId="btn-back">✗ Back to Rx</DButton>
@@ -60,6 +95,7 @@ export function TranslatedSigDialog({ dialog, printView, language, sigEntered, d
               <Translation text={render(c)} language={language} size={lang.code === 'hi' ? 10 : 12} />
             </div>
           </DialogRow>
+          <Source code={c.sig.code} language={language} />
         </KDialog>
       )
     }
@@ -85,6 +121,7 @@ export function TranslatedSigDialog({ dialog, printView, language, sigEntered, d
           <DialogRow label={lang.name}>
             <div className="k-dfield"><Translation text={render(c)} language={language} size={15} /></div>
           </DialogRow>
+          <Source code={c.sig.code} language={language} />
         </KDialog>
       )
     }
@@ -109,6 +146,7 @@ export function TranslatedSigDialog({ dialog, printView, language, sigEntered, d
               </button>
             ))}
           </div>
+          <Source code={dialog.candidates[dialog.selected].sig.code} language={language} />
         </KDialog>
       )
     case 'guide': {
@@ -143,6 +181,7 @@ export function TranslatedSigDialog({ dialog, printView, language, sigEntered, d
           <span className="k-dnote is-warning">
             This sig can’t be translated. {dialog.reason} The vial label will print in English only.
           </span>
+          <RequestBox label={`Request a verified ${lang.name} translation of this sig`} checked={requestTranslation} dispatch={dispatch} />
         </KDialog>
       )
     case 'notYetTranslatable':
@@ -155,6 +194,7 @@ export function TranslatedSigDialog({ dialog, printView, language, sigEntered, d
           <span className="k-dnote is-warning">
             No verified {lang.name} sig codes are configured in Kroll yet. The vial label will print in English.
           </span>
+          <RequestBox label={`Log that this patient needs ${lang.name} labels`} checked={requestTranslation} dispatch={dispatch} />
         </KDialog>
       )
   }

@@ -1,5 +1,36 @@
-import type { CSSProperties, ReactNode } from 'react'
+import { createContext, type CSSProperties, type ReactNode, useContext, useEffect, useState } from 'react'
+import { PHARMACIST } from '@/data/demo'
 import leaf from '@/assets/leaf.svg'
+
+/**
+ * The status bar's message, and a way to set it. Controls that aren't part of the demo say so
+ * here instead of silently doing nothing.
+ */
+export const KrollStatus = createContext<{ message: string | null; notify: (message: string) => void }>({ message: null, notify: () => {} })
+
+const notInDemo = (label: string): string => `${label.replace(/\s+/g, ' ').trim()} isn’t part of this demo.`
+
+/** `JL` for `RPh J. Lee`: Kroll's Init fields and status bar. */
+export const pharmacistInitials = PHARMACIST.replace(/^RPh\s+/, '').split(/[\s.]+/).filter(Boolean).map((w) => w[0]).join('')
+
+/** Kroll's bottom bar: messages, the signed-in pharmacist, and the clock. */
+export function StatusBar() {
+  const { message } = useContext(KrollStatus)
+  const [now, setNow] = useState(() => new Date())
+  useEffect(() => {
+    const t = window.setInterval(() => setNow(new Date()), 1000)
+    return () => window.clearInterval(t)
+  }, [])
+  const pad = (n: number): string => String(n).padStart(2, '0')
+  const clock = `${pad(now.getMonth() + 1)}/${pad(now.getDate())}/${now.getFullYear()} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`
+  return (
+    <div className="k-status">
+      <span className={message ? 'k-status-msg' : undefined} data-testid="status-message">{message ?? 'Ready'}</span>
+      <span>{`User: ${pharmacistInitials} (${PHARMACIST})`}</span>
+      <span>{clock}</span>
+    </div>
+  )
+}
 
 /** A Kroll text box, read-only unless it has `onEdit`. */
 export function Field({ value, width, grow, right, total, h17, focus, caret, style, onEdit, testId }: {
@@ -41,8 +72,10 @@ export function Label({ children, width }: { children: ReactNode; width?: number
 }
 
 export function Btn({ children, width, ok, bold, onClick, title, testId }: { children: ReactNode; width?: number; ok?: boolean; bold?: boolean; onClick?: () => void; title?: string; testId?: string }) {
+  const { notify } = useContext(KrollStatus)
+  const fallback = (e: React.MouseEvent<HTMLButtonElement>): void => notify(notInDemo(e.currentTarget.textContent ?? 'This'))
   return (
-    <button type="button" className={['k-btn', ok && 'is-ok', bold && 'is-bold'].filter(Boolean).join(' ')} style={{ width }} onClick={onClick} title={title} data-testid={testId}>
+    <button type="button" className={['k-btn', ok && 'is-ok', bold && 'is-bold', !onClick && 'is-inert'].filter(Boolean).join(' ')} style={{ width }} onClick={onClick ?? fallback} title={title} data-testid={testId}>
       {children}
     </button>
   )
@@ -51,21 +84,46 @@ export function Btn({ children, width, ok, bold, onClick, title, testId }: { chi
 const MENUS = ['File', 'Edit', 'Rx', 'View', 'Labels', 'Profile', 'Reports', 'Utilities', 'NH', 'Cards', 'Session', 'Help']
 const PATIENT_MENUS = ['File', 'Edit', 'Patient', 'Profile', 'Network', 'Utilities', 'NH', 'Cards', 'Session', 'Help']
 
-export function MenuBar({ variant, onLabels }: { variant: 'patient' | 'rx'; onLabels?: () => void }) {
+export function MenuBar({ variant, onLabels, onRequests }: { variant: 'patient' | 'rx'; onLabels?: () => void; onRequests?: () => void }) {
   const items = variant === 'patient' ? PATIENT_MENUS : MENUS
+  const [open, setOpen] = useState(false)
+  useEffect(() => {
+    if (!open) return
+    const close = (): void => setOpen(false)
+    window.addEventListener('click', close)
+    return () => window.removeEventListener('click', close)
+  }, [open])
   return (
     <div className="k-menubar">
       {items.map((m) =>
-        variant === 'rx' && m === 'Labels' ? (
+        m === 'Utilities' && onRequests ? (
+          <span key={m} className="k-menu">
+            <span className="is-link" role="button" onClick={(e) => { e.stopPropagation(); setOpen((o) => !o) }} data-testid="menu-utilities">
+              {m}
+            </span>
+            {open && (
+              <div className="k-list">
+                <button type="button" onClick={() => { setOpen(false); onRequests() }} data-testid="menu-translation-requests">
+                  Translation requests…
+                </button>
+              </div>
+            )}
+          </span>
+        ) : variant === 'rx' && m === 'Labels' ? (
           <span key={m} className="is-link" role="button" title="Preview labels (Ctrl+L)" onClick={onLabels} data-testid="menu-labels">
             {m}
           </span>
         ) : (
-          <span key={m}>{m}</span>
+          <MenuItem key={m} label={m} />
         ),
       )}
     </div>
   )
+}
+
+function MenuItem({ label }: { label: string }) {
+  const { notify } = useContext(KrollStatus)
+  return <span onClick={() => notify(notInDemo(`The ${label} menu`))}>{label}</span>
 }
 
 export interface FKey {
@@ -76,10 +134,12 @@ export interface FKey {
 }
 
 export function FKeyBar({ keys }: { keys: FKey[] }) {
+  const { notify } = useContext(KrollStatus)
   return (
     <div className="k-fkeys">
       {keys.map((k) => (
-        <button type="button" key={k.key} className={'k-fkey' + (k.current ? ' is-current' : '')} onClick={k.onClick}>
+        <button type="button" key={k.key} className={'k-fkey' + (k.current ? ' is-current' : '') + (k.onClick || k.current ? '' : ' is-inert')}
+          onClick={k.onClick ?? (k.current ? undefined : () => notify(notInDemo(`${k.key} - ${k.label}`)))}>
           {k.key} - {k.label}
         </button>
       ))}

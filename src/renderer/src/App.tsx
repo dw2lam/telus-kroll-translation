@@ -8,7 +8,9 @@ import { LabelPreviewDialog } from './flow/LabelPreviewDialog'
 import { PatientScreen } from './flow/PatientScreen'
 import type { LanguageCode } from './data/types'
 import { detailsOf, initialState, reducer } from './flow/state'
+import { RequestsDialog } from './flow/RequestsDialog'
 import { TranslatedSigDialog } from './flow/TranslatedSigDialog'
+import { KrollStatus } from './kroll/primitives'
 import { PrintView } from './print/PrintView'
 import './print/print.css'
 
@@ -203,6 +205,8 @@ export default function App() {
       } else if (e.key === 'F1') {
         e.preventDefault()
         window.kroll?.openCheatSheet()
+      } else if (e.key === 'Escape' && state.showRequests) {
+        dispatch({ type: 'closeRequests' })
       } else if (e.key === 'Escape' && state.preview) {
         dispatch({ type: 'closePreview' })
       } else if (e.key === 'Escape' && state.dialog) {
@@ -211,7 +215,16 @@ export default function App() {
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [fillOrPrint, state.dialog, state.preview, presenter, guide, doStep, back, showPresenter])
+  }, [fillOrPrint, state.dialog, state.preview, state.showRequests, presenter, guide, doStep, back, showPresenter])
+
+  // The status bar's message clears itself after a few seconds.
+  const [statusMessage, setStatusMessage] = useState<string | null>(null)
+  useEffect(() => {
+    if (!statusMessage) return
+    const t = window.setTimeout(() => setStatusMessage(null), 4000)
+    return () => window.clearTimeout(t)
+  }, [statusMessage])
+  const status = useMemo(() => ({ message: statusMessage, notify: setStatusMessage }), [statusMessage])
 
   const progress: GuideProgress | null = tour && guide ? { tour, steps, step: guide.step, ready } : null
 
@@ -221,6 +234,7 @@ export default function App() {
         {state.screen === 'print' && state.job ? (
           <PrintView key={state.job.id} job={state.job} onBack={() => dispatch({ type: 'go', screen: 'fill' })} onNewRx={() => dispatch({ type: 'reset' })} />
         ) : (
+          <KrollStatus.Provider value={status}>
           <div className="kroll-stage" ref={stageRef}>
             <div className="kroll-window" style={{ zoom: fit.zoom, width: fit.width, height: fit.height }} data-testid={`screen-${state.screen}`}>
               {state.screen === 'patient' ? (
@@ -231,6 +245,7 @@ export default function App() {
                   onLanguage={(l) => dispatch({ type: 'setLanguage', language: l })}
                   onOk={() => dispatch({ type: 'go', screen: 'fill' })}
                   onNewRx={() => dispatch({ type: 'go', screen: 'fill' })}
+                  onRequests={() => dispatch({ type: 'openRequests' })}
                 />
               ) : (
                 <FillRxScreen
@@ -245,10 +260,11 @@ export default function App() {
                   onPatient={() => dispatch({ type: 'go', screen: 'patient' })}
                   onFill={fillOrPrint}
                   onPreview={() => dispatch({ type: 'previewLabels' })}
+                  onRequests={() => dispatch({ type: 'openRequests' })}
                 />
               )}
               {state.dialog && (
-                <TranslatedSigDialog dialog={state.dialog} printView={printView} language={state.language} sigEntered={state.sigEntered} dispatch={dispatch} />
+                <TranslatedSigDialog dialog={state.dialog} printView={printView} language={state.language} sigEntered={state.sigEntered} requestTranslation={state.requestTranslation} dispatch={dispatch} />
               )}
               {state.preview && state.job && (
                 <LabelPreviewDialog
@@ -260,8 +276,10 @@ export default function App() {
                   onClose={() => dispatch({ type: 'closePreview' })}
                 />
               )}
+              {state.showRequests && <RequestsDialog requests={state.requests} onClose={() => dispatch({ type: 'closeRequests' })} />}
             </div>
           </div>
+          </KrollStatus.Provider>
         )}
         {!presenter && (
           <button type="button" className="pz-reveal" onClick={() => showPresenter(true)} title={`Show presenter (${MOD},)`} data-testid="pz-reveal">

@@ -157,3 +157,9 @@ export function fillDose(template: string, dose: string): string {
   const plural = dose === '1' ? '' : 's'
   return template.replaceAll('[N]', dose).replaceAll('(s)', plural).replaceAll('(S)', plural.toUpperCase())
 }
+
+/** The library's ID for a verified phrase, e.g. `HI-QD-001` or `ZH-QHS-PRN-001`. */
+export function phraseId(code: string, language: LanguageCode): string {
+  const prefix = language === 'zh-Hans' ? 'ZH' : language === 'zh-Hant' ? 'ZHT' : language.toUpperCase()
+  return `${prefix}-${code.trim().replace(/\s+/g, '-')}-001`
+}

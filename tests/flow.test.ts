@@ -97,3 +97,44 @@ describe('labels inside Kroll', () => {
     expect(s.preview).toBeNull()
   })
 })
+
+describe('hi-fi B3: liability record and translation requests', () => {
+  it('records the verified phrase and the pharmacist who confirmed the English', () => {
+    const exact = run({ ...initialState, screen: 'fill' }, { type: 'setSig', sig: 'QD' }, { type: 'submitSig' })
+    expect(exact.dialog?.kind).toBe('exact')
+    if (exact.dialog?.kind !== 'exact') return
+    const printed = run(exact, { type: 'confirm', candidate: exact.dialog.candidate }, { type: 'print', englishOnly: false, view: 'inline' })
+    expect(printed.job?.record).toMatchObject({ kind: 'translated', language: 'Hindi', phrase: 'HI-QD-001', version: 'v2026.11', confirmedBy: 'RPh J. Lee' })
+    expect(printed.requests).toHaveLength(3)
+  })
+
+  it('logs a request when a sig prints in English only, unless the box is unticked', () => {
+    const notYet = run({ ...initialState, screen: 'fill', language: 'tl' }, { type: 'submitSig' })
+    expect(notYet.dialog?.kind).toBe('notYetTranslatable')
+    expect(notYet.requestTranslation).toBe(true)
+    const logged = run(notYet, { type: 'print', englishOnly: true, view: 'inline' })
+    expect(logged.requests.at(-1)).toMatchObject({ id: 'TR-0042', language: 'Tagalog', sig: '(language)', status: 'Pending' })
+    expect(logged.job?.record).toEqual({ kind: 'request', id: 'TR-0042' })
+
+    const skipped = run(notYet, { type: 'toggleRequest' }, { type: 'print', englishOnly: true, view: 'inline' })
+    expect(skipped.requests).toHaveLength(3)
+    expect(skipped.job?.record).toBeNull()
+  })
+
+  it('names the sig when a known language has no verified match', () => {
+    const cannot = run(
+      { ...initialState, screen: 'fill', sigInput: '1 cap qhs prn dizziness' },
+      { type: 'submitSig' },
+      { type: 'noneOfThese' },
+      { type: 'noneOfTheseFit' },
+    )
+    expect(cannot.dialog?.kind).toBe('cannotTranslate')
+    const logged = run(cannot, { type: 'print', englishOnly: true, view: 'inline' })
+    expect(logged.requests.at(-1)).toMatchObject({ language: 'Hindi', sig: '1 CAP QHS PRN DIZZINESS' })
+  })
+
+  it('keeps the request queue while jumping between walkthrough steps', () => {
+    const logged = run({ ...initialState, screen: 'fill', language: 'tl' }, { type: 'submitSig' }, { type: 'print', englishOnly: true, view: 'inline' })
+    expect(run(logged, { type: 'load', state: initialState }).requests).toHaveLength(4)
+  })
+})

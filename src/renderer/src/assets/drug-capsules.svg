@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 60" width="220" height="60">
+  <defs>
+    <linearGradient id="cap" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#b24a3a"/>
+      <stop offset="0.45" stop-color="#8e2f24"/>
+      <stop offset="1" stop-color="#5e1c15"/>
+    </linearGradient>
+    <linearGradient id="body" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#c9774f"/>
+      <stop offset="0.45" stop-color="#a65a37"/>
+      <stop offset="1" stop-color="#6f3a22"/>
+    </linearGradient>
+    <linearGradient id="shine" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-30%" width="120%" height="180%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000" flood-opacity="0.22"/>
+    </filter>
+    <g id="capsule">
+      <path d="M17 0 H50 V30 H17 A15 15 0 0 1 17 0 Z" fill="url(#cap)"/>
+      <path d="M48 0 H80 A15 15 0 0 1 80 30 H48 Z" fill="url(#body)"/>
+      <rect x="47" y="0" width="3" height="30" fill="#000" opacity="0.18"/>
+      <rect x="8" y="4" width="78" height="7" rx="3.5" fill="url(#shine)"/>
+    </g>
+  </defs>
+  <use href="#capsule" transform="translate(18 16) rotate(-8 48 15)" filter="url(#shadow)"/>
+  <use href="#capsule" transform="translate(110 14) rotate(10 48 15)" filter="url(#shadow)"/>
+</svg>

@@ -1,7 +1,7 @@
-import { type Details, PERSONAS, type PersonaId } from '@/data/demo'
+import { type Details, krollDate, krollDateTime, LIBRARY_VERSION, PERSONAS, type PersonaId, PHARMACIST, RX, SEED_REQUESTS, type TranslationRequest } from '@/data/demo'
 import { languageByCode } from '@/data/languages'
 import { provider } from '@/data/demoProvider'
-import { type DoseForm, fillDose, forForm, KROLL_EXPANSIONS, parseSigCode } from '@/data/phrasebook'
+import { type DoseForm, fillDose, forForm, KROLL_EXPANSIONS, parseSigCode, phraseId } from '@/data/phrasebook'
 import type { Candidate, LanguageCode, VerifiedSig } from '@/data/types'
 
 export type Screen = 'patient' | 'fill' | 'print'
@@ -29,7 +29,14 @@ export interface PrintJob {
     /** The verified sentence's English, shown under the translation. */
     gloss: string
   }
+  /** What Kroll saves to the Rx history for this print (shown in the printed preview). */
+  record: TranslationRecord | null
 }
+
+/** The Rx history entry that makes the split of responsibility visible. */
+export type TranslationRecord =
+  | { kind: 'translated'; language: string; phrase: string; version: string; confirmedBy: string; printed: string }
+  | { kind: 'request'; id: string }
 
 export interface FlowState {
   screen: Screen
@@ -45,6 +52,12 @@ export interface FlowState {
   job: PrintJob | null
   /** The label preview open inside Kroll: right after printing, or on request. */
   preview: null | 'printed' | 'requested'
+  /** The English-only pop-ups' "request a verified translation" box. Checked by default. */
+  requestTranslation: boolean
+  /** Translation requests logged so far, oldest first. */
+  requests: TranslationRequest[]
+  /** Utilities → Translation requests… is open. */
+  showRequests: boolean
 }
 
 export const initialState: FlowState = {
@@ -58,6 +71,9 @@ export const initialState: FlowState = {
   confirmed: null,
   job: null,
   preview: null,
+  requestTranslation: true,
+  requests: SEED_REQUESTS,
+  showRequests: false,
 }
 
 export type Action =
@@ -78,6 +94,9 @@ export type Action =
   | { type: 'scenario'; language: LanguageCode; sig: string; submit?: boolean; persona?: PersonaId; screen?: Screen }
   | { type: 'edit'; changes: Partial<Details> }
   | { type: 'resetEdits' }
+  | { type: 'toggleRequest' }
+  | { type: 'openRequests' }
+  | { type: 'closeRequests' }
   | { type: 'reset' }
   /** Replaces the whole state (the guided demo jumping to a step). */
   | { type: 'load'; state: FlowState }
@@ -95,9 +114,10 @@ export const detailsOf = (state: FlowState): Details => ({ ...PERSONAS[state.per
 let jobs = 0
 
 /** The labels Kroll would print right now: its English sig, plus the confirmed translation unless English only. */
-function buildJob(state: FlowState, englishOnly: boolean): PrintJob {
+function buildJob(state: FlowState, englishOnly: boolean, record: TranslationRecord | null = null): PrintJob {
   const confirmed = englishOnly ? null : state.confirmed
   return {
+    record,
     id: ++jobs,
     details: detailsOf(state),
     form: parseSigCode(state.sigEntered || state.sigInput)?.form ?? 'capsule',
@@ -105,6 +125,19 @@ function buildJob(state: FlowState, englishOnly: boolean): PrintJob {
     translation: confirmed
       ? { language: state.language, text: confirmed.text, gloss: fillDose(forForm(confirmed.sig.english, confirmed.form), confirmed.dose).toUpperCase() }
       : null,
+  }
+}
+
+/** The next request in the queue for what's on screen: the sig, or the whole language when none is configured. */
+function newRequest(state: FlowState, now: Date): TranslationRequest {
+  const highest = Math.max(0, ...state.requests.map((r) => Number(r.id.slice(3))))
+  return {
+    id: `TR-${String(highest + 1).padStart(4, '0')}`,
+    language: languageByCode(state.language).name,
+    sig: state.dialog?.kind === 'notYetTranslatable' ? '(language)' : krollSigText(state.sigEntered).slice(0, 40),
+    rx: RX.number,
+    logged: krollDate(now),
+    status: 'Pending',
   }
 }
 
@@ -128,7 +161,7 @@ export function reducer(state: FlowState, action: Action): FlowState {
           : result.kind === 'noVerified'
             ? { kind: 'guide' }
             : result
-      return { ...state, sigEntered: sig, confirmed: null, dialog }
+      return { ...state, sigEntered: sig, confirmed: null, dialog, requestTranslation: true }
     }
     case 'closeDialog':
       return { ...state, dialog: null }
@@ -156,10 +189,35 @@ export function reducer(state: FlowState, action: Action): FlowState {
       }
     }
     case 'print': {
-      const job = buildJob(state, action.englishOnly)
-      if (action.view === 'inline') return { ...state, dialog: null, screen: 'fill', job, preview: 'printed' }
-      return { ...state, dialog: null, screen: 'print', job, preview: null }
+      const now = new Date()
+      let requests = state.requests
+      let record: TranslationRecord | null = null
+      const englishOnlyDialog = state.dialog?.kind === 'cannotTranslate' || state.dialog?.kind === 'notYetTranslatable'
+      if (action.englishOnly && englishOnlyDialog && state.requestTranslation) {
+        const request = newRequest(state, now)
+        requests = [...requests, request]
+        record = { kind: 'request', id: request.id }
+      } else if (!action.englishOnly && state.confirmed) {
+        record = {
+          kind: 'translated',
+          language: languageByCode(state.language).name,
+          phrase: phraseId(state.confirmed.sig.code, state.language),
+          version: LIBRARY_VERSION,
+          confirmedBy: PHARMACIST,
+          printed: krollDateTime(now),
+        }
+      }
+      const job = buildJob(state, action.englishOnly, record)
+      const next = { ...state, dialog: null, job, requests, requestTranslation: true }
+      if (action.view === 'inline') return { ...next, screen: 'fill', preview: 'printed' }
+      return { ...next, screen: 'print', preview: null }
     }
+    case 'toggleRequest':
+      return { ...state, requestTranslation: !state.requestTranslation }
+    case 'openRequests':
+      return { ...state, showRequests: true }
+    case 'closeRequests':
+      return { ...state, showRequests: false }
     case 'previewLabels':
       if (!state.sigInput.trim()) return state
       return { ...state, dialog: null, screen: 'fill', job: buildJob(state, false), preview: 'requested' }
@@ -194,7 +252,8 @@ export function reducer(state: FlowState, action: Action): FlowState {
     case 'load': {
       // Stepping through a walkthrough keeps what the presenter typed for this patient.
       const edits = action.state.persona === state.persona ? state.edits : {}
-      const loaded = { ...action.state, edits }
+      // The request queue is the pharmacy's, not the walkthrough's: it survives jumping between steps.
+      const loaded = { ...action.state, edits, requests: state.requests }
       return loaded.job ? { ...loaded, job: { ...loaded.job, details: detailsOf(loaded) } } : loaded
     }
   }

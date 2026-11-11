@@ -4,6 +4,7 @@ import type { PrintJob } from '@/flow/state'
 import { Panel1, Panel2, PANEL_WIDTH } from '@/labels/LabelPanels'
 import { saveLabelPdf } from '@/labels/savePdf'
 import PrintScene, { type PrintPhase, type SceneLabel } from './PrintScene'
+import { TranslationRecord } from '@/flow/TranslationRecord'
 
 const PX_PER_INCH = PANEL_WIDTH / 4
 
@@ -100,6 +101,7 @@ export function PrintView({ job, onBack, onNewRx }: { job: PrintJob; onBack: () 
           </p>
         </header>
         <div className="print-panels">
+          <TranslationRecord record={job.record} variant="print" />
           <figure>
             <figcaption>Panel 1 — front, dispensed label</figcaption>
             <div className="print-panel-frame"><Panel1 job={job} /></div>

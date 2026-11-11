@@ -5,6 +5,7 @@ import { Panel1, Panel2 } from '@/labels/LabelPanels'
 import { saveLabelPdf } from '@/labels/savePdf'
 import { DButton, Dialog as KDialog } from '@/kroll/primitives'
 import type { PrintJob } from './state'
+import { TranslationRecord } from './TranslationRecord'
 
 interface Props {
   job: PrintJob
@@ -43,6 +44,7 @@ export function LabelPreviewDialog({ job, reason, untranslated, show3d, onShow3d
             ? 'English label only — no translation has been confirmed for this sig yet.'
             : 'English label only.'}
       </span>
+      {reason === 'printed' && <TranslationRecord record={job.record} variant="kroll" />}
       <div className="k-preview-panels">
         <figure>
           <figcaption>Panel 1 — front, dispensed label</figcaption>

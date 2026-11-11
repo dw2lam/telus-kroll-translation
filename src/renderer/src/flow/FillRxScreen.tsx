@@ -2,9 +2,10 @@ import { useEffect, useRef, useState } from 'react'
 import { type Details, patientName, RX } from '@/data/demo'
 import { languageByCode } from '@/data/languages'
 import type { LanguageCode } from '@/data/types'
-import { Btn, Field, FKeyBar, Label, MenuBar } from '@/kroll/primitives'
+import { Btn, Field, FKeyBar, Label, MenuBar, pharmacistInitials, StatusBar } from '@/kroll/primitives'
 import { parseSigCode } from '@/data/phrasebook'
 import { krollSigText } from './state'
+import drugCapsules from '@/assets/drug-capsules.svg'
 
 interface Props {
   language: LanguageCode
@@ -18,10 +19,11 @@ interface Props {
   onPatient: () => void
   onFill: () => void
   onPreview: () => void
+  onRequests: () => void
 }
 
 /** F12 Fill Rx (Figma B3 / B5 / B6), the screen the Translated Sig pop-up opens over. */
-export function FillRxScreen({ language, details, onEdit, sigInput, translated, dialogOpen, onSig, onSubmit, onPatient, onFill, onPreview }: Props) {
+export function FillRxScreen({ language, details, onEdit, sigInput, translated, dialogOpen, onSig, onSubmit, onPatient, onFill, onPreview, onRequests }: Props) {
   const input = useRef<HTMLInputElement>(null)
   const lang = languageByCode(language)
   const sigText = krollSigText(sigInput)
@@ -41,7 +43,7 @@ export function FillRxScreen({ language, details, onEdit, sigInput, translated, 
 
   return (
     <>
-      <MenuBar variant="rx" onLabels={onPreview} />
+      <MenuBar variant="rx" onLabels={onPreview} onRequests={onRequests} />
       <FKeyBar
         keys={[
           { key: 'F3', label: 'Patient', onClick: onPatient },
@@ -58,7 +60,7 @@ export function FillRxScreen({ language, details, onEdit, sigInput, translated, 
         <Btn width={70}>New Rx</Btn>
         <Btn width={82}>Pending Adj</Btn>
         <Label width={40}>First Fill</Label>
-        <Field value="06/10/14" width={60} />
+        <Field value={RX.firstFill} width={60} />
         <Label width={92}>Last Fill Information</Label>
         <Field value="0" width={30} />
         <Label width={20}>Qty</Label>
@@ -110,7 +112,7 @@ export function FillRxScreen({ language, details, onEdit, sigInput, translated, 
           </div>
           <div className="k-row"><Label width={38}>Purch</Label><Field value="$66.83" width={54} /><Label width={38}>OnHand</Label><Field value="-190" width={40} /></div>
           <div className="k-row"><Label width={38}>DIN</Label><Field value={RX.din} width={64} /><Label width={38}>Min Qty</Label><Field value="0" width={28} /></div>
-          <div className="k-drugimg">drug image</div>
+          <div className="k-drugimg"><img src={drugCapsules} height={38} alt={`${details.brand} ${details.strength} capsules`} /></div>
         </div>
         <div className="k-panel" style={{ background: 'var(--field-doctor)', flex: '1 0 0', alignSelf: 'flex-start' }}>
           <span>Doc Search</span>
@@ -160,7 +162,7 @@ export function FillRxScreen({ language, details, onEdit, sigInput, translated, 
           )}
         </div>
         <div className="k-panel k-form k-form-dispense">
-          <div className="k-row"><Label width={44}>Init</Label><Field value="SB" width={40} /><Field value="SB" width={40} /></div>
+          <div className="k-row"><Label width={44}>Init</Label><Field value={pharmacistInitials} width={40} /><Field value={pharmacistInitials} width={40} /></div>
           <div className="k-row"><Label width={44}>Disp Qty</Label><Field {...edit('quantity')} width={40} /><Btn width={56}>Refills(+)</Btn><Field {...edit('refills')} width={24} /></div>
           <div className="k-row"><Label width={44}>Days</Label><Field value="30" width={40} /></div>
           <div className="k-row"><Label width={44}>Prod Sel</Label><Field value="None" width={84} caret /></div>
@@ -190,6 +192,7 @@ export function FillRxScreen({ language, details, onEdit, sigInput, translated, 
           <div className="k-row"><Label width={56}>Total</Label><Field value="$14.90" width={52} right total /></div>
         </div>
       </div>
+      <StatusBar />
     </>
   )
 }

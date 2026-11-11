@@ -2,16 +2,18 @@ import { useEffect, useRef, useState } from 'react'
 import type { Details } from '@/data/demo'
 import { hasTranslation, LANGUAGES, languageByCode } from '@/data/languages'
 import type { LanguageCode } from '@/data/types'
-import { Btn, Field, FKeyBar, Label, MenuBar } from '@/kroll/primitives'
+import { Btn, Field, FKeyBar, Label, MenuBar, StatusBar } from '@/kroll/primitives'
+import patientPhoto from '@/assets/patient-photo.svg'
 
 /** F3 Patient (Figma B1 / B2): where the patient's language is captured. */
-export function PatientScreen({ language, details, onEdit, onLanguage, onOk, onNewRx }: {
+export function PatientScreen({ language, details, onEdit, onLanguage, onOk, onNewRx, onRequests }: {
   language: LanguageCode
   details: Details
   onEdit: (changes: Partial<Details>) => void
   onLanguage: (l: LanguageCode) => void
   onOk: () => void
   onNewRx: () => void
+  onRequests: () => void
 }) {
   const edit = (key: keyof Details) => ({ value: details[key], onEdit: (value: string) => onEdit({ [key]: value }), testId: `edit-${key}` })
   const [open, setOpen] = useState(false)
@@ -28,7 +30,7 @@ export function PatientScreen({ language, details, onEdit, onLanguage, onOk, onN
 
   return (
     <>
-      <MenuBar variant="patient" />
+      <MenuBar variant="patient" onRequests={onRequests} />
       <FKeyBar
         keys={[
           { key: 'F3', label: 'Patient', current: true },
@@ -38,7 +40,6 @@ export function PatientScreen({ language, details, onEdit, onLanguage, onOk, onN
           { key: 'F10', label: 'Pickup' },
           { key: 'F11', label: 'Drop-off' },
           { key: 'F12', label: 'New Rx', onClick: onNewRx },
-          { key: 'Alt+X', label: 'Start' },
         ]}
       />
       <div className="k-tabs">
@@ -125,7 +126,7 @@ export function PatientScreen({ language, details, onEdit, onLanguage, onOk, onN
             <div className="k-row"><Label width={48}>PHN</Label><Field width={110} h17 caret /></div>
           </div>
           <div className="k-col" style={{ flex: 1, alignItems: 'center', gap: 6 }}>
-            <div className="k-photo">No image available</div>
+            <div className="k-photo"><img src={patientPhoto} width={140} height={92} alt="Patient photo placeholder" /></div>
             <div className="k-row" style={{ width: 'auto' }}>
               <Btn width={52}>Load</Btn>
               <Btn width={52}>Delete</Btn>
@@ -147,11 +148,7 @@ export function PatientScreen({ language, details, onEdit, onLanguage, onOk, onN
           <span>Comment</span>
         </div>
       </div>
-      <div className="k-status">
-        <span>Program Alert!!</span>
-        <span>User: KRL (Kroll User)</span>
-        <span>04/03/2022 15:53:08</span>
-      </div>
+      <StatusBar />
     </>
   )
 }
