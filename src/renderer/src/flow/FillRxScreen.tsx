@@ -95,10 +95,10 @@ export function FillRxScreen({ language, details, onEdit, sigInput, translated, 
           <div className="k-row"><Label width={40}>Name</Label><span className="k-grow" onBlur={() => setNameDraft(null)}><Field value={nameDraft ?? patientName(details)} onEdit={editName} testId="edit-name" grow /></span><Label width={20}>Age</Label><Field value={details.age.split(' ')[0]} onEdit={(age) => onEdit({ age: `${age} years` })} width={28} testId="edit-age" /></div>
           <div className="k-row"><Label width={40}>Address</Label><Field {...edit('address')} grow /><Field {...edit('gender')} width={44} /></div>
           <div className="k-row"><Label width={40}>City</Label><Field {...edit('city')} grow /><Label width={24}>Prov</Label><Field value="ON" width={30} /></div>
-          <div className="k-row"><Label width={40}>Phone</Label><Field value="Home" width={52} /><Field {...edit('phone')} grow /></div>
-          <div className="k-row"><Label width={40}>Plan</Label><Field width={60} /><Label width={42}>Client ID</Label><Field grow /></div>
-          <div className="k-box">Allergies</div>
-          <div className="k-box">Conditions</div>
+          <div className="k-row"><Label width={40}>Phone</Label><Field value={details.phoneLabel} width={86} /><Field {...edit('phone')} grow /></div>
+          <div className="k-row"><Label width={40}>Plan</Label><Field {...edit('plan')} width={60} /><Label width={42}>Client ID</Label><Field value={details.phn} grow /></div>
+          <div className="k-box">Allergies<span className="k-box-value">{details.allergies}</span></div>
+          <div className="k-box">Conditions<span className="k-box-value">{details.conditions}</span></div>
         </div>
         <div className="k-panel" style={{ background: 'var(--field-drug)', flex: '1 0 0' }}>
           <span>Drug Search</span>

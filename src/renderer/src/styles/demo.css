@@ -8,11 +8,11 @@
   --pz-accent: #007aff;
   --pz-accent-ring: rgba(0, 122, 255, 0.45);
   --pz-text: rgba(0, 0, 0, 0.85);
-  --pz-secondary: rgba(0, 0, 0, 0.5);
-  --pz-tertiary: rgba(0, 0, 0, 0.26);
+  --pz-secondary: rgba(0, 0, 0, 0.62);
+  --pz-tertiary: rgba(0, 0, 0, 0.38);
   --pz-separator: rgba(0, 0, 0, 0.1);
-  --pz-sidebar: #ececec;
-  --pz-group: rgba(255, 255, 255, 0.62);
+  --pz-sidebar: #ebebed;
+  --pz-group: #fff;
   --pz-hover: rgba(0, 0, 0, 0.05);
   --pz-control: rgba(0, 0, 0, 0.06);
   --pz-segment: #fff;
@@ -23,12 +23,12 @@
   :root {
     --pz-accent: #0a84ff;
     --pz-accent-ring: rgba(10, 132, 255, 0.55);
-    --pz-text: rgba(255, 255, 255, 0.88);
-    --pz-secondary: rgba(255, 255, 255, 0.55);
-    --pz-tertiary: rgba(255, 255, 255, 0.25);
+    --pz-text: rgba(255, 255, 255, 0.95);
+    --pz-secondary: rgba(255, 255, 255, 0.72);
+    --pz-tertiary: rgba(255, 255, 255, 0.45);
     --pz-separator: rgba(255, 255, 255, 0.1);
-    --pz-sidebar: #2a2a2c;
-    --pz-group: rgba(255, 255, 255, 0.06);
+    --pz-sidebar: #1e1e20;
+    --pz-group: #2c2c2f;
     --pz-hover: rgba(255, 255, 255, 0.06);
     --pz-control: rgba(255, 255, 255, 0.08);
     --pz-segment: rgba(255, 255, 255, 0.22);
@@ -39,16 +39,19 @@
 
 .app { height: 100%; display: flex; }
 .app-main { position: relative; flex: 1; min-width: 0; display: flex; flex-direction: column; }
+/* Magnifier: the whole main area zooms around the pointer and follows it. Clicks still land. */
+.magnify { flex: 1; min-height: 0; display: flex; flex-direction: column; transition: transform 160ms ease, transform-origin 60ms linear; }
+.app-main.is-magnified { overflow: hidden; cursor: zoom-in; }
+.app-main.is-magnified .magnify { will-change: transform, transform-origin; }
 
 /* On macOS the sidebar shows the window's own vibrancy; elsewhere a flat sidebar color. */
-html[data-platform='darwin'] body { background: transparent; }
+/* The sidebar is solid on every platform: translucent material made it hard to read in dark mode. */
 .pz {
   width: 300px; flex-shrink: 0; display: flex; flex-direction: column; min-height: 0;
   background: var(--pz-sidebar); border-left: 1px solid var(--pz-separator);
-  font-family: var(--pz-font); font-size: 13px; line-height: 1.38; color: var(--pz-text);
+  font-family: var(--pz-font); font-size: 13.5px; line-height: 1.4; color: var(--pz-text);
   -webkit-font-smoothing: antialiased; letter-spacing: -0.003em;
 }
-html[data-platform='darwin'] .pz { background: transparent; }
 
 /* Slides the sidebar in and out. It stays 300px wide inside, so nothing reflows as it moves. */
 .pz-slot { width: 300px; flex-shrink: 0; display: flex; overflow: hidden; transition: width 0.32s cubic-bezier(0.32, 0.72, 0, 1); }
@@ -72,11 +75,12 @@ html[data-platform='darwin'] .pz { background: transparent; }
 .pz-segmented button.is-selected { background: var(--pz-segment); box-shadow: var(--pz-shadow); }
 
 .pz-scroll { flex: 1; min-height: 0; overflow: auto; padding: 0 14px 12px; }
-.pz-intro { margin: 2px 2px 14px; color: var(--pz-secondary); font-size: 12px; }
+.pz-intro { margin: 2px 2px 14px; color: var(--pz-secondary); font-size: 12.5px; }
+.pz-intro b { color: var(--pz-text); font-weight: 600; }
 
 /* Grouped rows, as in System Settings. */
 .pz-group { margin-bottom: 14px; }
-.pz-group-label { margin: 0 4px 6px; font-size: 11px; font-weight: 600; color: var(--pz-secondary); }
+.pz-group-label { margin: 0 4px 6px; font-size: 11.5px; font-weight: 700; color: var(--pz-secondary); text-transform: uppercase; letter-spacing: 0.04em; }
 .pz-group-body { background: var(--pz-group); border-radius: 10px; box-shadow: 0 0 0 0.5px var(--pz-separator); overflow: hidden; }
 .pz-row {
   all: unset; box-sizing: border-box; width: 100%; min-height: 36px; display: flex; align-items: center; gap: 10px; padding: 6px 12px;
@@ -113,7 +117,58 @@ html[data-platform='darwin'] .pz { background: transparent; }
 .pz-switch:checked::after { transform: translateX(14px); }
 .pz-switch:focus-visible { outline: 3px solid var(--pz-accent-ring); }
 
-.pz-footer { flex-shrink: 0; padding: 10px 14px 0; border-top: 1px solid var(--pz-separator); }
+.pz-footer { flex-shrink: 0; padding: 10px 14px 10px; border-top: 1px solid var(--pz-separator); display: flex; flex-direction: column; gap: 10px; }
+
+/* Scenario rows: number, title, one line of detail, and two visible buttons. */
+.pz-scn { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; position: relative; }
+.pz-scn + .pz-scn::before { content: ''; position: absolute; top: 0; left: 42px; right: 0; height: 1px; background: var(--pz-separator); }
+.pz-scn-num {
+  width: 22px; height: 22px; flex-shrink: 0; border-radius: 11px; display: grid; place-items: center;
+  background: var(--pz-control); color: var(--pz-text); font-size: 11.5px; font-weight: 700; font-variant-numeric: tabular-nums;
+}
+.pz-scn-num.is-demo { background: var(--pz-accent); color: #fff; }
+.pz-scn-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.pz-scn-title { font-weight: 600; }
+.pz-scn-detail { font-size: 12px; color: var(--pz-secondary); }
+.pz-scn-actions { display: flex; gap: 6px; margin-top: 6px; }
+.pz-btn.is-small { height: 24px; padding: 0 10px; font-size: 12px; }
+
+/* Simulate section: labelled, full-width rows. */
+.pz-sim { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+.pz-sim-head { display: flex; align-items: center; gap: 8px; margin: 0 4px; font-size: 11.5px; font-weight: 700; color: var(--pz-secondary); text-transform: uppercase; letter-spacing: 0.04em; }
+.pz-wide {
+  all: unset; box-sizing: border-box; display: flex; align-items: center; gap: 10px; padding: 7px 10px; border-radius: 8px;
+  background: var(--pz-group); box-shadow: 0 0 0 0.5px var(--pz-separator); cursor: default; color: var(--pz-text);
+}
+.pz-wide > svg { color: var(--pz-accent); flex-shrink: 0; }
+.pz-wide > span { flex: 1; min-width: 0; font-weight: 500; font-size: 13px; }
+.pz-wide small { display: block; font-weight: 400; font-size: 11.5px; color: var(--pz-secondary); }
+button.pz-wide:hover { background: var(--pz-hover); }
+.pz-pill { padding: 0 7px; border-radius: 999px; font-size: 11px; line-height: 17px; font-weight: 700; text-transform: none; letter-spacing: 0; }
+.pz-pill.is-warn { background: #ff3b30; color: #fff; }
+
+/* Demo controls: icon above a word, like a macOS toolbar with labels. */
+.pz-tools { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; padding: 4px; border-radius: 10px; background: var(--pz-group); box-shadow: 0 0 0 0.5px var(--pz-separator); }
+.pz-tool {
+  all: unset; position: relative; display: flex; align-items: center; gap: 8px; padding: 7px 9px; border-radius: 7px;
+  color: var(--pz-text); cursor: default; font-size: 12.5px; white-space: nowrap;
+}
+.pz-tool > svg { color: var(--pz-accent); }
+.pz-tool:hover:not(:disabled) { background: var(--pz-hover); }
+.pz-tool[aria-pressed='true'] { background: var(--pz-accent); color: #fff; }
+.pz-tool[aria-pressed='true'] > svg { color: #fff; }
+.pz-tool:disabled { color: var(--pz-tertiary); }
+.pz-tool:disabled > svg { color: var(--pz-tertiary); }
+.pz-tool:focus-visible { outline: 3px solid var(--pz-accent-ring); }
+.pz-tool-badge { position: absolute; top: 50%; margin-top: -7px; right: 8px; min-width: 14px; height: 14px; padding: 0 3px; box-sizing: border-box; border-radius: 7px; background: #ff3b30; color: #fff; font-size: 9.5px; line-height: 14px; text-align: center; }
+.pz-scale { display: flex; align-items: center; justify-content: space-between; padding: 3px; border-radius: 7px; background: var(--pz-control); }
+.pz-scale button { all: unset; min-width: 26px; height: 24px; display: grid; place-items: center; border-radius: 5px; font-size: 14px; cursor: default; color: var(--pz-text); }
+.pz-scale button:hover:not(:disabled) { background: var(--pz-segment); }
+.pz-scale button:disabled { opacity: 0.35; }
+.pz-scale .pz-scale-value { flex: 1; font-size: 12px; font-variant-numeric: tabular-nums; }
+.pz-version { display: flex; justify-content: space-between; align-items: center; font-size: 11.5px; color: var(--pz-secondary); padding: 0 4px; }
+.pz-link { all: unset; color: var(--pz-accent); cursor: default; }
+.pz-link:hover { text-decoration: underline; }
 
 /* Walkthrough. */
 .pz-back { all: unset; display: inline-flex; align-items: center; gap: 2px; margin-left: -3px; font-size: 13px; color: var(--pz-accent); cursor: default; }
@@ -174,3 +229,13 @@ html[data-platform='darwin'] .pz { background: transparent; }
 @keyframes pz-pulse {
   50% { box-shadow: 0 0 0 6px rgba(0, 122, 255, 0.18), 0 0 0 1px var(--pz-accent); }
 }
+
+/* One scenario list: Guide me / Set up under each row. */
+.pz-scenario-actions { display: flex; gap: 6px; margin-top: 8px; }
+
+/* Scale stepper in the presenter footer. */
+.pz-stepper { display: inline-flex; align-items: center; border-radius: 6px; background: var(--pz-control); padding: 2px; gap: 2px; }
+.pz-stepper button { all: unset; min-width: 22px; height: 22px; padding: 0 6px; display: grid; place-items: center; border-radius: 4px; font-size: 13px; cursor: pointer; color: inherit; }
+.pz-stepper button:hover:not(:disabled) { background: var(--pz-segment); box-shadow: var(--pz-shadow); }
+.pz-stepper button:disabled { opacity: 0.35; cursor: default; }
+.pz-stepper .pz-stepper-value { min-width: 42px; font-size: 12px; font-variant-numeric: tabular-nums; }

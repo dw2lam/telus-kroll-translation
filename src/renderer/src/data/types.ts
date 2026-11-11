@@ -1,6 +1,6 @@
 import type { DoseForm } from './phrasebook'
 
-export type LanguageCode = 'en' | 'fr' | 'ar' | 'zh-Hans' | 'zh-Hant' | 'hi' | 'pa' | 'es' | 'tl' | 'ur'
+export type LanguageCode = 'en' | 'fr' | 'ar' | 'zh-Hans' | 'zh-Hant' | 'hi' | 'pa' | 'es' | 'tl' | 'ur' | 'fa'
 
 /** Label chrome in the patient's language, taken from the Figma label designs. */
 export interface LabelStrings {

@@ -46,7 +46,7 @@ const PHASE_TEXT: Record<PrintPhase, string> = {
 }
 
 /** The demo's last step: the labels Kroll would print, and a visualiser that prints them onto a vial. */
-export function PrintView({ job, onBack, onNewRx }: { job: PrintJob; onBack: () => void; onNewRx: () => void }) {
+export function PrintView({ job, onBack, onNewRx, onReport }: { job: PrintJob; onBack: () => void; onNewRx: () => void; onReport: () => void }) {
   const labels = usePanelImages(job)
   const [run, setRun] = useState(0)
   const [phase, setPhase] = useState<{ phase: PrintPhase; index: number }>({ phase: 'idle', index: 0 })
@@ -117,6 +117,9 @@ export function PrintView({ job, onBack, onNewRx }: { job: PrintJob; onBack: () 
           {saved && <p className="print-saved">Saved to {saved}</p>}
           <div className="print-buttons">
             <button type="button" onClick={() => void savePdf()} data-testid="btn-save-pdf">Save label PDF</button>
+            {job.translation && (
+              <button type="button" onClick={onReport} data-testid="btn-report-print">Report a translation issue</button>
+            )}
             <button type="button" onClick={onBack} data-testid="btn-back-to-rx">Back to Rx</button>
             <button type="button" className="is-primary" onClick={onNewRx} data-testid="btn-new-rx">New Rx</button>
           </div>

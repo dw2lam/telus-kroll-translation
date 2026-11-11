@@ -1,8 +1,7 @@
 import radioOn from '@/assets/radio-selected.svg'
 import { provider } from '@/data/demoProvider'
 import { languageByCode } from '@/data/languages'
-import { LIBRARY_VERSION } from '@/data/demo'
-import { fillDose, forForm, phraseId } from '@/data/phrasebook'
+import { fillDose, forForm } from '@/data/phrasebook'
 import type { Candidate, LanguageCode } from '@/data/types'
 import { DButton, Dialog as KDialog, DialogRow } from '@/kroll/primitives'
 import type { Action, Dialog } from './state'
@@ -15,6 +14,8 @@ interface Props {
   sigEntered: string
   /** The English-only pop-ups' request box. */
   requestTranslation: boolean
+  /** The library release in use. */
+  libraryVersion: string
   dispatch: (action: Action) => void
 }
 
@@ -38,12 +39,12 @@ function SigEntered({ sig }: { sig: string }) {
 }
 
 /** Where the translation comes from, and who answers for it (hi-fi B3, the liability split). */
-function Source({ code, language }: { code: string; language: LanguageCode }) {
+function Source({ version }: { version: string }) {
   return (
     <>
       <DialogRow label="Source">
         <div className="k-dfield" style={{ fontSize: 10 }} data-testid="source-row">
-          <span>{`Verified phrase library · Phrase ${phraseId(code, language)} · ${LIBRARY_VERSION}`}</span>
+          <span>{`Verified phrase library · ${version}`}</span>
           <span className="k-badge is-ok">Verified</span>
         </div>
       </DialogRow>
@@ -70,7 +71,7 @@ function RequestBox({ label, checked, dispatch }: { label: string; checked: bool
 }
 
 /** The Translated Sig pop-up in each of its states (Figma B4, B4t, B7, B8, B9, B10). */
-export function TranslatedSigDialog({ dialog, printView, language, sigEntered, requestTranslation, dispatch }: Props) {
+export function TranslatedSigDialog({ dialog, printView, language, sigEntered, requestTranslation, libraryVersion, dispatch }: Props) {
   const lang = languageByCode(language)
   const close = (): void => dispatch({ type: 'closeDialog' })
   const back = <DButton onClick={close} testId="btn-back">✗ Back to Rx</DButton>
@@ -82,7 +83,11 @@ export function TranslatedSigDialog({ dialog, printView, language, sigEntered, r
       const c = dialog.candidate
       return (
         <KDialog title={title} onClose={close} width={560} testId="dialog-exact"
-          footer={<><DButton primary onClick={() => dispatch({ type: 'confirm', candidate: c })} testId="btn-print-translation">✓ Print with translation</DButton>{back}</>}>
+          footer={<>
+            <DButton primary onClick={() => dispatch({ type: 'confirm', candidate: c })} testId="btn-print-translation">✓ Print with translation</DButton>
+            <DButton onClick={() => { dispatch({ type: 'confirm', candidate: c }); dispatch({ type: 'previewLabels' }) }} testId="btn-preview-first">Preview labels</DButton>
+            {back}
+          </>}>
           <SigEntered sig={sigEntered} />
           <DialogRow label="Matched sig code">
             <div className="k-dfield" style={{ fontSize: 10 }}>
@@ -95,7 +100,7 @@ export function TranslatedSigDialog({ dialog, printView, language, sigEntered, r
               <Translation text={render(c)} language={language} size={lang.code === 'hi' ? 10 : 12} />
             </div>
           </DialogRow>
-          <Source code={c.sig.code} language={language} />
+          <Source version={libraryVersion} />
         </KDialog>
       )
     }
@@ -121,7 +126,7 @@ export function TranslatedSigDialog({ dialog, printView, language, sigEntered, r
           <DialogRow label={lang.name}>
             <div className="k-dfield"><Translation text={render(c)} language={language} size={15} /></div>
           </DialogRow>
-          <Source code={c.sig.code} language={language} />
+          <Source version={libraryVersion} />
         </KDialog>
       )
     }
@@ -146,7 +151,7 @@ export function TranslatedSigDialog({ dialog, printView, language, sigEntered, r
               </button>
             ))}
           </div>
-          <Source code={dialog.candidates[dialog.selected].sig.code} language={language} />
+          <Source version={libraryVersion} />
         </KDialog>
       )
     case 'guide': {
@@ -170,6 +175,24 @@ export function TranslatedSigDialog({ dialog, printView, language, sigEntered, r
               </div>
             ))}
           </div>
+        </KDialog>
+      )
+    }
+    case 'paused': {
+      const c = dialog.candidate
+      return (
+        <KDialog title={title} onClose={close} width={560} testId="dialog-paused"
+          footer={<><DButton primary onClick={() => dispatch({ type: 'print', englishOnly: true, view: printView })} testId="btn-print-english">✓ Print English label</DButton>{back}</>}>
+          <SigEntered sig={sigEntered} />
+          <DialogRow label="Matched sig code">
+            <div className="k-dfield" style={{ fontSize: 10 }}>
+              <span>{fillDose(forForm(c.sig.english, c.form ?? 'capsule'), c.dose)}</span>
+              <span className="k-badge is-warn">Paused</span>
+            </div>
+          </DialogRow>
+          <span className="k-dnote is-warning">
+            This {lang.name} sentence is paused while two translators re-review it after a report. The label prints in English until the fix ships.
+          </span>
         </KDialog>
       )
     }

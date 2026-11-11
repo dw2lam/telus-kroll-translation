@@ -12,7 +12,8 @@ describe('walkthroughs', () => {
           if (typeof step.perform === 'function') expect(step.perform(state, { view }).length, step.title).toBeGreaterThan(0)
         })
         const end = stateAt(tour, steps.length, { view })
-        expect(view === '3d' ? end.screen : end.preview).toBe(view === '3d' ? 'print' : 'printed')
+        if (tour.endsWith) expect(tour.endsWith(end)).toBe(true)
+        else expect(view === '3d' ? end.screen : end.preview).toBe(view === '3d' ? 'print' : 'printed')
       })
     }
   }

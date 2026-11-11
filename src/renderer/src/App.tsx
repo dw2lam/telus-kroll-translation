@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState } from 'react'
-import { PHOTOS, SCENARIOS } from './data/demo'
+import { SCENARIOS } from './data/demo'
 import { Highlight } from './demo/Highlight'
 import { Icon, MOD, Presenter, type GuideProgress } from './demo/Presenter'
 import { stateAt, stepsFor, tourById } from './demo/tours'
@@ -10,7 +10,11 @@ import type { LanguageCode } from './data/types'
 import { detailsOf, initialState, reducer } from './flow/state'
 import { RequestsDialog } from './flow/RequestsDialog'
 import { TranslatedSigDialog } from './flow/TranslatedSigDialog'
-import { KrollStatus } from './kroll/primitives'
+import { KrollMenus, KrollStatus, type MenuEntry } from './kroll/primitives'
+import { NoticeDialog } from './flow/NoticeDialog'
+import { ReportDialog } from './flow/ReportDialog'
+import { ReportsDialog } from './flow/ReportsDialog'
+import { RxHistoryDialog } from './flow/RxHistoryDialog'
 import { PrintView } from './print/PrintView'
 import './print/print.css'
 
@@ -20,12 +24,21 @@ interface Fit {
   height: number
 }
 
+/** Presenter scale steps for the Kroll window. 1 is "fit": Kroll fills the stage. */
+export const SCALES = [0.75, 0.9, 1, 1.25, 1.5, 1.75, 2]
+const SCALE_KEY = 'kroll-label.scale'
+const MAGNIFIER_KEY = 'kroll-label.magnifier'
+/** How far the magnifier zooms in. */
+const MAGNIFY = 2
+
 /**
  * Kroll fills the whole stage. Its controls are drawn at the Figma frames' 9–11px
  * sizes, so the window is laid out at `stage / zoom` and zoomed back up: on a
  * large screen everything grows instead of leaving a small window in a big void.
+ * `scale` multiplies that: below 1 Kroll gets more room, above 1 it grows past the
+ * stage (never laid out under 1024×700) and the stage scrolls.
  */
-function useFill(): [(el: HTMLDivElement | null) => void, Fit] {
+function useFill(scale: number): [(el: HTMLDivElement | null) => void, Fit] {
   const [el, ref] = useState<HTMLDivElement | null>(null)
   const [fit, setFit] = useState<Fit>({ zoom: 1, width: 1024, height: 700 })
   useLayoutEffect(() => {
@@ -33,14 +46,14 @@ function useFill(): [(el: HTMLDivElement | null) => void, Fit] {
     const measure = (): void => {
       const w = el.clientWidth
       const h = el.clientHeight
-      const zoom = Math.max(0.8, Math.min(2.4, Math.min(w / 1024, h / 700)))
-      setFit({ zoom, width: w / zoom, height: h / zoom })
+      const zoom = Math.max(0.8, Math.min(2.4, Math.min(w / 1024, h / 700))) * scale
+      setFit({ zoom, width: Math.max(1024, w / zoom), height: Math.max(700, h / zoom) })
     }
     measure()
     const observer = new ResizeObserver(measure)
     observer.observe(el)
     return () => observer.disconnect()
-  }, [el])
+  }, [el, scale])
   return [ref, fit]
 }
 
@@ -55,6 +68,22 @@ function readPref(key: string): boolean {
   }
 }
 
+function readString(key: string): string | null {
+  try {
+    return localStorage.getItem(key)
+  } catch {
+    return null
+  }
+}
+
+function writeString(key: string, value: string): void {
+  try {
+    localStorage.setItem(key, value)
+  } catch {
+    // Preference only; it still applies for this session.
+  }
+}
+
 function writePref(key: string, on: boolean): void {
   try {
     localStorage.setItem(key, on ? 'on' : 'off')
@@ -65,7 +94,28 @@ function writePref(key: string, on: boolean): void {
 
 export default function App() {
   const [state, dispatch] = useReducer(reducer, initialState)
-  const [stageRef, fit] = useFill()
+  const [scale, setScale] = useState(() => {
+    const saved = Number(readString(SCALE_KEY))
+    return SCALES.includes(saved) ? saved : 1
+  })
+  const stepScale = useCallback((dir: 1 | -1 | 0) => {
+    setScale((current) => {
+      const i = SCALES.indexOf(current)
+      const next = dir === 0 ? 1 : SCALES[Math.max(0, Math.min(SCALES.length - 1, i + dir))]
+      writeString(SCALE_KEY, String(next))
+      return next
+    })
+  }, [])
+  const [stageRef, fit] = useFill(scale)
+  const [magnifier, setMagnifier] = useState(() => readString(MAGNIFIER_KEY) === 'on')
+  const toggleMagnifier = useCallback((on?: boolean) => {
+    setMagnifier((m) => {
+      const next = on ?? !m
+      writeString(MAGNIFIER_KEY, next ? 'on' : 'off')
+      return next
+    })
+  }, [])
+  const [lensOrigin, setLensOrigin] = useState({ x: 50, y: 50 })
   const [show3d, setShow3d] = useState(() => readPref(SHOW_3D_KEY))
   const [presenter, setPresenter] = useState(() => readPref(PRESENTER_KEY))
   const [guide, setGuide] = useState<{ tour: string; step: number } | null>(null)
@@ -143,15 +193,20 @@ export default function App() {
           startTour('leung')
         } else if (command === 'settings') setPresenter((p) => (writePref(PRESENTER_KEY, !p), !p))
         else if (command === 'restart') restart()
+        else if (command === 'zoomIn') stepScale(1)
+        else if (command === 'zoomOut') stepScale(-1)
+        else if (command === 'zoomReset') stepScale(0)
+        else if (command === 'magnifier') toggleMagnifier()
       }),
-    [startTour, restart, showPresenter],
+    [startTour, restart, showPresenter, stepScale, toggleMagnifier],
   )
 
   // A cell clicked in the cheat-sheet window loads here and runs.
   useEffect(
     () =>
       window.kroll?.onLoadScenario((language, sig) => {
-        dispatch({ type: 'scenario', language: language as LanguageCode, sig, submit: true })
+        // Ms. Leung reads Chinese; a sig for any other language loads Mrs. Farahani, whose language isn't translatable.
+        dispatch({ type: 'scenario', language: language as LanguageCode, sig, submit: true, persona: language === 'zh-Hans' ? 'leung' : 'farahani' })
         setGuide(null)
       }),
     [],
@@ -228,14 +283,45 @@ export default function App() {
 
   const progress: GuideProgress | null = tour && guide ? { tour, steps, step: guide.step, ready } : null
 
+  // Kroll's working menu items (PRD 1 and 2 entry points), shared by every screen.
+  const menus = useMemo<Partial<Record<string, MenuEntry[]>>>(
+    () => ({
+      Rx: [{ label: 'Rx History…', onClick: () => dispatch({ type: 'openRxHistory' }), testId: 'menu-rx-history' }],
+      Utilities: [
+        { label: 'Report a translation issue…', onClick: () => dispatch({ type: 'startReport', origin: 'lookup' }), testId: 'menu-report-issue' },
+        { label: 'Translation reports…', onClick: () => dispatch({ type: 'openReports' }), testId: 'menu-translation-reports' },
+        { label: 'Translation requests…', onClick: () => dispatch({ type: 'openRequests' }), testId: 'menu-translation-requests' },
+      ],
+    }),
+    [],
+  )
+
   return (
     <div className="app">
-      <main className="app-main">
+      <main
+        className={'app-main' + (magnifier ? ' is-magnified' : '')}
+        onMouseMove={
+          magnifier
+            ? (e) => {
+                const r = e.currentTarget.getBoundingClientRect()
+                setLensOrigin({ x: ((e.clientX - r.left) / r.width) * 100, y: ((e.clientY - r.top) / r.height) * 100 })
+              }
+            : undefined
+        }
+      >
+        <div className="magnify" style={magnifier ? { transform: `scale(${MAGNIFY})`, transformOrigin: `${lensOrigin.x}% ${lensOrigin.y}%` } : undefined}>
         {state.screen === 'print' && state.job ? (
-          <PrintView key={state.job.id} job={state.job} onBack={() => dispatch({ type: 'go', screen: 'fill' })} onNewRx={() => dispatch({ type: 'reset' })} />
+          <PrintView
+            key={state.job.id}
+            job={state.job}
+            onBack={() => dispatch({ type: 'go', screen: 'fill' })}
+            onNewRx={() => dispatch({ type: 'reset' })}
+            onReport={() => dispatch({ type: 'startReport', origin: 'printed', trace: state.job!.trace })}
+          />
         ) : (
+          <KrollMenus.Provider value={menus}>
           <KrollStatus.Provider value={status}>
-          <div className="kroll-stage" ref={stageRef}>
+          <div className={'kroll-stage' + (scale > 1 ? ' is-scrollable' : '')} ref={stageRef}>
             <div className="kroll-window" style={{ zoom: fit.zoom, width: fit.width, height: fit.height }} data-testid={`screen-${state.screen}`}>
               {state.screen === 'patient' ? (
                 <PatientScreen
@@ -246,7 +332,7 @@ export default function App() {
                   onOk={() => dispatch({ type: 'go', screen: 'fill' })}
                   onNewRx={() => dispatch({ type: 'go', screen: 'fill' })}
                   onRequests={() => dispatch({ type: 'openRequests' })}
-                  photo={PHOTOS[state.persona] !== undefined}
+                  photo={state.persona}
                 />
               ) : (
                 <FillRxScreen
@@ -265,7 +351,7 @@ export default function App() {
                 />
               )}
               {state.dialog && (
-                <TranslatedSigDialog dialog={state.dialog} printView={printView} language={state.language} sigEntered={state.sigEntered} requestTranslation={state.requestTranslation} dispatch={dispatch} />
+                <TranslatedSigDialog dialog={state.dialog} printView={printView} language={state.language} sigEntered={state.sigEntered} requestTranslation={state.requestTranslation} libraryVersion={state.libraryVersion} dispatch={dispatch} />
               )}
               {state.preview && state.job && (
                 <LabelPreviewDialog
@@ -275,13 +361,21 @@ export default function App() {
                   show3d={show3d}
                   onShow3d={() => dispatch({ type: 'show3d' })}
                   onClose={() => dispatch({ type: 'closePreview' })}
+                  onReport={() => dispatch({ type: 'startReport', origin: state.preview === 'requested' ? 'preview' : 'printed', trace: state.job!.trace })}
+                  onPrint={() => dispatch({ type: 'print', englishOnly: false, view: printView })}
                 />
               )}
               {state.showRequests && <RequestsDialog requests={state.requests} onClose={() => dispatch({ type: 'closeRequests' })} />}
+              {state.showReports && <ReportsDialog state={state} dispatch={dispatch} />}
+              {state.rxHistory && <RxHistoryDialog state={state} dispatch={dispatch} />}
+              {state.report && <ReportDialog state={state} printView={printView} dispatch={dispatch} />}
+              {state.notice && <NoticeDialog state={state} dispatch={dispatch} />}
             </div>
           </div>
           </KrollStatus.Provider>
+          </KrollMenus.Provider>
         )}
+        </div>
         {!presenter && (
           <button type="button" className="pz-reveal" onClick={() => showPresenter(true)} title={`Show presenter (${MOD},)`} data-testid="pz-reveal">
             <Icon name="sidebar" size={16} />
@@ -303,6 +397,14 @@ export default function App() {
           edited={Object.keys(state.edits).length}
           onResetEdits={() => dispatch({ type: 'resetEdits' })}
           onCollapse={() => showPresenter(false)}
+          scale={scale}
+          onScale={stepScale}
+          magnifier={magnifier}
+          onMagnifier={toggleMagnifier}
+          onSimulate={(event) => dispatch({ type: event === 'fix' ? 'simulateFix' : 'simulateExternalReport' })}
+          online={state.online}
+          onOnline={(online) => dispatch({ type: 'setOnline', online })}
+          pausedCount={state.paused.length}
         />
       </div>
       {current && <Highlight selector={current.highlight?.(state)} />}

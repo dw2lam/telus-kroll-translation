@@ -15,13 +15,17 @@ interface Props {
   show3d: boolean
   onShow3d: () => void
   onClose: () => void
+  /** Report a translation issue on this label (PRD 1): before printing, or the printed label. */
+  onReport: () => void
+  /** Print what's previewed (before printing only). */
+  onPrint: () => void
 }
 
 /** The printed labels, previewed inside Kroll (Labels menu, Labels F2, Ctrl+L, or printing with the 3D view off). */
-export function LabelPreviewDialog({ job, reason, untranslated, show3d, onShow3d, onClose }: Props) {
+export function LabelPreviewDialog({ job, reason, untranslated, show3d, onShow3d, onClose, onReport, onPrint }: Props) {
   const [saved, setSaved] = useState<string | null>(null)
   const language = job.translation ? languageByCode(job.translation.language) : null
-  const title = reason === 'printed' ? `Labels printed — Rx:${RX.number}` : `Label Preview — Rx:${RX.number}`
+  const title = reason === 'printed' ? `Labels printed — Rx:${job.rx}` : `Label Preview — Rx:${job.rx} (not printed yet)`
   return (
     <KDialog
       title={title}
@@ -31,9 +35,11 @@ export function LabelPreviewDialog({ job, reason, untranslated, show3d, onShow3d
       footer={
         <>
           {saved && <span className="k-hint k-saved">Saved to {saved}</span>}
+          {job.translation && <DButton onClick={onReport} testId="btn-preview-report">Report a translation issue</DButton>}
           <DButton onClick={() => void saveLabelPdf(job).then((p) => p && setSaved(p))} testId="btn-preview-pdf">Save label PDF</DButton>
-          {show3d && <DButton onClick={onShow3d} testId="btn-preview-3d">Show on vial (3D)</DButton>}
-          <DButton primary onClick={onClose} testId="btn-preview-close">{reason === 'printed' ? '✓ Done' : 'Close'}</DButton>
+          {show3d && reason === 'printed' && <DButton onClick={onShow3d} testId="btn-preview-3d">Show on vial (3D)</DButton>}
+          {reason === 'requested' && <DButton primary onClick={onPrint} testId="btn-preview-print">✓ Print labels</DButton>}
+          <DButton primary={reason === 'printed'} onClick={onClose} testId="btn-preview-close">{reason === 'printed' ? '✓ Done' : 'Close'}</DButton>
         </>
       }
     >

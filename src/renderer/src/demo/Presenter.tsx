@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react'
-import { useState } from 'react'
 import { version } from '../../../../package.json'
 import { SCENARIOS } from '@/data/demo'
 import { type Tour, TOURS, type TourStep } from './tours'
@@ -28,6 +27,17 @@ interface Props {
   edited: number
   onResetEdits: () => void
   onCollapse: () => void
+  /** Kroll window scale; 1 fits the window. */
+  scale: number
+  onScale: (step: 1 | -1 | 0) => void
+  magnifier: boolean
+  onMagnifier: (on: boolean) => void
+  /** TELUS-side events the demo can't otherwise reach. */
+  onSimulate: (event: 'externalReport' | 'fix') => void
+  online: boolean
+  onOnline: (online: boolean) => void
+  /** Phrases paused right now, for the Simulate group's status. */
+  pausedCount: number
 }
 
 const isMac = window.kroll?.platform === 'darwin'
@@ -44,6 +54,10 @@ const ICONS = {
   undo: 'M9 5 4.5 9.5 9 14M4.5 9.5H15a4.5 4.5 0 0 1 0 9h-3',
   update: 'M12 3.5v12m0 0-4.5-4.5m4.5 4.5 4.5-4.5M4.5 20.5h15',
   popout: 'M14 4h6v6M20 4l-8.5 8.5M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5',
+  scale: 'M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5',
+  alert: 'M12 3.5 21.5 20h-19L12 3.5ZM12 10v4.5M12 17.2v.3',
+  wifi: 'M3 9a13 13 0 0 1 18 0M6 12.5a8.5 8.5 0 0 1 12 0M9 16a4 4 0 0 1 6 0M12 19.5v.2',
+  magnifier: 'M10.5 4a6.5 6.5 0 1 1 0 13 6.5 6.5 0 0 1 0-13Zm4.8 11.3L20 20M8 10.5h5M10.5 8v5',
 }
 
 export function Icon({ name, size = 15 }: { name: keyof typeof ICONS; size?: number }) {
@@ -65,8 +79,7 @@ function Group({ children, label }: { children: ReactNode; label?: string }) {
 
 /** Presenter sidebar, styled like a macOS inspector. Everything here sits outside Kroll. */
 export function Presenter(props: Props) {
-  const { guide, show3d, onShow3d, onCheatSheet, onRestart, edited, onResetEdits, onCollapse } = props
-  const [tab, setTab] = useState<'walkthroughs' | 'scenarios'>('walkthroughs')
+  const { guide, show3d, onShow3d, onCheatSheet, onRestart, edited, onResetEdits, onCollapse, scale, onScale, magnifier, onMagnifier, onSimulate, online, onOnline, pausedCount } = props
 
   return (
     <aside className="pz" aria-label="Presenter" data-testid="presenter">
@@ -77,78 +90,120 @@ export function Presenter(props: Props) {
         </button>
       </header>
 
-      <div className="pz-segmented" role="tablist">
-        {(['walkthroughs', 'scenarios'] as const).map((t) => (
-          <button key={t} type="button" role="tab" aria-selected={tab === t} className={tab === t ? 'is-selected' : undefined} onClick={() => setTab(t)} data-testid={`pz-tab-${t}`}>
-            {t === 'walkthroughs' ? 'Walkthroughs' : 'Scenarios'}
-          </button>
-        ))}
-      </div>
-
       <div className="pz-scroll">
-        {tab === 'scenarios' ? (
-          <Scenarios onScenario={props.onScenario} />
-        ) : guide ? (
+        {guide ? (
           <Walkthrough {...props} guide={guide} />
         ) : (
-          <TourList onStartTour={props.onStartTour} />
+          <>
+            <ScenarioList onStartTour={props.onStartTour} onScenario={props.onScenario} />
+            <Simulate onSimulate={onSimulate} online={online} onOnline={onOnline} pausedCount={pausedCount} />
+          </>
         )}
       </div>
 
       <div className="pz-footer">
-        <Group>
-          <label className="pz-row">
-            <span className="pz-row-icon"><Icon name="cube" /></span>
-            <span className="pz-row-text">3D print view</span>
-            <input type="checkbox" className="pz-switch" checked={show3d} onChange={(e) => onShow3d(e.target.checked)} data-testid="toggle-3d" />
-          </label>
-          <button type="button" className="pz-row" onClick={onCheatSheet} data-testid="btn-cheatsheet">
-            <span className="pz-row-icon"><Icon name="doc" /></span>
-            <span className="pz-row-text">Cheat sheet</span>
-            <kbd>F1</kbd>
-            <span className="pz-chevron" title="Opens in its own window"><Icon name="popout" size={13} /></span>
+        {/* View and demo controls, as a compact toolbar. */}
+        <div className="pz-tools" role="toolbar" aria-label="Demo controls">
+          <button type="button" className="pz-tool" aria-pressed={show3d} onClick={() => onShow3d(!show3d)} title="Labels print onto a vial in 3D" data-testid="toggle-3d">
+            <Icon name="cube" size={17} />
+            <span>3D print</span>
           </button>
-          <button type="button" className="pz-row" onClick={onResetEdits} disabled={edited === 0} data-testid="btn-reset-edits">
-            <span className="pz-row-icon"><Icon name="undo" /></span>
-            <span className="pz-row-text">Reset names and details</span>
-            {edited > 0 && <kbd data-testid="edit-count">{edited}</kbd>}
+          <button type="button" className="pz-tool" aria-pressed={magnifier} onClick={() => onMagnifier(!magnifier)} title={`Zoom in around the pointer (${isMac ? '⇧⌘M' : 'Ctrl+Shift+M'})`} data-testid="toggle-magnifier">
+            <Icon name="magnifier" size={17} />
+            <span>Magnifier</span>
           </button>
-          <div className="pz-row is-static">
-            <span className="pz-row-icon"><Icon name="update" /></span>
-            <span className="pz-row-text" data-testid="app-version">Version {version}</span>
-            <button type="button" className="pz-btn" onClick={() => window.kroll?.checkForUpdates()} title="Check for updates" data-testid="btn-update">
-              Update
+          <button type="button" className="pz-tool" onClick={onCheatSheet} title="Cheat sheet (F1), in its own window" data-testid="btn-cheatsheet">
+            <Icon name="doc" size={17} />
+            <span>Cheat sheet</span>
+          </button>
+          <button type="button" className="pz-tool" onClick={onResetEdits} disabled={edited === 0} title="Put back the names and details you edited" data-testid="btn-reset-edits">
+            <Icon name="undo" size={17} />
+            <span>Undo edits</span>
+            {edited > 0 && <span className="pz-tool-badge" data-testid="edit-count">{edited}</span>}
+          </button>
+          <button type="button" className="pz-tool" onClick={onRestart} title="Start the demo over" data-testid="btn-restart">
+            <Icon name="restart" size={17} />
+            <span>Start over</span>
+          </button>
+          <span className="pz-scale" title="Scale Kroll">
+            <button type="button" onClick={() => onScale(-1)} disabled={scale <= 0.75} title={`Zoom out (${MOD}−)`} aria-label="Zoom out" data-testid="scale-down">−</button>
+            <button type="button" className="pz-scale-value" onClick={() => onScale(0)} title={`Fit the window (${MOD}0)`} data-testid="scale-value">
+              {scale === 1 ? 'Fit' : `${Math.round(scale * 100)}%`}
             </button>
-          </div>
-          <button type="button" className="pz-row" onClick={onRestart} data-testid="btn-restart">
-            <span className="pz-row-icon"><Icon name="restart" /></span>
-            <span className="pz-row-text">Restart demo</span>
+            <button type="button" onClick={() => onScale(1)} disabled={scale >= 2} title={`Zoom in (${MOD}+)`} aria-label="Zoom in" data-testid="scale-up">+</button>
+          </span>
+        </div>
+
+        <div className="pz-version">
+          <span data-testid="app-version">Version {version}</span>
+          <button type="button" className="pz-link" onClick={() => window.kroll?.checkForUpdates()} data-testid="btn-update">
+            Check for updates
           </button>
-        </Group>
+        </div>
       </div>
     </aside>
   )
 }
 
-function TourList({ onStartTour }: { onStartTour: (id: string) => void }) {
+/** TELUS-side events and the pharmacy's connection: what one pharmacy can't trigger by itself. */
+function Simulate({ onSimulate, online, onOnline, pausedCount }: Pick<Props, 'onSimulate' | 'online' | 'onOnline' | 'pausedCount'>) {
+  return (
+    <section className="pz-sim" aria-label="Simulate the translation network">
+      <div className="pz-sim-head">
+        <span>Simulate the network</span>
+        {pausedCount > 0 && <span className="pz-pill is-warn" data-testid="paused-count">{pausedCount} paused</span>}
+      </div>
+      <button type="button" className="pz-wide" onClick={() => onSimulate('externalReport')} data-testid="sim-external-report">
+        <Icon name="alert" size={14} />
+        <span>Another pharmacy reports a problem<small>Pauses Chinese “twice a day” everywhere</small></span>
+      </button>
+      <button type="button" className="pz-wide" onClick={() => onSimulate('fix')} data-testid="sim-fix">
+        <Icon name="check" size={14} />
+        <span>TELUS ships the fix<small>Paused sentences come back</small></span>
+      </button>
+      <label className="pz-wide is-switch">
+        <Icon name="wifi" size={14} />
+        <span>Pharmacy online<small>{online ? 'Print receipts send right away' : 'Offline: print receipts wait in a queue'}</small></span>
+        <input type="checkbox" className="pz-switch" checked={online} onChange={(e) => onOnline(e.target.checked)} data-testid="toggle-online" />
+      </label>
+    </section>
+  )
+}
+
+/** Each scenario: Guide me walks through it step by step; Set up loads it and leaves Kroll to you. */
+function ScenarioList({ onStartTour, onScenario }: { onStartTour: (id: string) => void; onScenario: (id: string) => void }) {
+  const groups = [
+    { label: 'Main demo', list: SCENARIOS.filter((s) => !s.edge) },
+    { label: 'Edge cases', list: SCENARIOS.filter((s) => s.edge) },
+  ]
   return (
     <>
       <p className="pz-intro">
-        A clickable Kroll prototype with one new feature: a second label in the patient’s language. Translated wording is team-written placeholder
-        text, not verified.
+        <b>▶ Walkthrough</b> takes you through a scenario one step at a time, with notes. <b>Load only</b> fills in Kroll for that scenario and leaves the clicking to you.
       </p>
-      <Group label="Walk through">
-        {TOURS.map((t, i) => (
-          <button type="button" key={t.id} className="pz-row is-tall" onClick={() => onStartTour(t.id)} data-testid={`tour-${t.id}`}>
-            <span className="pz-badge">{i + 1}</span>
-            <span className="pz-row-text">
-              {t.title}
-              <small>{t.summary}</small>
-            </span>
-            <span className="pz-chevron"><Icon name="chevronRight" size={13} /></span>
-          </button>
-        ))}
-      </Group>
+      {groups.map(({ label, list }) => (
+        <Group key={label} label={label}>
+          {list.map((s) => (
+            <div key={s.id} className="pz-scn">
+              <span className={'pz-scn-num' + (s.edge ? '' : ' is-demo')}>{SCENARIOS.indexOf(s) + 1}</span>
+              <span className="pz-scn-text">
+                <span className="pz-scn-title">{s.title}</span>
+                <span className="pz-scn-detail">{s.detail}</span>
+                <span className="pz-scn-actions">
+                  {s.tour && (
+                    <button type="button" className="pz-btn is-primary is-small" onClick={() => onStartTour(s.tour!)} title="Step by step, with notes; Kroll highlights what to click" data-testid={`tour-${s.tour}`}>
+                      ▶ Walkthrough
+                    </button>
+                  )}
+                  <button type="button" className="pz-btn is-small" onClick={() => onScenario(s.id)} title="Fill in Kroll for this scenario, without the step-by-step notes" data-testid={`scenario-${s.id}`}>
+                    Load only
+                  </button>
+                </span>
+              </span>
+            </div>
+          ))}
+        </Group>
+      ))}
     </>
   )
 }
@@ -161,7 +216,7 @@ function Walkthrough({ guide, onStep, onDoStep, onExitTour, onStartTour }: Props
   return (
     <div className="pz-walk" data-testid="walkthrough" data-step={step}>
       <button type="button" className="pz-back" onClick={onExitTour} data-testid="tour-exit">
-        <Icon name="chevronLeft" size={13} /> Walkthroughs
+        <Icon name="chevronLeft" size={13} /> Scenarios
       </button>
       <h2>{tour.title}</h2>
       <p className="pz-sub">{finished ? 'Complete' : `Step ${step + 1} of ${steps.length}`}</p>
@@ -214,24 +269,5 @@ function Walkthrough({ guide, onStep, onDoStep, onExitTour, onStartTour }: Props
       )}
       <p className="pz-keys">PageDown / PageUp step forward and back, so a presentation clicker works.</p>
     </div>
-  )
-}
-
-function Scenarios({ onScenario }: { onScenario: (id: string) => void }) {
-  return (
-    <>
-      <p className="pz-intro">Opens F12 Fill Rx with the patient and sig filled in. Press Enter in the Sig box to continue.</p>
-      <Group>
-        {SCENARIOS.map((s) => (
-          <button type="button" key={s.id} className="pz-row is-tall" onClick={() => onScenario(s.id)} data-testid={`scenario-${s.id}`}>
-            <span className="pz-row-text">
-              {s.title}
-              <small>{s.detail}</small>
-            </span>
-            <span className="pz-chevron"><Icon name="chevronRight" size={13} /></span>
-          </button>
-        ))}
-      </Group>
-    </>
   )
 }

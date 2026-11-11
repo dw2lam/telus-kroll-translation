@@ -1,3 +1,4 @@
+import { KROLL_EXPANSIONS } from '@/data/phrasebook'
 import { describe, expect, it } from 'vitest'
 import { provider } from '@/data/demoProvider'
 import { languageByCode } from '@/data/languages'
@@ -36,7 +37,7 @@ describe('demo provider', () => {
   it('refuses what it cannot represent, and gates languages without verified sigs', () => {
     expect(provider.translate('zzz qqq', hindi).kind).toBe('cannotTranslate')
     expect(provider.translate('1 cap bid tid', hindi).kind).toBe('cannotTranslate')
-    expect(provider.translate('*1C', languageByCode('tl')).kind).toBe('notYetTranslatable')
+    expect(provider.translate('*1C', languageByCode('pa')).kind).toBe('notYetTranslatable')
     expect(provider.translate('*1C', languageByCode('fr')).kind).toBe('notYetTranslatable')
     for (const code of ['ar', 'pa', 'zh-Hant'] as const) expect(provider.translate('QD', languageByCode(code)).kind).toBe('notYetTranslatable')
   })
@@ -64,8 +65,16 @@ describe('demo provider', () => {
   })
 
   it('never offers an unverified draft for free text', () => {
+    const guide = provider.phrasingGuide(hindi).map((s) => s.code)
+    expect(guide).not.toContain('QAM')
+    expect(provider.translate('take 1 capsule every morning', hindi).kind).not.toBe('exact')
+  })
+
+  it('has a Chinese (Simplified) sentence for every Kroll code', () => {
     const chinese = languageByCode('zh-Hans')
-    expect(provider.phrasingGuide(chinese).map((s) => s.code)).toEqual(['QD', 'BID', 'QD CF'])
-    expect(provider.translate('take 1 capsule three times a day', chinese).kind).not.toBe('exact')
+    for (const code of Object.keys(KROLL_EXPANSIONS)) {
+      expect(provider.translate(code, chinese).kind, code).toBe('exact')
+    }
+    expect(provider.phrasingGuide(chinese)).toHaveLength(Object.keys(KROLL_EXPANSIONS).length)
   })
 })

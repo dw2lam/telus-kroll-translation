@@ -1,58 +1,53 @@
-import { useEffect, useState } from 'react'
+import { Fragment, useEffect, useMemo, useState } from 'react'
 import { provider } from '@/data/demoProvider'
 import { hasTranslation, LANGUAGES, languageByCode } from '@/data/languages'
 import { fillDose, KROLL_ALIASES, KROLL_EXPANSIONS, PHRASEBOOK } from '@/data/phrasebook'
-import type { LanguageCode, TranslationResult } from '@/data/types'
+import type { LanguageCode, TranslationResult, VerifiedSig } from '@/data/types'
 import './cheatsheet.css'
 
-type Outcome = TranslationResult['kind']
+/** The demo patient's language. Every scenario runs in it, so the sheet shows just this one. */
+const DEMO_LANGUAGE: LanguageCode = 'zh-Hans'
 
-const OUTCOME: Record<Outcome, { label: string; frame: string; tone: string }> = {
-  exact: { label: 'Exact match', frame: 'B4', tone: 'ok' },
-  closest: { label: 'Closest match', frame: 'B7', tone: 'near' },
-  candidates: { label: 'Top 5', frame: 'B8', tone: 'near' },
-  noVerified: { label: 'Phrasing guide', frame: 'B9', tone: 'guide' },
-  cannotTranslate: { label: 'Can’t translate', frame: 'B10', tone: 'stop' },
-  notYetTranslatable: { label: 'Not yet translatable', frame: 'B4t', tone: 'stop' },
-}
-
-const TRANSLATED = LANGUAGES.filter(hasTranslation)
-const UNTRANSLATED = LANGUAGES.filter((l) => l.code !== 'en' && !hasTranslation(l))
-
-const FREE_TEXT = [
-  '1 CAP QHS PRN DIZZINESS',
-  'take 2 capsules by mouth twice daily',
-  '1 cap at bedtime as needed for sleep',
-  '1 cap four times daily',
-  'take 1 capsule daily with food',
-  'take 1 capsule every morning',
-  '1 cap bid tid',
-  'zzz qqq',
+/** Codes grouped by what they mean, so the list scans by intent rather than alphabet. */
+const GROUPS: { title: string; codes: string[] }[] = [
+  { title: 'How often', codes: ['QD', 'BID', 'TID', 'QID'] },
+  { title: 'Time of day', codes: ['QAM', 'QPM', 'QHS'] },
+  { title: 'Every few hours', codes: ['Q4H', 'Q6H', 'Q8H', 'Q12H', 'Q4-6H PRN'] },
+  { title: 'As needed', codes: ['PRN', 'QD PRN', 'QHS PRN', 'QHS PRN SLP'] },
+  { title: 'With meals', codes: ['AC', 'PC', 'CF', 'QD CF', 'BID CF'] },
 ]
 
-function Badge({ outcome }: { outcome: Outcome }) {
-  const o = OUTCOME[outcome]
-  return (
-    <span className={`cs-badge is-${o.tone}`}>
-      {o.label} <em>{o.frame}</em>
-    </span>
-  )
+type Outcome = TranslationResult['kind'] | 'paused'
+
+/** Each Translated Sig pop-up, in the order a pharmacist can meet them. */
+const OUTCOMES: { kind: Outcome; label: string; frame: string; tone: string; meaning: string; via?: string }[] = [
+  { kind: 'exact', label: 'Exact match', frame: 'B4', tone: 'ok', meaning: 'A verified sentence for the sig. Confirm and print both labels.' },
+  { kind: 'closest', label: 'Closest match', frame: 'B7', tone: 'near', meaning: 'Free text close to a verified sentence. Use it only if it says the same thing.' },
+  { kind: 'candidates', label: 'Top 5', frame: 'B8', tone: 'near', meaning: 'Other verified sentences ranked by fit.', via: 'Closest → Not this one' },
+  { kind: 'noVerified', label: 'Phrasing guide', frame: 'B9', tone: 'guide', meaning: 'Codes that do translate, to reword the sig.', via: 'Top 5 → None of these' },
+  { kind: 'cannotTranslate', label: 'Can’t translate', frame: 'B10', tone: 'stop', meaning: 'Nothing verified fits. English label, plus a translation request.' },
+  { kind: 'notYetTranslatable', label: 'Not yet translatable', frame: 'B4t', tone: 'stop', meaning: 'The patient’s language has no verified sentences yet.' },
+  { kind: 'paused', label: 'Paused', frame: 'E', tone: 'stop', meaning: 'A severity 1 report paused the sentence. English until TELUS ships the fix.', via: 'Simulate → Another pharmacy reports a phrase, then 1C PO BID' },
+]
+
+/** Free text worth trying live. The sheet picks whichever reaches each outcome. */
+const FREE_TEXT = ['1 CAP QD FOR ANEMIA', '1 cap bid tid', '1 CAP QHS PRN DIZZINESS', 'take 2 caps every other day', 'zzz qqq']
+
+const demoLanguage = languageByCode(DEMO_LANGUAGE)
+const TRANSLATED = LANGUAGES.filter(hasTranslation)
+const RECORDED_ONLY = LANGUAGES.filter((l) => l.code !== 'en' && !hasTranslation(l))
+
+/** A live example for each outcome, worked out from the provider so the sheet can't drift from the app. */
+function exampleFor(kind: Outcome): { language: LanguageCode; sig: string } | null {
+  if (kind === 'exact') return { language: DEMO_LANGUAGE, sig: 'QD' }
+  if (kind === 'notYetTranslatable') return { language: 'fa', sig: 'QD' }
+  if (kind === 'paused') return null
+  const sig = FREE_TEXT.find((s) => provider.translate(s, demoLanguage).kind === kind)
+  return sig ? { language: DEMO_LANGUAGE, sig } : null
 }
 
-/** What the result would print or offer, in one line. */
-function detail(result: TranslationResult, language: LanguageCode): string | null {
-  const lang = languageByCode(language)
-  switch (result.kind) {
-    case 'exact':
-      return provider.render(result.candidate.sig, lang, result.candidate.dose)
-    case 'closest':
-      return `${result.candidate.sig.code} · ${Math.round(result.candidate.confidence * 100)}%`
-    case 'candidates':
-      return result.candidates.map((c) => c.sig.code).join(' · ')
-    default:
-      return null
-  }
-}
+const sentence = (sig: VerifiedSig): string => provider.render(sig, demoLanguage, '1') ?? '—'
+const english = (sig: VerifiedSig): string => fillDose(KROLL_EXPANSIONS[sig.code] ?? sig.english.toUpperCase(), '1')
 
 interface Props {
   /** Loads the sig for that language into F12 Fill Rx and runs it. Omitted when printing the sheet. */
@@ -63,12 +58,13 @@ interface Props {
 }
 
 /**
- * Every sig code × patient language, and the free-text examples, with the state
- * each one reaches — computed live from the translation provider, so it can't
- * drift from what the app does. Click any cell to load it.
+ * The presenter's reference: every sig code with the English Kroll prints and the Chinese the
+ * under-panel prints, grouped by meaning, plus what each pop-up means and a live example of it.
+ * Computed from the translation provider, so it can't drift from what the app does.
  */
 export function CheatSheet({ onLoad, onClose, onSavePdf, standalone }: Props) {
   const [saving, setSaving] = useState(false)
+  const [query, setQuery] = useState('')
   const load = (language: LanguageCode, sig: string) => (onLoad ? () => onLoad(language, sig) : undefined)
 
   useEffect(() => {
@@ -80,18 +76,40 @@ export function CheatSheet({ onLoad, onClose, onSavePdf, standalone }: Props) {
     )
   }, [standalone])
 
+  const groups = useMemo(() => {
+    const byCode = new Map(PHRASEBOOK.map((s) => [s.code, s]))
+    const grouped = new Set(GROUPS.flatMap((g) => g.codes))
+    const all = [...GROUPS, { title: 'Other', codes: PHRASEBOOK.map((s) => s.code).filter((c) => !grouped.has(c)) }]
+    const q = query.trim().toLowerCase()
+    const matches = (s: VerifiedSig): boolean =>
+      !q || s.code.toLowerCase().includes(q) || english(s).toLowerCase().includes(q) || sentence(s).includes(query.trim())
+    return all
+      .map((g) => ({ title: g.title, sigs: g.codes.map((c) => byCode.get(c)).filter((s): s is VerifiedSig => !!s && matches(s)) }))
+      .filter((g) => g.sigs.length > 0)
+  }, [query])
+
+  const examples = useMemo(() => OUTCOMES.map((o) => ({ ...o, example: exampleFor(o.kind) })), [])
+
   return (
     <div className={'cs' + (standalone ? ' is-standalone' : '')} data-testid="cheatsheet">
       <header className="cs-head">
         <div>
-          <h1>Telus Kroll Translation Demo — cheat sheet</h1>
+          <h1>Cheat sheet</h1>
           <p>
-            Every sig code and patient language, and the Translated Sig state each one reaches. Generated live from the demo provider.
-            {onLoad && ' Click any cell to load it into F12 Fill Rx.'} All non-English wording is illustrative, not verified.
+            Ms. Leung · {demoLanguage.name}. {onLoad ? 'Click anything to run it in Kroll.' : ''} All non-English wording is illustrative, not verified.
           </p>
         </div>
         {!standalone && (
           <div className="cs-actions">
+            <input
+              className="cs-search"
+              type="search"
+              placeholder="Find a sig code or phrase"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              spellCheck={false}
+              data-testid="cs-search"
+            />
             {onSavePdf && (
               <button
                 type="button"
@@ -114,112 +132,115 @@ export function CheatSheet({ onLoad, onClose, onSavePdf, standalone }: Props) {
         )}
       </header>
 
-      <section>
-        <h2>Sig codes × patient language</h2>
-        <p className="cs-note">
-          Type the code in the Sig field with or without a dose: <code>BID</code>, <code>2 BID</code>, <code>1C PO BID</code>, <code>1T PO BID</code>,{' '}
-          <code>2 CAP PO BID</code>. <code>T</code> swaps capsule for tablet on the sig and the label, and that tablet wording is a draft. Mrs. Leung’s
-          walkthrough uses <code>1C PO BID</code> in Chinese (Simplified). Also read:{' '}
-          {Object.entries(KROLL_ALIASES).map(([a, { code, dose }], i) => (
-            <span key={a}>{i > 0 && ', '}<code>{a}</code> = {dose ? `${dose} × ` : ''}{code}</span>
-          ))}. <b>Draft</b> marks a sentence nobody on the team has written or checked yet.
-        </p>
-        <table className="cs-table">
-          <thead>
-            <tr>
-              <th>Code</th>
-              <th>English label (Kroll)</th>
-              {TRANSLATED.map((l) => (
-                <th key={l.code}>{l.name}</th>
+      <div className="cs-layout">
+        <main className="cs-main">
+          <div className="cs-colhead" aria-hidden>
+            <span>Code</span>
+            <span>English label (Kroll)</span>
+            <span>{demoLanguage.name} under-panel</span>
+          </div>
+          {groups.map((g) => (
+            <section key={g.title} className="cs-group">
+              <h2>{g.title}</h2>
+              <ul>
+                {g.sigs.map((s) => (
+                  <li key={s.code}>
+                    <button type="button" className={'cs-sig' + (onLoad ? ' is-clickable' : '')} onClick={load(DEMO_LANGUAGE, s.code)} disabled={!onLoad} data-testid={`cs-sig-${s.code}`}>
+                      <span className="cs-code">{s.code}</span>
+                      <span className="cs-en">{english(s)}</span>
+                      <span className="cs-tr" lang={DEMO_LANGUAGE}>{sentence(s)}</span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))}
+          {groups.length === 0 && (
+            <div className="cs-empty">
+              <p>No sig code matches “{query.trim()}”.</p>
+              {onLoad && (
+                <button type="button" className="cs-try" onClick={load(DEMO_LANGUAGE, query.trim())} data-testid="cs-try-free-text">
+                  Try it as a free-text sig in Kroll
+                </button>
+              )}
+            </div>
+          )}
+        </main>
+
+        <aside className="cs-side">
+          <section>
+            <h2>What can happen</h2>
+            <ol className="cs-outcomes">
+              {examples.map((o) => (
+                <li key={o.kind}>
+                  <div className="cs-outcome-head">
+                    <span className={`cs-dot is-${o.tone}`} />
+                    <b>{o.label}</b>
+                    <em>{o.frame}</em>
+                  </div>
+                  <p>{o.meaning}</p>
+                  {o.via ? (
+                    <p className="cs-via">Reached by {o.via}</p>
+                  ) : (
+                    o.example && (
+                      <button type="button" className={'cs-example' + (onLoad ? ' is-clickable' : '')} onClick={load(o.example.language, o.example.sig)} disabled={!onLoad}>
+                        {o.example.language !== DEMO_LANGUAGE && <span>{languageByCode(o.example.language).name} · </span>}
+                        <code>{o.example.sig}</code>
+                      </button>
+                    )
+                  )}
+                </li>
               ))}
-              <th>{UNTRANSLATED.map((l) => l.name).join(' · ')}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {PHRASEBOOK.map((sig) => (
-              <tr key={sig.code}>
-                <td className="cs-code">{sig.code}</td>
-                <td className="cs-en">{fillDose(KROLL_EXPANSIONS[sig.code] ?? sig.english.toUpperCase(), '1')}</td>
-                {TRANSLATED.map((l) => {
-                  const result = provider.translate(sig.code, l)
-                  const text = detail(result, l.code)
-                  return (
-                    <td key={l.code} className={'cs-cell' + (onLoad ? ' is-clickable' : '')} onClick={load(l.code, sig.code)} title={onLoad ? `Load ${sig.code} for a ${l.name} patient` : undefined}>
-                      <Badge outcome={result.kind} />
-                      {sig.drafts?.[l.code] && result.kind === 'exact' && <span className="cs-draft">Draft</span>}
-                      {text && (
-                        <span className="cs-tr" lang={l.code} dir={l.rtl ? 'rtl' : 'ltr'}>
-                          {text}
-                        </span>
-                      )}
-                    </td>
-                  )
-                })}
-                <td className={'cs-cell' + (onLoad ? ' is-clickable' : '')} onClick={load('tl', sig.code)}>
-                  <Badge outcome="notYetTranslatable" />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </section>
+            </ol>
+          </section>
 
-      <div className="cs-columns">
-        <section>
-          <h2>Free-text sigs · Hindi patient</h2>
-          <table className="cs-table">
-            <thead>
-              <tr>
-                <th>Typed in the Sig field</th>
-                <th>First state</th>
-                <th>Offers</th>
-              </tr>
-            </thead>
-            <tbody>
-              {FREE_TEXT.map((sig) => {
-                const result = provider.translate(sig, languageByCode('hi'))
-                return (
-                  <tr key={sig} className={onLoad ? 'is-clickable' : undefined} onClick={load('hi', sig)}>
-                    <td className="cs-code">{sig}</td>
-                    <td><Badge outcome={result.kind} /></td>
-                    <td className="cs-tr" lang="hi">{detail(result, 'hi') ?? (result.kind === 'cannotTranslate' ? 'English label only' : '—')}</td>
-                  </tr>
-                )
-              })}
-            </tbody>
-          </table>
-        </section>
+          <section>
+            <h2>Reporting and the log</h2>
+            <dl className="cs-keys">
+              <dt>Rx → Rx History</dt><dd>Every print by Rx number; view entry, verify, export, report</dd>
+              <dt>Utilities</dt><dd>Report a translation issue (by Rx number) · Translation reports · Translation requests</dd>
+              <dt>Preview labels</dt><dd>From the match pop-up: report before printing</dd>
+              <dt>Rx 1000048</dt><dd>Ms. Leung’s earlier label, for the phone-call case</dd>
+            </dl>
+          </section>
 
-        <section>
-          <h2>Pharmacist moves</h2>
-          <ol className="cs-steps">
-            <li><b>Closest (B7)</b> → <i>✓ Use this sig</i> prints · <i>Not this one</i> → <b>Top 5 (B8)</b></li>
-            <li><b>Top 5 (B8)</b> → <i>✓ Use selected</i> prints · <i>None of these</i> → <b>Phrasing guide (B9)</b></li>
-            <li><b>Phrasing guide (B9)</b> → <i>✓ Back to Rx to reword</i> · <i>None of these fit</i> → <b>Can’t translate (B10)</b></li>
-            <li><b>Can’t translate / Not yet translatable</b> → <i>✓ Print English label</i> (panel 1 only)</li>
-            <li>Every confirmed translation lands in the Rx (B5), then prints a two-panel peel label.</li>
-          </ol>
+          <section>
+            <h2>Typing a sig</h2>
+            <dl className="cs-keys">
+              <dt><code>BID</code></dt><dd>The code alone: 1 capsule</dd>
+              <dt><code>2 BID</code></dt><dd>With a dose</dd>
+              <dt><code>1T PO BID</code></dt><dd><code>T</code> for tablet, <code>C</code> for capsule</dd>
+              {Object.entries(KROLL_ALIASES).map(([alias, { code, dose }]) => (
+                <Fragment key={alias}>
+                  <dt><code>{alias}</code></dt>
+                  <dd>{dose ? `${dose} × ${code}` : `Same as ${code}`}</dd>
+                </Fragment>
+              ))}
+            </dl>
+          </section>
 
-          <h2>Patient languages (F3 → Language)</h2>
-          <ul className="cs-langs">
-            {LANGUAGES.filter((l) => l.code !== 'en').map((l) => (
-              <li key={l.code} className={onLoad ? 'is-clickable' : undefined} onClick={load(l.code, 'QD')}>
-                <span>{l.name}</span>
-                <Badge outcome={hasTranslation(l) ? 'exact' : 'notYetTranslatable'} />
-                {l.rtl && hasTranslation(l) && <span className="cs-rtl">right-to-left</span>}
-              </li>
-            ))}
-            <li><span>English</span><span className="cs-muted">no pop-up — prints the English label</span></li>
-          </ul>
+          <section>
+            <h2>Languages</h2>
+            <p className="cs-langs">
+              <b>Translates:</b> {TRANSLATED.map((l) => l.name).join(', ')}.
+              <br />
+              <b>Recorded only</b> (English label): {RECORDED_ONLY.map((l) => l.name).join(', ')}.
+            </p>
+          </section>
 
-          <h2>Keys</h2>
-          <dl className="cs-keys">
-            <dt>↵</dt><dd>Translate the sig</dd>
-            <dt>F3 / F12</dt><dd>Patient / Fill Rx (F12 again prints)</dd>
-            <dt>Ctrl/⌘ L</dt><dd>Preview labels inside Kroll (also Labels menu, Labels F2)</dd>
-            <dt>Esc</dt><dd>Close the pop-up</dd>
-          </dl>
-        </section>
+          <section>
+            <h2>Keys</h2>
+            <dl className="cs-keys">
+              <dt>↵</dt><dd>Translate the sig</dd>
+              <dt>F3 · F12</dt><dd>Patient · Fill Rx (F12 again prints)</dd>
+              <dt>⌘/Ctrl L</dt><dd>Preview labels inside Kroll</dd>
+              <dt>Esc</dt><dd>Close the pop-up</dd>
+              <dt>F1</dt><dd>This sheet</dd>
+              <dt>⇧⌘M</dt><dd>Magnifier</dd>
+              <dt>⌘+ ⌘− ⌘0</dt><dd>Scale Kroll</dd>
+            </dl>
+          </section>
+        </aside>
       </div>
     </div>
   )

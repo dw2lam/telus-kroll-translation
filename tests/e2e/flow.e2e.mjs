@@ -11,7 +11,6 @@ page.on('pageerror', (e) => errors.push(e.message))
 const text = async (sel) => (await page.locator(sel).first().innerText()).replace(/\s+/g, ' ')
 const printed = () => page.waitForSelector('[data-testid=print-status][data-phase=done]', { timeout: 45000 })
 const scenario = async (id) => {
-  await page.click('[data-testid=pz-tab-scenarios]')
   await page.click(`[data-testid=scenario-${id}]`)
 }
 
@@ -32,6 +31,20 @@ try {
   await page.click('[data-testid=pz-reveal]')
   await page.waitForTimeout(500)
   assert.equal(await slotWidth(), 300)
+  // App scaling and the magnifier.
+  const krollZoom = () => page.evaluate(() => Number(getComputedStyle(document.querySelector('.kroll-window')).zoom))
+  const fitZoom = await krollZoom()
+  await page.click('[data-testid=scale-up]')
+  assert.equal(await text('[data-testid=scale-value]'), '125%')
+  assert.ok(Math.abs((await krollZoom()) - fitZoom * 1.25) < 0.01)
+  await page.click('[data-testid=scale-value]')
+  assert.equal(await text('[data-testid=scale-value]'), 'Fit')
+  await page.click('[data-testid=toggle-magnifier]')
+  assert.match(await page.getAttribute('.magnify', 'style'), /scale\(2\)/)
+  await page.click('[data-testid=toggle-magnifier]')
+  assert.doesNotMatch((await page.getAttribute('.magnify', 'style')) ?? '', /scale/)
+  console.log('✓ scaling and magnifier')
+
   // Ms. Leung: language at intake, sig code, verified translation, peel-back label.
   await page.click('[data-testid=tour-leung]')
   assert.equal(await page.inputValue('[data-testid=edit-lastName]'), 'Leung')
@@ -69,7 +82,7 @@ try {
   await page.press('[data-testid=sig-input]', 'Enter')
   assert.match(await text('[data-testid=dialog-closest]'), /Closest match · \d+%/)
   await page.click('[data-testid=btn-not-this-one]')
-  assert.equal(await page.locator('[data-testid=dialog-candidates] [role=radio]').count(), 3)
+  assert.equal(await page.locator('[data-testid=dialog-candidates] [role=radio]').count(), 5)
   await page.click('[data-testid=btn-none-of-these]')
   await page.waitForSelector('[data-testid=dialog-guide]')
   await page.click('[data-testid=btn-none-fit]')
@@ -88,7 +101,6 @@ try {
 
   // Walkthrough: steps advance from the sidebar button or from using Kroll itself, and jump around.
   const atStep = (n) => page.waitForFunction((n) => document.querySelector('[data-testid=walkthrough]')?.getAttribute('data-step') === String(n), n, { timeout: 45000 })
-  await page.click('[data-testid=pz-tab-walkthroughs]')
   await page.click('[data-testid=tour-leung]')
   await page.waitForSelector('[data-testid=screen-patient]')
   await page.click('[data-testid=step-do]')
@@ -110,13 +122,63 @@ try {
   await page.waitForSelector('[data-testid=screen-fill]')
   await page.click('[data-testid=tour-exit]')
   console.log('✓ walkthrough jumps to any step and back')
+  // Every edge-case walkthrough runs to the end from the sidebar, in the inline print view.
+  await page.click('[data-testid=toggle-3d]')
+  for (const id of ['rollout', 'no-match', 'tech-preview', 'directions-flagged', 'phone-call', 'network-pause', 'fix-ships', 'wrong-phrase', 'offline-dispute']) {
+    if (await page.locator('[data-testid=tour-exit]').count()) await page.click('[data-testid=tour-exit]')
+    await page.click(`[data-testid=tour-${id}]`)
+    for (let i = 0; i < 12 && !(await page.locator('[data-testid=tour-finished]').count()); i++) {
+      await page.click('[data-testid=step-do]:not([disabled])', { timeout: 45000 })
+      await page.waitForTimeout(150)
+    }
+    await page.waitForSelector('[data-testid=tour-finished]')
+    console.log(`✓ edge case: ${id}`)
+  }
+  await page.click('[data-testid=tour-exit]')
+  await page.click('[data-testid=toggle-3d]')
+
+  // Free play reaches the same edge cases from Kroll's own menus.
+  await page.click('[data-testid=btn-restart]')
+  await page.click('[data-testid=btn-patient-ok]')
+  await page.click('[data-testid=menu-rx]')
+  await page.click('[data-testid=menu-rx-history]')
+  await page.click('[data-testid=history-row-P7C-9KD]')
+  await page.click('[data-testid=btn-view-entry]')
+  await page.click('[data-testid=btn-verify-entry]')
+  assert.match(await text('[data-testid=verify-result]'), /Matches the print receipt/)
+  await page.click('[data-testid=btn-entry-back]')
+  await page.click('[data-testid=btn-history-close]')
+  await page.click('[data-testid=sim-external-report]')
+  await page.waitForSelector('[data-testid=callback-list]')
+  await page.click('[data-testid=btn-notice-close]')
+  await page.fill('[data-testid=sig-input]', '1C PO BID')
+  await page.press('[data-testid=sig-input]', 'Enter')
+  await page.waitForSelector('[data-testid=dialog-paused]')
+  await page.keyboard.press('Escape')
+  await page.click('[data-testid=sim-fix]')
+  await page.waitForSelector('[data-testid=dialog-notice-fixed]')
+  await page.click('[data-testid=btn-notice-close]')
+  await page.click('[data-testid=menu-utilities]')
+  await page.click('[data-testid=menu-translation-reports]')
+  assert.match(await text('[data-testid=dialog-reports]'), /Fixed/)
+  await page.click('[data-testid=btn-reports-close]')
+  console.log('✓ free play: Rx history, verify, simulate pause and fix, reports')
+
   // Cheat sheet pops out into its own window; clicking a cell runs it in Kroll.
   const sheets = () => app.windows().filter((w) => w.url().includes('#cheatsheet-window'))
   const opened = app.waitForEvent('window')
   await page.click('[data-testid=btn-cheatsheet]')
   const sheet = await opened
-  await sheet.waitForSelector('[data-testid=cheatsheet] .cs-cell.is-clickable')
-  await sheet.click('.cs-cell.is-clickable >> nth=0')
+  await sheet.waitForSelector('[data-testid=cheatsheet] .cs-sig.is-clickable')
+  // Search filters the codes; a phrase with no code offers to run it as free text.
+  await sheet.fill('[data-testid=cs-search]', 'bedtime')
+  assert.equal(await sheet.locator('.cs-sig').count(), 3)
+  await sheet.fill('[data-testid=cs-search]', '1 cap qd for anemia')
+  await sheet.click('[data-testid=cs-try-free-text]')
+  await page.waitForSelector('[data-testid=dialog-closest]')
+  await page.keyboard.press('Escape')
+  await sheet.fill('[data-testid=cs-search]', '')
+  await sheet.click('[data-testid=cs-sig-BID]')
   await page.waitForSelector('[role=dialog]')
   await page.keyboard.press('F1')
   await page.waitForTimeout(500)

@@ -4,7 +4,12 @@ import { hasTranslation, LANGUAGES, languageByCode } from '@/data/languages'
 import type { LanguageCode } from '@/data/types'
 import { Btn, Field, FKeyBar, Label, MenuBar, StatusBar } from '@/kroll/primitives'
 import patientPhoto from '@/assets/patient-photo.svg'
+import farahaniPhoto from '@/assets/patient-farahani.jpg'
 import leungPhoto from '@/assets/patient-leung.jpg'
+import type { PersonaId } from '@/data/demo'
+
+/** Photos on file, by patient. */
+const PHOTO_FILES: Record<PersonaId, string> = { leung: leungPhoto, farahani: farahaniPhoto }
 
 /** F3 Patient (Figma B1 / B2): where the patient's language is captured. */
 export function PatientScreen({ language, details, onEdit, onLanguage, onOk, onNewRx, onRequests, photo }: {
@@ -15,8 +20,8 @@ export function PatientScreen({ language, details, onEdit, onLanguage, onOk, onN
   onOk: () => void
   onNewRx: () => void
   onRequests: () => void
-  /** Whether the patient has a photo on file. */
-  photo: boolean
+  /** Whose photo is on file. */
+  photo: PersonaId
 }) {
   const edit = (key: keyof Details) => ({ value: details[key], onEdit: (value: string) => onEdit({ [key]: value }), testId: `edit-${key}` })
   const [open, setOpen] = useState(false)
@@ -84,11 +89,11 @@ export function PatientScreen({ language, details, onEdit, onLanguage, onOk, onN
                 </span>
               </div>
               <div className="k-phones-row is-head"><span>Description</span><span>Phone</span></div>
-              <div className="k-phones-row"><span>Home</span><span>{details.phone}</span></div>
+              <div className="k-phones-row"><span>{details.phoneLabel}</span><span>{details.phone}</span></div>
             </div>
             <div className="k-row">
               <Label width={62}>Family Doctor</Label>
-              <Field width={150} h17 />
+              <Field {...edit('familyDoctor')} width={150} h17 />
               <span className="k-mini is-16">F2</span>
               <span className="k-mini is-16" style={{ width: 34 }}>Clear</span>
             </div>
@@ -126,10 +131,10 @@ export function PatientScreen({ language, details, onEdit, onLanguage, onOk, onN
             </div>
             <div className="k-row"><Label width={48}>Height</Label><Field {...edit('height')} width={110} h17 /></div>
             <div className="k-row"><Label width={48}>Weight</Label><Field {...edit('weight')} width={110} h17 /></div>
-            <div className="k-row"><Label width={48}>PHN</Label><Field width={110} h17 caret /></div>
+            <div className="k-row"><Label width={48}>PHN</Label><Field {...edit('phn')} width={110} h17 caret /></div>
           </div>
           <div className="k-col" style={{ flex: 1, alignItems: 'center', gap: 6 }}>
-            <div className="k-photo"><img src={photo ? leungPhoto : patientPhoto} width={140} height={92} alt={photo ? `Photo of ${details.firstName} ${details.lastName}` : 'No photo on file'} /></div>
+            <div className="k-photo"><img src={PHOTO_FILES[photo] ?? patientPhoto} width={140} height={92} alt={`Photo of ${details.firstName} ${details.lastName}`} /></div>
             <div className="k-row" style={{ width: 'auto' }}>
               <Btn width={52}>Load</Btn>
               <Btn width={52}>Delete</Btn>

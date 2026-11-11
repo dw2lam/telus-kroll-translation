@@ -65,8 +65,7 @@ describe('fill flow', () => {
     let s = run({ ...initialState, screen: 'fill', sigInput: '1 CAP QD FOR ANEMIA' }, { type: 'submitSig' })
     expect(s.dialog?.kind).toBe('closest')
     s = run(s, { type: 'notThisOne' })
-    // Chinese has three verified sentences, so the top 5 shows three.
-    expect(s.dialog?.kind === 'candidates' && s.dialog.candidates.length).toBe(3)
+    expect(s.dialog?.kind === 'candidates' && s.dialog.candidates.length).toBe(5)
     s = run(s, { type: 'noneOfThese' }, { type: 'noneOfTheseFit' })
     expect(s.dialog?.kind).toBe('cannotTranslate')
     s = run(s, { type: 'print', englishOnly: true, view: '3d' })
@@ -82,7 +81,7 @@ describe('fill flow', () => {
 
 describe('labels inside Kroll', () => {
   it('prints into the in-Kroll preview when the 3D view is off', () => {
-    const s = run({ ...initialState, screen: 'fill', language: 'tl' }, { type: 'submitSig' }, { type: 'print', englishOnly: true, view: 'inline' })
+    const s = run({ ...initialState, screen: 'fill', language: 'pa' }, { type: 'submitSig' }, { type: 'print', englishOnly: true, view: 'inline' })
     expect(s.screen).toBe('fill')
     expect(s.preview).toBe('printed')
     expect(s.job?.translation).toBeNull()
@@ -107,16 +106,16 @@ describe('hi-fi B3: liability record and translation requests', () => {
     expect(exact.dialog?.kind).toBe('exact')
     if (exact.dialog?.kind !== 'exact') return
     const printed = run(exact, { type: 'confirm', candidate: exact.dialog.candidate }, { type: 'print', englishOnly: false, view: 'inline' })
-    expect(printed.job?.record).toMatchObject({ kind: 'translated', language: 'Chinese (Simplified)', phrase: 'ZH-QD-001', version: 'v2026.11', confirmedBy: 'RPh J. Lee' })
+    expect(printed.job?.record).toMatchObject({ kind: 'translated', language: 'Chinese (Simplified)', trace: printed.job?.trace, version: 'v2026.11', confirmedBy: 'RPh J. Lee', receipt: 'sent' })
     expect(printed.requests).toHaveLength(3)
   })
 
   it('logs a request when a sig prints in English only, unless the box is unticked', () => {
-    const notYet = run({ ...initialState, screen: 'fill', language: 'tl' }, { type: 'submitSig' })
+    const notYet = run({ ...initialState, screen: 'fill', language: 'pa' }, { type: 'submitSig' })
     expect(notYet.dialog?.kind).toBe('notYetTranslatable')
     expect(notYet.requestTranslation).toBe(true)
     const logged = run(notYet, { type: 'print', englishOnly: true, view: 'inline' })
-    expect(logged.requests.at(-1)).toMatchObject({ id: 'TR-0042', language: 'Tagalog', sig: '(language)', status: 'Pending' })
+    expect(logged.requests.at(-1)).toMatchObject({ id: 'TR-0042', language: 'Punjabi', sig: '(language)', status: 'Pending' })
     expect(logged.job?.record).toEqual({ kind: 'request', id: 'TR-0042' })
 
     const skipped = run(notYet, { type: 'toggleRequest' }, { type: 'print', englishOnly: true, view: 'inline' })
@@ -136,8 +135,8 @@ describe('hi-fi B3: liability record and translation requests', () => {
     expect(logged.requests.at(-1)).toMatchObject({ language: 'Chinese (Simplified)', sig: '1 CAP QD FOR ANEMIA' })
   })
 
-  it('keeps the request queue while jumping between walkthrough steps', () => {
-    const logged = run({ ...initialState, screen: 'fill', language: 'tl' }, { type: 'submitSig' }, { type: 'print', englishOnly: true, view: 'inline' })
-    expect(run(logged, { type: 'load', state: initialState }).requests).toHaveLength(4)
+  it('replays a walkthrough step exactly: the pharmacy log is the walkthrough’s, not free play’s', () => {
+    const logged = run({ ...initialState, screen: 'fill', language: 'pa' }, { type: 'submitSig' }, { type: 'print', englishOnly: true, view: 'inline' })
+    expect(run(logged, { type: 'load', state: initialState }).requests).toHaveLength(3)
   })
 })

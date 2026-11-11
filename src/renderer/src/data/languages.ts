@@ -49,6 +49,7 @@ export const LANGUAGES: Language[] = [
       },
     },
   },
+  { code: 'fa', name: 'Persian (Farsi)', rtl: true },
   { code: 'pa', name: 'Punjabi', rtl: true },
   { code: 'es', name: 'Spanish', rtl: false },
   { code: 'tl', name: 'Tagalog', rtl: false },

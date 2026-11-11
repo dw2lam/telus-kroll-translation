@@ -1,8 +1,8 @@
 import peelOff from '@/assets/peel-off.svg'
-import { type Details, patientName, RX, RX_WARNINGS } from '@/data/demo'
+import { dispensingParts } from '@/data/audit'
+import { patientName, RX, RX_WARNINGS } from '@/data/demo'
 import { languageByCode } from '@/data/languages'
-import { forForm } from '@/data/phrasebook'
-import type { Language, LanguageCode } from '@/data/types'
+import type { LanguageCode } from '@/data/types'
 import type { PrintJob } from '@/flow/state'
 import './labels.css'
 
@@ -26,6 +26,7 @@ export function Panel1({ job }: { job: PrintJob }) {
   const t = job.translation
   const d = job.details
   const strings = t ? languageByCode(t.language).label : undefined
+  const chromeInEnglish = job.englishLines.includes('chrome')
   const rtl = t ? languageByCode(t.language).rtl : false
   return (
     <div className="lbl lbl-p1" data-panel="1">
@@ -34,12 +35,12 @@ export function Panel1({ job }: { job: PrintJob }) {
           <p className="lbl-pharmacy">{`${RX.pharmacy}   ${RX.pharmacyPhone}`}</p>
           <p className="lbl-address">{RX.pharmacyAddress}</p>
           <div className="lbl-line">
-            <span className="lbl-hl lbl-17b">Rx:{RX.number}</span>
+            <span className="lbl-hl lbl-17b">Rx:{job.rx}</span>
             <span className="lbl-16b">{patientName(d)}</span>
           </div>
           <div className="lbl-line">
             <span className="lbl-12">{d.doctor}</span>
-            <span className="lbl-10">{RX.date}</span>
+            <span className="lbl-10">{job.date}</span>
           </div>
           <div className="lbl-line is-start">
             <span className="lbl-16">{d.quantity} {job.form === 'tablet' ? 'TAB' : RX.form}</span>
@@ -47,7 +48,7 @@ export function Panel1({ job }: { job: PrintJob }) {
           </div>
           <div className="lbl-line">
             <span className="lbl-12 lbl-italic">{d.generic} {d.strength}</span>
-            <span className="lbl-7">Expiry:{RX.expiry}</span>
+            <span className="lbl-7">Expiry:{job.expiry}</span>
           </div>
           <div className="lbl-line">
             <span className="lbl-10">{`DIN:  ${RX.din}  ${RX.manufacturer}`}</span>
@@ -64,12 +65,12 @@ export function Panel1({ job }: { job: PrintJob }) {
       {t && strings && (
         <div className="lbl-pointer" dir={rtl ? 'rtl' : 'ltr'}>
           <div className="lbl-pointer-text">
-            <p className="lbl-pointer-main" lang={t.language}>{strings.pointer}</p>
+            <p className="lbl-pointer-main" lang={chromeInEnglish ? 'en' : t.language}>{chromeInEnglish ? 'Look at the back for instructions' : strings.pointer}</p>
             <p className="lbl-pointer-gloss" dir="ltr">Look at the back for instructions — printed in the patient’s language, not English</p>
           </div>
           <div className="lbl-peel">
             <img src={peelOff} width={64} height={35.833} alt="" style={rtl ? { transform: 'scaleX(-1)' } : undefined} />
-            <span lang={t.language}>{strings.peel}</span>
+            <span lang={chromeInEnglish ? 'en' : t.language}>{chromeInEnglish ? 'PEEL' : strings.peel}</span>
           </div>
         </div>
       )}
@@ -78,18 +79,22 @@ export function Panel1({ job }: { job: PrintJob }) {
 }
 
 /** Quantity, refills, dates and prescriber in the patient's language. The values stay as dispensed. */
-function Dispensing({ language, details, form }: { language: Language; details: Details; form: PrintJob['form'] }) {
-  const d = language.label!.dispensing
-  const fields: [string, string][] = [
-    [forForm(d.quantity, form), details.quantity],
-    [d.refills, details.refills],
-    [d.date, RX.date],
-    [d.expiry, RX.expiry],
-    [d.prescriber, details.doctor],
-  ]
+function Dispensing({ job, english }: { job: PrintJob; english: boolean }) {
+  const t = job.translation!
+  const language = languageByCode(t.language)
+  if (english) {
+    const d = job.details
+    return (
+      <p className="lbl-dispensing" dir="ltr" data-testid="label-dispensing">
+        {`Qty: ${d.quantity}  ·  Refills: ${d.refills}  ·  Filled: ${job.date}  ·  Expiry: ${job.expiry}  ·  ${d.doctor}`}
+        <span className="lbl-untranslated"> · could not be translated</span>
+      </p>
+    )
+  }
+  const parts = dispensingParts(t.language, job.details, job.form, job.date, job.expiry)
   return (
     <p className="lbl-dispensing" lang={language.code} dir={language.rtl ? 'rtl' : 'ltr'} data-testid="label-dispensing">
-      {fields.map(([template, value], i) => {
+      {parts.map(({ template, value }, i) => {
         const [before, after] = template.split('{}')
         return (
           <span key={template}>
@@ -104,19 +109,30 @@ function Dispensing({ language, details, form }: { language: Language; details: 
   )
 }
 
+/** An auxiliary warning: in the patient's language, or in English when it was flagged or its phrase is paused. */
+function Warning({ text, english }: { text: string; english: boolean }) {
+  return (
+    <li lang={english ? 'en' : undefined} dir={english ? 'ltr' : undefined} className={english ? 'is-english' : undefined}>
+      {text}
+      {english && <span className="lbl-untranslated"> · could not be translated</span>}
+    </li>
+  )
+}
+
 /** Panel 2 — the under-panel in the patient's language, revealed when panel 1 is peeled (Figma C2). */
 export function Panel2({ job }: { job: PrintJob }) {
   const t = job.translation
   if (!t) return null
   const language = languageByCode(t.language)
   const strings = language.label!
-  const warnings = RX_WARNINGS[t.language]
+  const inEnglish = (key: string): boolean => job.englishLines.includes(key)
+  const warnings = RX_WARNINGS[t.language]?.map((w, i) => (inEnglish(`warning-${i + 1}`) ? { text: RX.warnings[i], english: true } : { text: w, english: false }))
   const dir = language.rtl ? 'rtl' : 'ltr'
   const d = job.details
   return (
     <div className="lbl lbl-p2" data-panel="2">
       <div className="lbl-p2-head" dir={dir}>
-        <span lang={t.language} className="lbl-p2-title">{strings.header}</span>
+        <span lang={inEnglish('chrome') ? 'en' : t.language} className="lbl-p2-title">{inEnglish('chrome') ? 'Instructions' : strings.header}</span>
         <span className="lbl-9b" dir="ltr">{strings.tag}</span>
       </div>
       <div className="lbl-p2-body">
@@ -126,7 +142,7 @@ export function Panel2({ job }: { job: PrintJob }) {
             <span className="lbl-11b">{`${d.brand}  ${d.strength}  ·  ${d.generic}`}</span>
           </div>
           <div className="lbl-stack is-end" dir="ltr">
-            <span className="lbl-11b">Rx:{RX.number}</span>
+            <span className="lbl-11b">Rx:{job.rx}</span>
             <span className="lbl-9">DIN: {RX.din}</span>
           </div>
         </div>
@@ -136,7 +152,7 @@ export function Panel2({ job }: { job: PrintJob }) {
             {t.text}
           </p>
           <p className="lbl-gloss" dir="ltr">{t.gloss}</p>
-          <Dispensing language={language} details={d} form={job.form} />
+          <Dispensing job={job} english={inEnglish('dispensing')} />
         </div>
         <div className="lbl-footer" dir={dir}>
           {strings.footer.map((line) => (
@@ -149,18 +165,20 @@ export function Panel2({ job }: { job: PrintJob }) {
             <div className="lbl-p2-warnings" lang={t.language} dir={dir} data-testid="label-translated-warnings">
               <ol>
                 {warnings.slice(0, 2).map((w) => (
-                  <li key={w}>{w}</li>
+                  <Warning key={w.text} {...w} />
                 ))}
               </ol>
               <ol start={3}>
                 {warnings.slice(2).map((w) => (
-                  <li key={w}>{w}</li>
+                  <Warning key={w.text} {...w} />
                 ))}
               </ol>
             </div>
           </>
         )}
-        <p className="lbl-demo" dir="ltr">DEMO — illustrative wording, not a verified translation</p>
+        <p className="lbl-trace" dir="ltr" data-testid="label-trace">
+          Trace {job.trace} · Library {job.libraryVersion} · <span className="lbl-demo">demo wording, not verified</span>
+        </p>
       </div>
     </div>
   )

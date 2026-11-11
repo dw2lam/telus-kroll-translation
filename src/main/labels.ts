@@ -37,6 +37,20 @@ async function askForPdfPath(owner: BrowserWindow | null, name: string): Promise
 }
 
 export function registerLabelIpc(): void {
+  // PRD 2: in a dispute the pharmacy exports one audit entry as JSON for TELUS to verify.
+  ipcMain.handle('audit:export', async (event, json: string, name: string) => {
+    const owner = BrowserWindow.fromWebContents(event.sender)
+    const options = {
+      title: 'Export audit entry',
+      defaultPath: join(app.getPath('documents'), name.replace(/[\\/:*?"<>|]/g, '-')),
+      filters: [{ name: 'JSON', extensions: ['json'] }],
+    }
+    const { canceled, filePath } = owner ? await dialog.showSaveDialog(owner, options) : await dialog.showSaveDialog(options)
+    if (canceled || !filePath) return null
+    await writeFile(filePath, json)
+    return filePath
+  })
+
   ipcMain.handle('cheatsheet:savePdf', async (event) => {
     const filePath = await askForPdfPath(BrowserWindow.fromWebContents(event.sender), 'Telus Kroll Translation Demo cheat sheet')
     if (!filePath) return null

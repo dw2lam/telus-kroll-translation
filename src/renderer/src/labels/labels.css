@@ -42,7 +42,10 @@
 .lbl-gloss { font-size: 10px; color: var(--text-muted); }
 .lbl-dispensing { font-size: 10px; white-space: pre-wrap; }
 .lbl-footer { display: flex; flex-direction: column; gap: 3px; font-size: 9.5px; color: var(--text-muted); }
-.lbl-demo { font-size: 7px; font-weight: 700; letter-spacing: 0.04em; color: var(--accent-warning); }
+.lbl-trace { margin: 0; font-size: 7px; letter-spacing: 0.02em; color: #444; font-variant-numeric: tabular-nums; }
+.lbl-demo { font-weight: 700; color: var(--accent-warning); }
+.lbl-untranslated { font-size: 0.85em; font-style: italic; color: #555; }
+.lbl-p2-warnings li.is-english { font-family: var(--font-ui); }
 
 /* Translated warnings in two columns: 1–2, then 3–5. */
 .lbl-p2-warnings { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 9px; line-height: 1.3; }

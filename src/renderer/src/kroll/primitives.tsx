@@ -84,39 +84,56 @@ export function Btn({ children, width, ok, bold, onClick, title, testId }: { chi
 const MENUS = ['File', 'Edit', 'Rx', 'View', 'Labels', 'Profile', 'Reports', 'Utilities', 'NH', 'Cards', 'Session', 'Help']
 const PATIENT_MENUS = ['File', 'Edit', 'Patient', 'Profile', 'Network', 'Utilities', 'NH', 'Cards', 'Session', 'Help']
 
-export function MenuBar({ variant, onLabels, onRequests }: { variant: 'patient' | 'rx'; onLabels?: () => void; onRequests?: () => void }) {
+/** A dropdown item in Kroll's menu bar. */
+export interface MenuEntry {
+  label: string
+  onClick: () => void
+  testId: string
+}
+
+/** Menus with working items, by menu name (`Rx`, `Utilities`). App provides them so every screen shares one set. */
+export const KrollMenus = createContext<Partial<Record<string, MenuEntry[]>>>({})
+
+export function MenuBar({ variant, onLabels }: { variant: 'patient' | 'rx'; onLabels?: () => void; onRequests?: () => void }) {
   const items = variant === 'patient' ? PATIENT_MENUS : MENUS
-  const [open, setOpen] = useState(false)
+  const menus = useContext(KrollMenus)
+  const [open, setOpen] = useState<string | null>(null)
   useEffect(() => {
     if (!open) return
-    const close = (): void => setOpen(false)
+    const close = (): void => setOpen(null)
     window.addEventListener('click', close)
     return () => window.removeEventListener('click', close)
   }, [open])
   return (
     <div className="k-menubar">
-      {items.map((m) =>
-        m === 'Utilities' && onRequests ? (
-          <span key={m} className="k-menu">
-            <span className="is-link" role="button" onClick={(e) => { e.stopPropagation(); setOpen((o) => !o) }} data-testid="menu-utilities">
-              {m}
+      {items.map((m) => {
+        const entries = menus[m]
+        if (entries?.length) {
+          return (
+            <span key={m} className="k-menu">
+              <span className="is-link" role="button" onClick={(e) => { e.stopPropagation(); setOpen((o) => (o === m ? null : m)) }} data-testid={`menu-${m.toLowerCase()}`}>
+                {m}
+              </span>
+              {open === m && (
+                <div className="k-list">
+                  {entries.map((entry) => (
+                    <button type="button" key={entry.testId} onClick={() => { setOpen(null); entry.onClick() }} data-testid={entry.testId}>
+                      {entry.label}
+                    </button>
+                  ))}
+                </div>
+              )}
             </span>
-            {open && (
-              <div className="k-list">
-                <button type="button" onClick={() => { setOpen(false); onRequests() }} data-testid="menu-translation-requests">
-                  Translation requests…
-                </button>
-              </div>
-            )}
-          </span>
-        ) : variant === 'rx' && m === 'Labels' ? (
+          )
+        }
+        return variant === 'rx' && m === 'Labels' ? (
           <span key={m} className="is-link" role="button" title="Preview labels (Ctrl+L)" onClick={onLabels} data-testid="menu-labels">
             {m}
           </span>
         ) : (
           <MenuItem key={m} label={m} />
-        ),
-      )}
+        )
+      })}
     </div>
   )
 }
@@ -176,9 +193,9 @@ export function DialogRow({ label, children }: { label: string; children: ReactN
   )
 }
 
-export function DButton({ children, primary, onClick, testId }: { children: ReactNode; primary?: boolean; onClick: () => void; testId?: string }) {
+export function DButton({ children, primary, onClick, testId, disabled }: { children: ReactNode; primary?: boolean; onClick: () => void; testId?: string; disabled?: boolean }) {
   return (
-    <button type="button" className={'k-dbtn' + (primary ? ' is-primary' : '')} onClick={onClick} data-testid={testId}>
+    <button type="button" className={'k-dbtn' + (primary ? ' is-primary' : '')} onClick={onClick} data-testid={testId} disabled={disabled}>
       {children}
     </button>
   )

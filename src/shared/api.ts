@@ -6,7 +6,7 @@ export interface LabelRequest {
 }
 
 /** Presenter commands sent from the native Demo menu. */
-export type DemoCommand = 'guide' | 'settings' | 'restart'
+export type DemoCommand = 'guide' | 'settings' | 'restart' | 'zoomIn' | 'zoomOut' | 'zoomReset' | 'magnifier'
 
 /** What the preload script exposes to the renderer as `window.kroll`. */
 export interface KrollBridge {
@@ -25,6 +25,8 @@ export interface KrollBridge {
   onLoadScenario(listener: (language: string, sig: string) => void): () => void
   /** Same as Help › Check for Updates…: the main process shows the result. */
   checkForUpdates(): void
+  /** Saves one audit entry as JSON (PRD 2 disputes). Resolves to the path, or null if cancelled. */
+  exportAuditEntry(json: string, suggestedName: string): Promise<string | null>
   /** Saves the cheat sheet as a landscape Letter PDF. Resolves to the path, or null if cancelled. */
   saveCheatSheetPdf(): Promise<string | null>
 }

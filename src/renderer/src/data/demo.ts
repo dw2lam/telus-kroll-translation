@@ -13,7 +13,7 @@ export const krollDateTime = (d: Date): string => `${krollDate(d)} ${pad(d.getHo
 export const krollShortDate = (d: Date): string => `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${String(d.getFullYear()).slice(2)}`
 
 /** The demo fills today, so the label and the translation record agree. The Rx expires a year later. */
-const TODAY = new Date()
+export const TODAY = new Date()
 const EXPIRY = new Date(TODAY.getFullYear() + 1, TODAY.getMonth(), TODAY.getDate())
 
 /** The prescription on screen in every Figma frame. */
@@ -29,13 +29,19 @@ export const PATIENT = {
   address: '3255 Hwy 7',
   city: 'Markham',
   postal: 'L3R 3P9',
-  email: '',
+  email: 'mei.leung@email.com',
   phone: '(437) 555-0142',
-  birthdate: '',
+  phoneLabel: 'Home',
+  birthdate: '03/14/1952',
   age: '74 years',
   gender: 'Female',
-  height: '',
-  weight: '',
+  height: `5' 1"`,
+  weight: '115',
+  familyDoctor: 'Dr. McGraw, Phil',
+  phn: '0000-000-142-ML',
+  plan: 'ODB',
+  allergies: 'No known drug allergies',
+  conditions: 'Iron deficiency anemia',
 }
 
 export const RX = {
@@ -75,6 +81,15 @@ export interface Details {
   postal: string
   email: string
   phone: string
+  /** The phone row's description, e.g. `Home` or `Daughter (Sara)`. */
+  phoneLabel: string
+  familyDoctor: string
+  /** Health card number: a clearly fake demo value. */
+  phn: string
+  /** Drug plan, e.g. ODB (Ontario Drug Benefit, 65+). */
+  plan: string
+  allergies: string
+  conditions: string
   birthdate: string
   age: string
   gender: string
@@ -89,16 +104,42 @@ export interface Details {
 }
 
 /** Patients the demo can load. Edge-case scenarios can add more. */
-export type PersonaId = 'leung'
+export type PersonaId = 'leung' | 'farahani'
 
 const RX_DETAILS = { doctor: RX.doctor, brand: RX.brand, strength: RX.strength, generic: RX.generic, quantity: RX.quantity, refills: RX.refills }
 
+/**
+ * Mrs. Parvin Farahani is the mother of Sara Farahani, the team's secondary persona ("the family
+ * interpreter", Figma "Secondary user persona 1"). She reads Persian, which isn't translatable at
+ * rollout. The persona doesn't give her details, so her name, age and address are demo values.
+ * Sara is her contact. Phone numbers are fictional (555-01xx) and health card numbers are obviously fake.
+ */
 export const PERSONAS: Record<PersonaId, Details> = {
   leung: { ...PATIENT, ...RX_DETAILS },
+  farahani: {
+    ...PATIENT,
+    ...RX_DETAILS,
+    lastName: 'Farahani',
+    firstName: 'Parvin',
+    salutation: 'Mrs.',
+    address: '46 Mill St',
+    city: 'Richmond Hill',
+    postal: 'L4C 4B7',
+    email: 'parvin.farahani@email.com',
+    phone: '(437) 555-0177',
+    phoneLabel: 'Daughter (Sara)',
+    birthdate: '06/21/1957',
+    age: '69 years',
+    height: `5' 3"`,
+    weight: '142',
+    phn: '0000-000-177-PF',
+    allergies: 'Penicillin',
+  },
 }
 
-/** A photo on file for the patient (Kroll's photo slot). */
-export const PHOTOS: Partial<Record<PersonaId, string>> = { leung: 'leung' }
+/** Each patient's prescription on screen. */
+export const PERSONA_RX: Record<PersonaId, string> = { leung: '1000051', farahani: '1000052' }
+
 
 /** `Last, First` as Kroll prints it. */
 export const patientName = (d: Details): string => (d.firstName ? `${d.lastName}, ${d.firstName}` : d.lastName)
@@ -126,7 +167,10 @@ export const RX_WARNINGS: Partial<Record<LanguageCode, string[]>> = {
   ],
 }
 
-/** One-click setups for presenting each branch of the flow. */
+/**
+ * The presenter's list. Each scenario can be set up (Fill Rx loaded, the presenter drives) or,
+ * when it has a walkthrough, guided step by step. The basic demo comes first; edge cases follow.
+ */
 export interface Scenario {
   id: string
   title: string
@@ -134,10 +178,31 @@ export interface Scenario {
   language: LanguageCode
   sig: string
   persona?: PersonaId
+  /** The walkthrough that guides this scenario, if it has one. */
+  tour?: string
+  /** Listed under Edge cases. */
+  edge?: boolean
 }
 
 export const SCENARIOS: Scenario[] = [
-  { id: 'leung', title: 'Ms. Leung · 1C PO BID', detail: 'Basic demo: a sig code prints the English label and the Chinese under-panel', language: 'zh-Hans', sig: '1C PO BID', persona: 'leung' },
+  {
+    id: 'leung',
+    title: 'Basic: sig code → labels',
+    detail: 'Ms. Leung · 1C PO BID. Her language at intake, a verified Chinese sentence, and the peel-back label.',
+    language: 'zh-Hans',
+    sig: '1C PO BID',
+    persona: 'leung',
+    tour: 'leung',
+  },
+  { id: 'rollout', title: 'Language not supported yet', detail: 'Mrs. Farahani · Persian. English label, and the need is logged.', language: 'fa', sig: 'QD', persona: 'farahani', tour: 'rollout', edge: true },
+  { id: 'no-match', title: 'No verified sentence fits', detail: 'Free text “1 CAP QD FOR ANEMIA”. Closest, top 5, guide, English only.', language: 'zh-Hans', sig: '1 CAP QD FOR ANEMIA', persona: 'leung', tour: 'no-match', edge: true },
+  { id: 'tech-preview', title: 'Technician flags a line before printing', detail: 'Report from the preview; that line prints in English.', language: 'zh-Hans', sig: '1C PO BID', persona: 'leung', tour: 'tech-preview', edge: true },
+  { id: 'directions-flagged', title: 'Dosing directions flagged', detail: 'Severity 1, paused everywhere, English-only label.', language: 'zh-Hans', sig: '1C PO BID', persona: 'leung', tour: 'directions-flagged', edge: true },
+  { id: 'phone-call', title: 'Family calls days later', detail: 'Find Rx 1000048 by number, report, reprint, AIMS.', language: 'zh-Hans', sig: '1C PO BID', persona: 'leung', tour: 'phone-call', edge: true },
+  { id: 'network-pause', title: 'Another pharmacy pauses a sentence', detail: 'Notice, callback list, English until fixed.', language: 'zh-Hans', sig: '1C PO BID', persona: 'leung', tour: 'network-pause', edge: true },
+  { id: 'fix-ships', title: 'TELUS ships the fix', detail: 'New library version, report Fixed, translating again.', language: 'zh-Hans', sig: '1C PO BID', persona: 'leung', tour: 'fix-ships', edge: true },
+  { id: 'wrong-phrase', title: 'Wrong English phrase picked', detail: 'A pharmacy error: logged, nothing paused.', language: 'zh-Hans', sig: '1C PO BID', persona: 'leung', tour: 'wrong-phrase', edge: true },
+  { id: 'offline-dispute', title: 'Offline, then a dispute', detail: 'Receipt queues, then the entry is verified.', language: 'zh-Hans', sig: '1C PO BID', persona: 'leung', tour: 'offline-dispute', edge: true },
 ]
 
 /** The pharmacist signed in to Kroll. Translation records name them as the one who confirmed the English. */
@@ -158,10 +223,10 @@ export interface TranslationRequest {
 }
 
 /** Requests already in the queue when the demo starts (illustrative). */
-const daysAgo = (n: number): string => krollDate(new Date(TODAY.getFullYear(), TODAY.getMonth(), TODAY.getDate() - n))
+export const daysAgo = (n: number): string => krollDate(new Date(TODAY.getFullYear(), TODAY.getMonth(), TODAY.getDate() - n))
 
 export const SEED_REQUESTS: TranslationRequest[] = [
   { id: 'TR-0039', language: 'Punjabi', sig: '(language)', rx: '1000047', logged: daysAgo(7), status: 'Pending' },
   { id: 'TR-0040', language: 'Hindi', sig: '1 CAP Q2D WITH MEALS', rx: '1000049', logged: daysAgo(4), status: 'In review' },
-  { id: 'TR-0041', language: 'Tagalog', sig: '(language)', rx: '1000050', logged: daysAgo(2), status: 'Pending' },
+  { id: 'TR-0041', language: 'Urdu', sig: '(language)', rx: '1000050', logged: daysAgo(2), status: 'Pending' },
 ]

@@ -64,33 +64,52 @@ const TEAM_SENTENCES: VerifiedSig[] = [
   { code: 'UD', english: 'Use as directed', translations: { hi: 'निर्देशानुसार लें' } },
 ]
 
-// Sentences drafted to cover the code list in the demo's languages. These are NOT team
+// Hindi sentences drafted to cover the code list. These are NOT team
 // wording and nobody has verified them: the team must check every one. They stay separate
 // so that's easy, the cheat sheet marks them, and only the exact code reaches them.
 const DRAFTS: Record<string, Partial<Record<LanguageCode, string>>> = {
-  TID: { 'zh-Hans': '每日三次，每次[N]粒，口服' },
-  QID: { 'zh-Hans': '每日四次，每次[N]粒，口服' },
-  QHS: { 'zh-Hans': '睡前服用，每次[N]粒，口服' },
-  QAM: { hi: 'हर सुबह [N] कैप्सूल मुँह से लें', 'zh-Hans': '每日早上一次，每次[N]粒，口服' },
-  QPM: { hi: 'हर शाम [N] कैप्सूल मुँह से लें', 'zh-Hans': '每日晚上一次，每次[N]粒，口服' },
-  Q4H: { hi: 'हर 4 घंटे में [N] कैप्सूल मुँह से लें', 'zh-Hans': '每4小时一次，每次[N]粒，口服' },
-  Q6H: { hi: 'हर 6 घंटे में [N] कैप्सूल मुँह से लें', 'zh-Hans': '每6小时一次，每次[N]粒，口服' },
-  Q8H: { hi: 'हर 8 घंटे में [N] कैप्सूल मुँह से लें', 'zh-Hans': '每8小时一次，每次[N]粒，口服' },
-  Q12H: { hi: 'हर 12 घंटे में [N] कैप्सूल मुँह से लें', 'zh-Hans': '每12小时一次，每次[N]粒，口服' },
-  'QHS PRN': { 'zh-Hans': '需要时于睡前服用，每次[N]粒，口服' },
-  'QD PRN': { 'zh-Hans': '需要时服用，每日一次，每次[N]粒，口服' },
-  'QHS PRN SLP': { 'zh-Hans': '需要时于睡前服用以助眠，每次[N]粒，口服' },
-  PRN: { 'zh-Hans': '需要时服用，每次[N]粒，口服' },
-  'Q4-6H PRN': { hi: 'ज़रूरत पड़ने पर हर 4 से 6 घंटे में [N] कैप्सूल मुँह से लें', 'zh-Hans': '需要时每4至6小时服用一次，每次[N]粒，口服' },
-  AC: { 'zh-Hans': '饭前服用，每次[N]粒，口服' },
-  PC: { 'zh-Hans': '饭后服用，每次[N]粒，口服' },
-  CF: { 'zh-Hans': '随餐服用，每次[N]粒，口服' },
+  QAM: { hi: 'हर सुबह [N] कैप्सूल मुँह से लें' },
+  QPM: { hi: 'हर शाम [N] कैप्सूल मुँह से लें' },
+  Q4H: { hi: 'हर 4 घंटे में [N] कैप्सूल मुँह से लें' },
+  Q6H: { hi: 'हर 6 घंटे में [N] कैप्सूल मुँह से लें' },
+  Q8H: { hi: 'हर 8 घंटे में [N] कैप्सूल मुँह से लें' },
+  Q12H: { hi: 'हर 12 घंटे में [N] कैप्सूल मुँह से लें' },
+  'Q4-6H PRN': { hi: 'ज़रूरत पड़ने पर हर 4 से 6 घंटे में [N] कैप्सूल मुँह से लें' },
   'QD CF': { hi: 'दिन में एक बार भोजन के साथ [N] कैप्सूल मुँह से लें' },
-  'BID CF': { hi: 'दिन में दो बार भोजन के साथ [N] कैप्सूल मुँह से लें', 'zh-Hans': '随餐服用，每日两次，每次[N]粒，口服' },
-  UD: { 'zh-Hans': '请按指示使用' },
+  'BID CF': { hi: 'दिन में दो बार भोजन के साथ [N] कैप्सूल मुँह से लें' },
 }
 
-export const PHRASEBOOK: VerifiedSig[] = TEAM_SENTENCES.map((sig) => ({ ...sig, drafts: DRAFTS[sig.code] }))
+// The rest of the Chinese (Simplified) library, so every Kroll code has a sentence. Written
+// 2026-11-11 in the team's style (frequency, then dose, then route: 每日两次，每次[N]粒，口服),
+// at the team's request. Like every string in this demo it is illustrative: a certified
+// translator still has to review it before anyone calls it verified.
+const CHINESE_LIBRARY: Record<string, string> = {
+  TID: '每日三次，每次[N]粒，口服',
+  QID: '每日四次，每次[N]粒，口服',
+  QHS: '睡前服用，每次[N]粒，口服',
+  QAM: '每日早上服用，每次[N]粒，口服',
+  QPM: '每日晚上服用，每次[N]粒，口服',
+  Q4H: '每4小时服用一次，每次[N]粒，口服',
+  Q6H: '每6小时服用一次，每次[N]粒，口服',
+  Q8H: '每8小时服用一次，每次[N]粒，口服',
+  Q12H: '每12小时服用一次，每次[N]粒，口服',
+  'QHS PRN': '需要时睡前服用，每次[N]粒，口服',
+  'QD PRN': '需要时服用，每日一次，每次[N]粒，口服',
+  'QHS PRN SLP': '需要助眠时睡前服用，每次[N]粒，口服',
+  PRN: '需要时服用，每次[N]粒，口服',
+  'Q4-6H PRN': '需要时每4至6小时服用一次，每次[N]粒，口服',
+  AC: '饭前服用，每次[N]粒，口服',
+  PC: '饭后服用，每次[N]粒，口服',
+  CF: '随餐服用，每次[N]粒，口服',
+  'BID CF': '随餐服用，每日两次，每次[N]粒，口服',
+  UD: '请遵医嘱使用',
+}
+
+export const PHRASEBOOK: VerifiedSig[] = TEAM_SENTENCES.map((sig) => ({
+  ...sig,
+  translations: { ...sig.translations, 'zh-Hans': sig.translations['zh-Hans'] ?? CHINESE_LIBRARY[sig.code] },
+  drafts: DRAFTS[sig.code],
+}))
 
 /** How Kroll's own Sig Codes table expands a code onto the English label. */
 export const KROLL_EXPANSIONS: Record<string, string> = {
