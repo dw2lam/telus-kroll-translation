@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState } from 'react'
-import { SCENARIOS } from './data/demo'
+import { PHOTOS, SCENARIOS } from './data/demo'
 import { Highlight } from './demo/Highlight'
 import { Icon, MOD, Presenter, type GuideProgress } from './demo/Presenter'
 import { stateAt, stepsFor, tourById } from './demo/tours'
@@ -140,7 +140,7 @@ export default function App() {
       window.kroll?.onDemoCommand((command) => {
         if (command === 'guide') {
           showPresenter(true)
-          startTour('exact')
+          startTour('leung')
         } else if (command === 'settings') setPresenter((p) => (writePref(PRESENTER_KEY, !p), !p))
         else if (command === 'restart') restart()
       }),
@@ -246,6 +246,7 @@ export default function App() {
                   onOk={() => dispatch({ type: 'go', screen: 'fill' })}
                   onNewRx={() => dispatch({ type: 'go', screen: 'fill' })}
                   onRequests={() => dispatch({ type: 'openRequests' })}
+                  photo={PHOTOS[state.persona] !== undefined}
                 />
               ) : (
                 <FillRxScreen

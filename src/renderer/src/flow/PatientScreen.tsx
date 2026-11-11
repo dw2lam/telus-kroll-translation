@@ -4,9 +4,10 @@ import { hasTranslation, LANGUAGES, languageByCode } from '@/data/languages'
 import type { LanguageCode } from '@/data/types'
 import { Btn, Field, FKeyBar, Label, MenuBar, StatusBar } from '@/kroll/primitives'
 import patientPhoto from '@/assets/patient-photo.svg'
+import leungPhoto from '@/assets/patient-leung.jpg'
 
 /** F3 Patient (Figma B1 / B2): where the patient's language is captured. */
-export function PatientScreen({ language, details, onEdit, onLanguage, onOk, onNewRx, onRequests }: {
+export function PatientScreen({ language, details, onEdit, onLanguage, onOk, onNewRx, onRequests, photo }: {
   language: LanguageCode
   details: Details
   onEdit: (changes: Partial<Details>) => void
@@ -14,6 +15,8 @@ export function PatientScreen({ language, details, onEdit, onLanguage, onOk, onN
   onOk: () => void
   onNewRx: () => void
   onRequests: () => void
+  /** Whether the patient has a photo on file. */
+  photo: boolean
 }) {
   const edit = (key: keyof Details) => ({ value: details[key], onEdit: (value: string) => onEdit({ [key]: value }), testId: `edit-${key}` })
   const [open, setOpen] = useState(false)
@@ -126,7 +129,7 @@ export function PatientScreen({ language, details, onEdit, onLanguage, onOk, onN
             <div className="k-row"><Label width={48}>PHN</Label><Field width={110} h17 caret /></div>
           </div>
           <div className="k-col" style={{ flex: 1, alignItems: 'center', gap: 6 }}>
-            <div className="k-photo"><img src={patientPhoto} width={140} height={92} alt="Patient photo placeholder" /></div>
+            <div className="k-photo"><img src={photo ? leungPhoto : patientPhoto} width={140} height={92} alt={photo ? `Photo of ${details.firstName} ${details.lastName}` : 'No photo on file'} /></div>
             <div className="k-row" style={{ width: 'auto' }}>
               <Btn width={52}>Load</Btn>
               <Btn width={52}>Delete</Btn>

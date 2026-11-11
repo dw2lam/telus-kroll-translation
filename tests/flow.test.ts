@@ -19,22 +19,24 @@ describe('fill flow', () => {
     expect(edited.job?.details.lastName).toBe('Chen')
     expect(edited.job?.details.doctor).toBe('Dr. Lee')
     expect(Object.keys(edited.edits)).toHaveLength(2)
-    expect(detailsOf(run(edited, { type: 'resetEdits' })).lastName).toBe('Shah')
+    expect(detailsOf(run(edited, { type: 'resetEdits' })).lastName).toBe('Leung')
     // Typing a field back to its original value isn't an edit.
-    expect(run(edited, { type: 'edit', changes: { lastName: 'Shah' } }).edits).toEqual({ doctor: 'Dr. Lee' })
+    expect(run(edited, { type: 'edit', changes: { lastName: 'Leung' } }).edits).toEqual({ doctor: 'Dr. Lee' })
   })
 
-  it('keeps edits while stepping through a walkthrough, and drops them for another patient', () => {
-    const edited = run(initialState, { type: 'edit', changes: { firstName: 'Mei' } })
-    expect(run(edited, { type: 'load', state: { ...initialState, screen: 'fill' } }).edits).toEqual({ firstName: 'Mei' })
-    expect(run(edited, { type: 'scenario', persona: 'leung', language: 'zh-Hans', sig: 'BID' }).edits).toEqual({})
+  it('keeps edits while stepping through a walkthrough, and drops them on restart', () => {
+    const edited = run(initialState, { type: 'edit', changes: { firstName: 'May' } })
+    expect(run(edited, { type: 'load', state: { ...initialState, screen: 'fill' } }).edits).toEqual({ firstName: 'May' })
+    expect(run(edited, { type: 'reset' }).edits).toEqual({})
   })
 
-  it('walks Mrs. Leung from intake to a translated label', () => {
+  it('walks Ms. Leung from intake to a translated label', () => {
     const tour = tourById('leung')!
     const end = stateAt(tour, 5, { view: '3d' })
     expect(detailsOf(end).lastName).toBe('Leung')
-    expect(detailsOf(end).age).toBe('78 years')
+    expect(detailsOf(end).firstName).toBe('Mei')
+    expect(detailsOf(end).age).toBe('74 years')
+    expect(detailsOf(end).city).toBe('Markham')
     expect(end.language).toBe('zh-Hans')
     expect(end.job?.englishSig).toBe('TAKE 1 CAPSULE TWICE A DAY')
     expect(end.job?.translation?.text).toBe('每日两次，每次1粒，口服')
@@ -52,7 +54,7 @@ describe('fill flow', () => {
     const s = run({ ...initialState, screen: 'fill' }, { type: 'submitSig' })
     expect(s.dialog?.kind).toBe('exact')
     const confirmed = run(s, { type: 'confirm', candidate: (s.dialog as { candidate: never }).candidate })
-    expect(confirmed.confirmed?.text).toBe('दिन में एक बार 1 कैप्सूल मुँह से लें')
+    expect(confirmed.confirmed?.text).toBe('每天 1 次，每次 1 粒胶囊')
     const printed = run(confirmed, { type: 'print', englishOnly: false, view: '3d' })
     expect(printed.screen).toBe('print')
     expect(printed.job?.englishSig).toBe('TAKE 1 CAPSULE ONCE A DAY')
@@ -60,15 +62,16 @@ describe('fill flow', () => {
   })
 
   it('closest → not this one → none of these → none fit → English only', () => {
-    let s = run({ ...initialState, screen: 'fill', sigInput: '1 CAP QHS PRN DIZZINESS' }, { type: 'submitSig' })
+    let s = run({ ...initialState, screen: 'fill', sigInput: '1 CAP QD FOR ANEMIA' }, { type: 'submitSig' })
     expect(s.dialog?.kind).toBe('closest')
     s = run(s, { type: 'notThisOne' })
-    expect(s.dialog?.kind === 'candidates' && s.dialog.candidates.length).toBe(5)
+    // Chinese has three verified sentences, so the top 5 shows three.
+    expect(s.dialog?.kind === 'candidates' && s.dialog.candidates.length).toBe(3)
     s = run(s, { type: 'noneOfThese' }, { type: 'noneOfTheseFit' })
     expect(s.dialog?.kind).toBe('cannotTranslate')
     s = run(s, { type: 'print', englishOnly: true, view: '3d' })
     expect(s.job?.translation).toBeNull()
-    expect(s.job?.englishSig).toBe('1 CAP QHS PRN DIZZINESS')
+    expect(s.job?.englishSig).toBe('1 CAP QD FOR ANEMIA')
   })
 
   it('English patients skip the pop-up', () => {
@@ -91,7 +94,7 @@ describe('labels inside Kroll', () => {
     expect(s.job?.translation).toBeNull()
     s = run(s, { type: 'closePreview' }, { type: 'submitSig' })
     s = run(s, { type: 'confirm', candidate: (s.dialog as { candidate: never }).candidate }, { type: 'previewLabels' })
-    expect(s.job?.translation?.language).toBe('hi')
+    expect(s.job?.translation?.language).toBe('zh-Hans')
     s = run(s, { type: 'show3d' })
     expect(s.screen).toBe('print')
     expect(s.preview).toBeNull()
@@ -104,7 +107,7 @@ describe('hi-fi B3: liability record and translation requests', () => {
     expect(exact.dialog?.kind).toBe('exact')
     if (exact.dialog?.kind !== 'exact') return
     const printed = run(exact, { type: 'confirm', candidate: exact.dialog.candidate }, { type: 'print', englishOnly: false, view: 'inline' })
-    expect(printed.job?.record).toMatchObject({ kind: 'translated', language: 'Hindi', phrase: 'HI-QD-001', version: 'v2026.11', confirmedBy: 'RPh J. Lee' })
+    expect(printed.job?.record).toMatchObject({ kind: 'translated', language: 'Chinese (Simplified)', phrase: 'ZH-QD-001', version: 'v2026.11', confirmedBy: 'RPh J. Lee' })
     expect(printed.requests).toHaveLength(3)
   })
 
@@ -123,14 +126,14 @@ describe('hi-fi B3: liability record and translation requests', () => {
 
   it('names the sig when a known language has no verified match', () => {
     const cannot = run(
-      { ...initialState, screen: 'fill', sigInput: '1 cap qhs prn dizziness' },
+      { ...initialState, screen: 'fill', sigInput: '1 cap qd for anemia' },
       { type: 'submitSig' },
       { type: 'noneOfThese' },
       { type: 'noneOfTheseFit' },
     )
     expect(cannot.dialog?.kind).toBe('cannotTranslate')
     const logged = run(cannot, { type: 'print', englishOnly: true, view: 'inline' })
-    expect(logged.requests.at(-1)).toMatchObject({ language: 'Hindi', sig: '1 CAP QHS PRN DIZZINESS' })
+    expect(logged.requests.at(-1)).toMatchObject({ language: 'Chinese (Simplified)', sig: '1 CAP QD FOR ANEMIA' })
   })
 
   it('keeps the request queue while jumping between walkthrough steps', () => {

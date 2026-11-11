@@ -16,29 +16,26 @@ export const krollShortDate = (d: Date): string => `${pad(d.getDate())}/${pad(d.
 const TODAY = new Date()
 const EXPIRY = new Date(TODAY.getFullYear() + 1, TODAY.getMonth(), TODAY.getDate())
 
-/** Whole years from `dd/mm/yyyy` to today. */
-function ageFrom(birthdate: string): string {
-  const [d, m, y] = birthdate.split('/').map(Number)
-  let age = TODAY.getFullYear() - y
-  if (TODAY.getMonth() + 1 < m || (TODAY.getMonth() + 1 === m && TODAY.getDate() < d)) age--
-  return `${age} years`
-}
-
 /** The prescription on screen in every Figma frame. */
+/**
+ * Ms. Mei Leung, the team's primary persona (Figma "Primary user persona 1"): 74, retired, lives in
+ * Markham, speaks Cantonese with limited English and reads Simplified Chinese. The phone number is
+ * fictional (555-01xx is reserved for fiction).
+ */
 export const PATIENT = {
-  lastName: 'Shah',
-  firstName: 'Rohan',
+  lastName: 'Leung',
+  firstName: 'Mei',
   salutation: 'Ms.',
-  address: '100 Main St',
-  city: 'Vancouver',
-  postal: 'M1M 1M1',
-  email: 'rshah@email.com',
-  phone: '(555) 555-5555',
-  birthdate: '05/05/1980',
-  age: ageFrom('05/05/1980'),
+  address: '3255 Hwy 7',
+  city: 'Markham',
+  postal: 'L3R 3P9',
+  email: '',
+  phone: '(437) 555-0142',
+  birthdate: '',
+  age: '74 years',
   gender: 'Female',
-  height: `5' 6"`,
-  weight: '120',
+  height: '',
+  weight: '',
 }
 
 export const RX = {
@@ -91,28 +88,17 @@ export interface Details {
   refills: string
 }
 
-export type PersonaId = 'rohan' | 'leung'
+/** Patients the demo can load. Edge-case scenarios can add more. */
+export type PersonaId = 'leung'
 
 const RX_DETAILS = { doctor: RX.doctor, brand: RX.brand, strength: RX.strength, generic: RX.generic, quantity: RX.quantity, refills: RX.refills }
 
-/** Mrs. Leung is the persona from the journey map: 78, reads Mandarin. Her first name isn't in the research, so it's blank. */
 export const PERSONAS: Record<PersonaId, Details> = {
-  rohan: { ...PATIENT, ...RX_DETAILS },
-  leung: {
-    ...PATIENT,
-    ...RX_DETAILS,
-    lastName: 'Leung',
-    firstName: '',
-    salutation: 'Mrs.',
-    city: 'Toronto',
-    age: '78 years',
-    gender: 'Female',
-    email: '',
-    birthdate: '',
-    height: '',
-    weight: '',
-  },
+  leung: { ...PATIENT, ...RX_DETAILS },
 }
+
+/** A photo on file for the patient (Kroll's photo slot). */
+export const PHOTOS: Partial<Record<PersonaId, string>> = { leung: 'leung' }
 
 /** `Last, First` as Kroll prints it. */
 export const patientName = (d: Details): string => (d.firstName ? `${d.lastName}, ${d.firstName}` : d.lastName)
@@ -151,12 +137,7 @@ export interface Scenario {
 }
 
 export const SCENARIOS: Scenario[] = [
-  { id: 'leung', title: 'Mrs. Leung · 1C PO BID', detail: 'Chinese (Simplified), the presentation scenario', language: 'zh-Hans', sig: '1C PO BID', persona: 'leung' },
-  { id: 'exact-code', title: 'Hindi · QD', detail: 'Exact match (B3 → B4 → B5)', language: 'hi', sig: 'QD' },
-  { id: 'closest', title: 'Hindi · free-text sig', detail: 'Closest → top 5 → phrasing guide → can’t translate (B6 → B10)', language: 'hi', sig: '1 CAP QHS PRN DIZZINESS' },
-  { id: 'exact-text', title: 'Hindi · free text, exact', detail: 'Free text that matches a verified sig exactly', language: 'hi', sig: 'take 2 capsules by mouth twice daily' },
-  { id: 'tagalog', title: 'Tagalog · QD', detail: 'Captured, not yet translatable (B3t → B4t)', language: 'tl', sig: 'QD' },
-  { id: 'chinese', title: 'Chinese (Simplified) · QD', detail: 'Simplified script label', language: 'zh-Hans', sig: 'QD' },
+  { id: 'leung', title: 'Ms. Leung · 1C PO BID', detail: 'Basic demo: a sig code prints the English label and the Chinese under-panel', language: 'zh-Hans', sig: '1C PO BID', persona: 'leung' },
 ]
 
 /** The pharmacist signed in to Kroll. Translation records name them as the one who confirmed the English. */

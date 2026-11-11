@@ -62,9 +62,9 @@ export interface FlowState {
 
 export const initialState: FlowState = {
   screen: 'patient',
-  persona: 'rohan',
+  persona: 'leung',
   edits: {},
-  language: 'hi',
+  language: 'zh-Hans',
   sigInput: 'QD',
   sigEntered: '',
   dialog: null,
@@ -226,7 +226,7 @@ export function reducer(state: FlowState, action: Action): FlowState {
     case 'show3d':
       return state.job ? { ...state, preview: null, screen: 'print' } : state
     case 'scenario': {
-      const persona = action.persona ?? 'rohan'
+      const persona = action.persona ?? 'leung'
       const loaded: FlowState = {
         ...initialState,
         screen: action.screen ?? 'fill',
