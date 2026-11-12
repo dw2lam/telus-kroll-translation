@@ -62,7 +62,7 @@ describe('fill flow', () => {
   })
 
   it('closest → not this one → none of these → none fit → English only', () => {
-    let s = run({ ...initialState, screen: 'fill', sigInput: '1 CAP QD FOR ANEMIA' }, { type: 'submitSig' })
+    let s = run({ ...initialState, screen: 'fill', sigInput: '1 CAP DAILY FOR ANEMIA' }, { type: 'submitSig' })
     expect(s.dialog?.kind).toBe('closest')
     s = run(s, { type: 'notThisOne' })
     expect(s.dialog?.kind === 'candidates' && s.dialog.candidates.length).toBe(5)
@@ -70,7 +70,7 @@ describe('fill flow', () => {
     expect(s.dialog?.kind).toBe('cannotTranslate')
     s = run(s, { type: 'print', englishOnly: true, view: '3d' })
     expect(s.job?.translation).toBeNull()
-    expect(s.job?.englishSig).toBe('1 CAP QD FOR ANEMIA')
+    expect(s.job?.englishSig).toBe('1 CAP DAILY FOR ANEMIA')
   })
 
   it('English patients skip the pop-up', () => {
@@ -102,7 +102,7 @@ describe('labels inside Kroll', () => {
 
 describe('hi-fi B3: liability record and translation requests', () => {
   it('records the verified phrase and the pharmacist who confirmed the English', () => {
-    const exact = run({ ...initialState, screen: 'fill' }, { type: 'setSig', sig: 'QD' }, { type: 'submitSig' })
+    const exact = run({ ...initialState, screen: 'fill' }, { type: 'setSig', sig: 'DAILY' }, { type: 'submitSig' })
     expect(exact.dialog?.kind).toBe('exact')
     if (exact.dialog?.kind !== 'exact') return
     const printed = run(exact, { type: 'confirm', candidate: exact.dialog.candidate }, { type: 'print', englishOnly: false, view: 'inline' })
@@ -125,14 +125,14 @@ describe('hi-fi B3: liability record and translation requests', () => {
 
   it('names the sig when a known language has no verified match', () => {
     const cannot = run(
-      { ...initialState, screen: 'fill', sigInput: '1 cap qd for anemia' },
+      { ...initialState, screen: 'fill', sigInput: '1 cap daily for anemia' },
       { type: 'submitSig' },
       { type: 'noneOfThese' },
       { type: 'noneOfTheseFit' },
     )
     expect(cannot.dialog?.kind).toBe('cannotTranslate')
     const logged = run(cannot, { type: 'print', englishOnly: true, view: 'inline' })
-    expect(logged.requests.at(-1)).toMatchObject({ language: 'Chinese (Simplified)', sig: '1 CAP QD FOR ANEMIA' })
+    expect(logged.requests.at(-1)).toMatchObject({ language: 'Chinese (Simplified)', sig: '1 CAP DAILY FOR ANEMIA' })
   })
 
   it('replays a walkthrough step exactly: the pharmacy log is the walkthrough’s, not free play’s', () => {

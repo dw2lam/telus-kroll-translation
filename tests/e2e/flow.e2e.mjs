@@ -61,7 +61,7 @@ try {
   await page.click('[data-testid=btn-restart]')
   console.log('✓ Ms. Leung walkthrough, with an edited name')
 
-  // Chinese, sig code QD: patient language → Fill Rx → exact → B5 → print → peel.
+  // Chinese, sig code DAILY: patient language → Fill Rx → exact → B5 → print → peel.
   await page.click('[data-testid=language-field]')
   await page.click('[data-testid=language-list] button:has-text("Chinese (Simplified)")')
   await page.click('button:has-text("OK")')
@@ -78,7 +78,7 @@ try {
   // Free text: closest → top 5 → phrasing guide → can't translate → English only.
   await page.click('[data-testid=btn-restart]')
   await page.click('[data-testid=btn-patient-ok]')
-  await page.fill('[data-testid=sig-input]', '1 CAP QD FOR ANEMIA')
+  await page.fill('[data-testid=sig-input]', '1 CAP DAILY FOR ANEMIA')
   await page.press('[data-testid=sig-input]', 'Enter')
   assert.match(await text('[data-testid=dialog-closest]'), /Closest match · \d+%/)
   await page.click('[data-testid=btn-not-this-one]')
@@ -169,11 +169,21 @@ try {
   const opened = app.waitForEvent('window')
   await page.click('[data-testid=btn-cheatsheet]')
   const sheet = await opened
+  await sheet.waitForSelector('[data-testid=cheatsheet]')
+  // Learn tab: the decoder breaks a sig into pieces and prints the English line.
+  await sheet.click('[data-testid=cs-tab-learn]')
+  await sheet.fill('[data-testid=cs-decoder-input]', '2T PO QHS PRN')
+  assert.equal(await sheet.textContent('[data-testid=cs-decoder-english]'), 'TAKE 2 TABLETS AT BEDTIME AS NEEDED')
+  assert.equal(await sheet.locator('[data-testid=cs-decoder] .cs-tok').count(), 5)
+  await sheet.locator('[data-testid=cs-quiz-option]').first().click()
+  await sheet.waitForSelector('[data-testid=cs-quiz-next]')
+  assert.match(await sheet.textContent('[data-testid=cs-quiz-score]'), /of 1 right/)
+  await sheet.click('[data-testid=cs-tab-reference]')
   await sheet.waitForSelector('[data-testid=cheatsheet] .cs-sig.is-clickable')
   // Search filters the codes; a phrase with no code offers to run it as free text.
   await sheet.fill('[data-testid=cs-search]', 'bedtime')
   assert.equal(await sheet.locator('.cs-sig').count(), 3)
-  await sheet.fill('[data-testid=cs-search]', '1 cap qd for anemia')
+  await sheet.fill('[data-testid=cs-search]', '1 cap daily for anemia')
   await sheet.click('[data-testid=cs-try-free-text]')
   await page.waitForSelector('[data-testid=dialog-closest]')
   await page.keyboard.press('Escape')

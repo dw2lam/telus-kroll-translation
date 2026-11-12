@@ -51,7 +51,7 @@ The demo patient is **Ms. Mei Leung**, the team's primary persona: 74, Markham, 
 | Step | Screen |
 |---|---|
 | 1. **F3 Patient**: record the patient's language. Languages with verified sigs show *(Translation Available)*. | ![F3 Patient language list](docs/screenshots/01-patient-language.jpg) |
-| 2. **F12 Fill Rx**: type a sig code (`QD`, `1C PO BID`, `2 CAP PO QHS`) or free text and press ↵. The **Translated Sig** pop-up shows the verified sentence and where it came from. The pharmacist confirms the English; the translation's accuracy is the verified library's. | ![Exact match](docs/screenshots/02-exact-match.jpg) |
+| 2. **F12 Fill Rx**: type a sig code (`DAILY`, `1C PO BID`, `2 CAP PO QHS`) or free text and press ↵. The **Translated Sig** pop-up shows the verified sentence and where it came from. The pharmacist confirms the English; the translation's accuracy is the verified library's. | ![Exact match](docs/screenshots/02-exact-match.jpg) |
 | 3. Free text that isn't exact goes **Closest → Not this one → Top 5 → None of these → Phrasing guide → None of these fit → Can't translate**: English label only, with a translation request logged. | ![Top 5 candidates](docs/screenshots/04-top-five.jpg) |
 | 4. **Preview labels** before printing, or print straight away: a 3D printer feeds both panels onto an amber vial, and **Peel panel 1** reveals the patient's language underneath. Each translated label carries a **trace code**. | ![3D printer and vial, panel peeled](docs/screenshots/05-print-3d-peeled.jpg) |
 | 5. With **3D print view** off, or via the **Labels** menu, **Labels F2** or **Ctrl/⌘+L**, the labels open inside Kroll with the **translation record** saved to the Rx history. **Save label PDF** prints them 4 in wide. | ![Ms. Leung's English and Chinese labels inside Kroll](docs/screenshots/09-mrs-leung-label.jpg) |
@@ -94,7 +94,7 @@ Presenter controls live in a sidebar on the right. None of it is part of Kroll. 
 - **Scenarios:** the main demo and nine edge cases. **▶ Walkthrough** takes you through one step at a time, with notes, and rings the control each step is about; do the step from the sidebar or in Kroll yourself. **Load only** fills Kroll in for that scenario and leaves the clicking to you. **PageDown / PageUp** step forward and back, so a presentation clicker works.
   1. Basic: sig code → labels (Ms. Leung, `1C PO BID`)
   2. Language not supported yet (Mrs. Farahani, Persian)
-  3. No verified sentence fits (`1 CAP QD FOR ANEMIA`)
+  3. No verified sentence fits (`1 CAP DAILY FOR ANEMIA`)
   4. Technician flags a line before printing
   5. Dosing directions flagged
   6. Family calls days later (Rx 1000048)
@@ -104,7 +104,7 @@ Presenter controls live in a sidebar on the right. None of it is part of Kroll. 
   10. Offline, then a dispute
 - **Simulate the network:** another pharmacy reports a problem, TELUS ships the fix, and the pharmacy going offline.
 - **Controls:** 3D print view, Magnifier (zooms around the pointer, **⇧⌘M**), Cheat sheet, Undo edits, Start over, and Kroll size (**⌘+ / ⌘− / ⌘0**).
-- **Cheat sheet** (or **F1**) opens in its own window: every sig code grouped by meaning with its English and Chinese, what each pop-up means with a live example, and how to reach the reporting tools. Search filters the codes; a phrase with no code can be tried as free text. Click anything to run it in Kroll; **Save as PDF** for a printable copy.
+- **Cheat sheet** (or **F1**) opens in its own window, in three tabs. **Learn sig codes** is a short lesson (what a sig is, reading one left to right, the Latin pieces, how codes stack, why codes translate exactly, what to watch out for) with a live **sig decoder** beside it that breaks any sig into its pieces and shows both label panels, and a practice quiz. **Code reference** lists every code with its meaning, its Latin, the English Kroll prints and the Chinese and Hindi. **Demo guide** has each pop-up state with a live example, how to reach every edge case, the reporting tools and the keys. Search filters the codes; a phrase with no code can be tried as free text. Click anything to run it in Kroll; **Save as PDF** for a printable copy.
 
 | | |
 |---|---|
@@ -132,10 +132,10 @@ Patient, doctor, drug, quantity and refill fields on F3 Patient and F12 Fill Rx 
 
 ## Sig codes and languages
 
-**Codes:** QD, BID, TID, QID, QHS, QAM, QPM, Q4H, Q6H, Q8H, Q12H, QHS PRN, QD PRN, QHS PRN SLP, PRN, Q4-6H PRN, AC, PC, CF, QD CF, BID CF, UD.
+**Codes:** DAILY, BID, TID, QID, QHS, QAM, QPM, Q4H, Q6H, Q8H, Q12H, QHS PRN, DAILY PRN, QHS PRN SLP, PRN, Q4-6H PRN, AC, PC, CF, DAILY CF, BID CF, UD.
 
 - A dose can lead the code, written short or in full: `2 BID`, `1C PO BID`, `1T PO BID`, `2 CAP PO BID`. `T` swaps capsule for tablet on the sig and the label.
-- `OD` reads as QD and `HS` as QHS. The Figma frames' shorthand also works: `*1C` / `1C` = 1 × QD, `*2C` = 2 × QD.
+- `HS` reads as QHS. There is no `QD` or `OD`: both are on [ISMP Canada's Do Not Use list](https://www.ismp-canada.org/download/ISMPC_List_of_Dangerous_Abbreviations.pdf), which says to use “daily”. The Figma frames' shorthand also works: `*1C` / `1C` = 1 × DAILY, `*2C` = 2 × DAILY.
 
 **Languages:**
 

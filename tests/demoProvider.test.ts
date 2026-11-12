@@ -8,10 +8,10 @@ const hindi = languageByCode('hi')
 
 describe('demo provider', () => {
   it('matches Kroll codes exactly, with implied or leading doses', () => {
-    const qd = provider.translate('QD', hindi)
+    const qd = provider.translate('DAILY', hindi)
     expect(qd.kind).toBe('exact')
     if (qd.kind === 'exact') {
-      expect(qd.candidate.sig.code).toBe('QD')
+      expect(qd.candidate.sig.code).toBe('DAILY')
       expect(provider.render(qd.candidate.sig, hindi, qd.candidate.dose)).toBe('दिन में एक बार 1 कैप्सूल मुँह से लें')
     }
     expect(provider.translate('*1C', hindi).kind).toBe('exact')
@@ -26,10 +26,10 @@ describe('demo provider', () => {
     expect(r.candidate.sig.code).toBe('QHS PRN')
     expect(Math.round(r.candidate.confidence * 100)).toBe(88)
     expect(r.readAs).toBe('take 1 capsule at bedtime as needed for dizziness')
-    expect(r.others.map((c) => c.sig.code)).toEqual(['QHS', 'QD PRN', 'QHS PRN SLP', 'PRN'])
+    expect(r.others.map((c) => c.sig.code)).toEqual(['QHS', 'DAILY PRN', 'QHS PRN SLP', 'PRN'])
   })
 
-  it('reads "twice daily" as BID, not QD', () => {
+  it('reads "twice daily" as BID, not DAILY', () => {
     const r = provider.translate('take 2 capsules by mouth twice daily', hindi)
     expect(r.kind === 'exact' && r.candidate.sig.code).toBe('BID')
   })
@@ -39,7 +39,7 @@ describe('demo provider', () => {
     expect(provider.translate('1 cap bid tid', hindi).kind).toBe('cannotTranslate')
     expect(provider.translate('*1C', languageByCode('pa')).kind).toBe('notYetTranslatable')
     expect(provider.translate('*1C', languageByCode('fr')).kind).toBe('notYetTranslatable')
-    for (const code of ['ar', 'pa', 'zh-Hant'] as const) expect(provider.translate('QD', languageByCode(code)).kind).toBe('notYetTranslatable')
+    for (const code of ['ar', 'pa', 'zh-Hant'] as const) expect(provider.translate('DAILY', languageByCode(code)).kind).toBe('notYetTranslatable')
   })
 
   it('knows the wider Kroll code list, and sends untranslated codes to the phrasing guide', () => {
@@ -60,7 +60,7 @@ describe('demo provider', () => {
       const written = provider.translate('2 CAP PO TID', language)
       expect(written.kind === 'exact' && [written.candidate.sig.code, written.candidate.dose]).toEqual(['TID', '2'])
     }
-    expect(provider.translate('OD', hindi).kind).toBe('exact')
+    for (const banned of ['QD', 'OD']) expect(provider.translate(banned, hindi).kind).toBe('cannotTranslate')
     expect(provider.translate('1 CAP PO HS', hindi).kind).toBe('exact')
   })
 

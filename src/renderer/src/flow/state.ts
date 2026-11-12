@@ -138,7 +138,7 @@ export const initialState: FlowState = {
   persona: 'leung',
   edits: {},
   language: 'zh-Hans',
-  sigInput: 'QD',
+  sigInput: 'DAILY',
   sigEntered: '',
   dialog: null,
   confirmed: null,

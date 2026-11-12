@@ -24,8 +24,8 @@ interface Seed {
 const SEEDS: Seed[] = [
   { trace: 'H4M-2QX', persona: 'leung', rx: '1000051', fill: 1, daysAgo: 56, sig: '1C PO BID', code: 'BID', language: 'zh-Hans', translated: true, version: 'v2026.10' },
   { trace: 'P7C-9KD', persona: 'leung', rx: '1000051', fill: 2, daysAgo: 28, sig: '1C PO BID', code: 'BID', language: 'zh-Hans', translated: true, version: 'v2026.11' },
-  { trace: 'W3R-6TB', persona: 'leung', rx: '1000048', fill: 1, daysAgo: 9, sig: 'QD CF', code: 'QD CF', language: 'zh-Hans', translated: true, version: 'v2026.11' },
-  { trace: 'F8N-4JA', persona: 'farahani', rx: '1000052', fill: 1, daysAgo: 30, sig: 'QD', code: 'QD', language: 'fa', translated: false, version: 'v2026.11' },
+  { trace: 'W3R-6TB', persona: 'leung', rx: '1000048', fill: 1, daysAgo: 9, sig: 'DAILY CF', code: 'DAILY CF', language: 'zh-Hans', translated: true, version: 'v2026.11' },
+  { trace: 'F8N-4JA', persona: 'farahani', rx: '1000052', fill: 1, daysAgo: 30, sig: 'DAILY', code: 'DAILY', language: 'fa', translated: false, version: 'v2026.11' },
 ]
 
 function isoDaysAgo(n: number, hour: number): string {

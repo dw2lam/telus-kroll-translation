@@ -103,7 +103,7 @@ export const TOURS: Tour[] = [
     id: 'rollout',
     title: 'Language not supported yet',
     summary: 'Mrs. Farahani reads Persian, which has no verified sentences at rollout. English label, and the need is logged.',
-    setup: { type: 'scenario', persona: 'farahani', language: 'fa', sig: 'QD', screen: 'patient' },
+    setup: { type: 'scenario', persona: 'farahani', language: 'fa', sig: 'DAILY', screen: 'patient' },
     endsWith: (s) => s.showRequests,
     steps: [
       {
@@ -116,7 +116,7 @@ export const TOURS: Tour[] = [
       },
       {
         title: 'Enter the sig',
-        body: 'QD is an everyday code, but there is nothing verified to print in Persian.',
+        body: 'DAILY is an everyday code, but there is nothing verified to print in Persian.',
         highlight: () => '[data-testid=sig-input]',
         doLabel: 'Press Enter',
         perform: () => [{ type: 'submitSig' }],
@@ -144,11 +144,11 @@ export const TOURS: Tour[] = [
     id: 'no-match',
     title: 'No verified sentence fits',
     summary: 'A free-text sig. Closest match, top 5, phrasing guide, then English only with a translation request.',
-    setup: { type: 'scenario', persona: 'leung', language: 'zh-Hans', sig: '1 CAP QD FOR ANEMIA' },
+    setup: { type: 'scenario', persona: 'leung', language: 'zh-Hans', sig: '1 CAP DAILY FOR ANEMIA' },
     steps: [
       {
         title: 'Enter a free-text sig',
-        body: 'Not every sig is a code. There is no verified Chinese sentence for “1 CAP QD FOR ANEMIA”.',
+        body: 'Not every sig is a code. There is no verified Chinese sentence for “1 CAP DAILY FOR ANEMIA”.',
         highlight: () => '[data-testid=sig-input]',
         doLabel: 'Press Enter',
         perform: () => [{ type: 'submitSig' }],

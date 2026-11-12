@@ -7,7 +7,7 @@ import type { LanguageCode, VerifiedSig } from './types'
 // phrasing guide, which is exactly what the real flow must do.
 const TEAM_SENTENCES: VerifiedSig[] = [
   {
-    code: 'QD',
+    code: 'DAILY',
     english: 'Take [N] capsule(s) by mouth once daily',
     translations: {
       hi: 'दिन में एक बार [N] कैप्सूल मुँह से लें',
@@ -41,7 +41,7 @@ const TEAM_SENTENCES: VerifiedSig[] = [
     translations: { hi: 'ज़रूरत पड़ने पर सोते समय [N] कैप्सूल मुँह से लें' },
   },
   {
-    code: 'QD PRN',
+    code: 'DAILY PRN',
     english: 'Take [N] capsule(s) by mouth once daily as needed',
     translations: { hi: 'ज़रूरत पड़ने पर दिन में एक बार [N] कैप्सूल मुँह से लें' },
   },
@@ -56,7 +56,7 @@ const TEAM_SENTENCES: VerifiedSig[] = [
   { code: 'PC', english: 'Take [N] capsule(s) by mouth after meals', translations: { hi: 'भोजन के बाद [N] कैप्सूल मुँह से लें' } },
   { code: 'CF', english: 'Take [N] capsule(s) by mouth with food', translations: { hi: 'भोजन के साथ [N] कैप्सूल मुँह से लें' } },
   {
-    code: 'QD CF',
+    code: 'DAILY CF',
     english: 'Take [N] capsule(s) by mouth once daily with food',
     translations: { 'zh-Hans': '随餐服用，每日一次，每次[N]粒，口服' },
   },
@@ -75,7 +75,7 @@ const DRAFTS: Record<string, Partial<Record<LanguageCode, string>>> = {
   Q8H: { hi: 'हर 8 घंटे में [N] कैप्सूल मुँह से लें' },
   Q12H: { hi: 'हर 12 घंटे में [N] कैप्सूल मुँह से लें' },
   'Q4-6H PRN': { hi: 'ज़रूरत पड़ने पर हर 4 से 6 घंटे में [N] कैप्सूल मुँह से लें' },
-  'QD CF': { hi: 'दिन में एक बार भोजन के साथ [N] कैप्सूल मुँह से लें' },
+  'DAILY CF': { hi: 'दिन में एक बार भोजन के साथ [N] कैप्सूल मुँह से लें' },
   'BID CF': { hi: 'दिन में दो बार भोजन के साथ [N] कैप्सूल मुँह से लें' },
 }
 
@@ -94,7 +94,7 @@ const CHINESE_LIBRARY: Record<string, string> = {
   Q8H: '每8小时服用一次，每次[N]粒，口服',
   Q12H: '每12小时服用一次，每次[N]粒，口服',
   'QHS PRN': '需要时睡前服用，每次[N]粒，口服',
-  'QD PRN': '需要时服用，每日一次，每次[N]粒，口服',
+  'DAILY PRN': '需要时服用，每日一次，每次[N]粒，口服',
   'QHS PRN SLP': '需要助眠时睡前服用，每次[N]粒，口服',
   PRN: '需要时服用，每次[N]粒，口服',
   'Q4-6H PRN': '需要时每4至6小时服用一次，每次[N]粒，口服',
@@ -113,7 +113,7 @@ export const PHRASEBOOK: VerifiedSig[] = TEAM_SENTENCES.map((sig) => ({
 
 /** How Kroll's own Sig Codes table expands a code onto the English label. */
 export const KROLL_EXPANSIONS: Record<string, string> = {
-  QD: 'TAKE [N] CAPSULE(S) ONCE A DAY',
+  DAILY: 'TAKE [N] CAPSULE(S) ONCE A DAY',
   BID: 'TAKE [N] CAPSULE(S) TWICE A DAY',
   TID: 'TAKE [N] CAPSULE(S) THREE TIMES A DAY',
   QID: 'TAKE [N] CAPSULE(S) FOUR TIMES A DAY',
@@ -125,25 +125,24 @@ export const KROLL_EXPANSIONS: Record<string, string> = {
   Q8H: 'TAKE [N] CAPSULE(S) EVERY 8 HOURS',
   Q12H: 'TAKE [N] CAPSULE(S) EVERY 12 HOURS',
   'QHS PRN': 'TAKE [N] CAPSULE(S) AT BEDTIME AS NEEDED',
-  'QD PRN': 'TAKE [N] CAPSULE(S) ONCE A DAY AS NEEDED',
+  'DAILY PRN': 'TAKE [N] CAPSULE(S) ONCE A DAY AS NEEDED',
   'QHS PRN SLP': 'TAKE [N] CAPSULE(S) AT BEDTIME AS NEEDED FOR SLEEP',
   PRN: 'TAKE [N] CAPSULE(S) AS NEEDED',
   'Q4-6H PRN': 'TAKE [N] CAPSULE(S) EVERY 4 TO 6 HOURS AS NEEDED',
   AC: 'TAKE [N] CAPSULE(S) BEFORE MEALS',
   PC: 'TAKE [N] CAPSULE(S) AFTER MEALS',
   CF: 'TAKE [N] CAPSULE(S) WITH FOOD',
-  'QD CF': 'TAKE [N] CAPSULE(S) ONCE A DAY WITH FOOD',
+  'DAILY CF': 'TAKE [N] CAPSULE(S) ONCE A DAY WITH FOOD',
   'BID CF': 'TAKE [N] CAPSULE(S) TWICE A DAY WITH FOOD',
   UD: 'USE AS DIRECTED',
 }
 
 /** Other ways pharmacists write a code. `*1C` is the shorthand in the Figma frames: one capsule once a day. */
 export const KROLL_ALIASES: Record<string, { code: string; dose?: string }> = {
-  OD: { code: 'QD' },
   HS: { code: 'QHS' },
-  '*1C': { code: 'QD', dose: '1' },
-  '1C': { code: 'QD', dose: '1' },
-  '*2C': { code: 'QD', dose: '2' },
+  '*1C': { code: 'DAILY', dose: '1' },
+  '1C': { code: 'DAILY', dose: '1' },
+  '*2C': { code: 'DAILY', dose: '2' },
 }
 
 export type DoseForm = 'capsule' | 'tablet'
@@ -177,7 +176,7 @@ export function fillDose(template: string, dose: string): string {
   return template.replaceAll('[N]', dose).replaceAll('(s)', plural).replaceAll('(S)', plural.toUpperCase())
 }
 
-/** The library's ID for a verified phrase, e.g. `HI-QD-001` or `ZH-QHS-PRN-001`. */
+/** The library's ID for a verified phrase, e.g. `HI-DAILY-001` or `ZH-QHS-PRN-001`. */
 export function phraseId(code: string, language: LanguageCode): string {
   const prefix = language === 'zh-Hans' ? 'ZH' : language === 'zh-Hant' ? 'ZHT' : language.toUpperCase()
   return `${prefix}-${code.trim().replace(/\s+/g, '-')}-001`

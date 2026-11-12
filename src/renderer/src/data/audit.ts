@@ -23,7 +23,7 @@ export function libraryPrefix(language: LanguageCode): string {
   return language === 'zh-Hans' ? 'ZH' : language === 'zh-Hant' ? 'ZHT' : language.toUpperCase()
 }
 
-/** The phrase ID for a sig code's sentence, e.g. `ZH-QD-001`. */
+/** The phrase ID for a sig code's sentence, e.g. `ZH-DAILY-001`. */
 export const directionsPhraseId = (code: string, language: LanguageCode): string => `${libraryPrefix(language)}-${code.trim().replace(/\s+/g, '-')}-001`
 
 /** Quantity, refills, dates and prescriber in the patient's language. The values stay as dispensed. */

@@ -6,7 +6,7 @@ import type { Candidate, Language, TranslationProvider, TranslationResult, Verif
 // PHRASEBOOK, using a handful of keywords, so the demo can reach every state of
 // the Translated Sig pop-up. Swap it for the real platform at this interface.
 
-type Frequency = 'QD' | 'BID' | 'TID' | 'QID' | 'QHS' | 'QAM' | 'QPM' | 'Q4H' | 'Q6H' | 'Q8H' | 'Q12H' | 'Q4-6H'
+type Frequency = 'DAILY' | 'BID' | 'TID' | 'QID' | 'QHS' | 'QAM' | 'QPM' | 'Q4H' | 'Q6H' | 'Q8H' | 'Q12H' | 'Q4-6H'
 type Food = 'AC' | 'PC' | 'CF'
 
 interface Reading {
@@ -21,7 +21,7 @@ interface Reading {
 }
 
 const FEATURES: Record<string, Partial<Reading>> = {
-  QD: { frequency: ['QD'] },
+  DAILY: { frequency: ['DAILY'] },
   BID: { frequency: ['BID'] },
   TID: { frequency: ['TID'] },
   QID: { frequency: ['QID'] },
@@ -33,10 +33,10 @@ const FEATURES: Record<string, Partial<Reading>> = {
   Q8H: { frequency: ['Q8H'] },
   Q12H: { frequency: ['Q12H'] },
   'Q4-6H PRN': { frequency: ['Q4-6H'], prn: true },
-  'QD CF': { frequency: ['QD'], food: ['CF'] },
+  'DAILY CF': { frequency: ['DAILY'], food: ['CF'] },
   'BID CF': { frequency: ['BID'], food: ['CF'] },
   'QHS PRN': { frequency: ['QHS'], prn: true },
-  'QD PRN': { frequency: ['QD'], prn: true },
+  'DAILY PRN': { frequency: ['DAILY'], prn: true },
   'QHS PRN SLP': { frequency: ['QHS'], prn: true, sleep: true },
   PRN: { prn: true },
   AC: { food: ['AC'] },
@@ -57,7 +57,7 @@ const PHRASES: [RegExp, Partial<Reading>][] = [
   [/\b(qpm|every evening|each evening|in the evening)\b/, { frequency: ['QPM'] }],
   [/\b(bid|twice a day|twice daily|2 times a day|two times a day)\b/, { frequency: ['BID'] }],
   [/\b(tid|three times a day|three times daily|3 times a day)\b/, { frequency: ['TID'] }],
-  [/\b(qd|od|daily|once a day|once daily|every day|each day)\b/, { frequency: ['QD'] }],
+  [/\b(daily|once a day|once daily|every day|each day)\b/, { frequency: ['DAILY'] }],
   [/\b(qhs|hs|at bedtime|bedtime|before bed|at night|nightly)\b/, { frequency: ['QHS'] }],
   [/\b(prn|as needed|if needed|when needed|as required)\b/, { prn: true }],
   [/\b(ac|before meals|before food)\b/, { food: ['AC'] }],
@@ -109,7 +109,7 @@ function distance(reading: Reading, sig: VerifiedSig): number {
 function humanise(reading: Reading): string {
   const parts = [`take ${reading.dose} capsule${reading.dose === '1' ? '' : 's'}`]
   const freq: Record<Frequency, string> = {
-    QD: 'once daily',
+    DAILY: 'once daily',
     BID: 'twice daily',
     TID: 'three times daily',
     QID: 'four times daily',
