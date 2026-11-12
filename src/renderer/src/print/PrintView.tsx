@@ -5,6 +5,7 @@ import { Panel1, Panel2, PANEL_WIDTH } from '@/labels/LabelPanels'
 import { saveLabelPdf } from '@/labels/savePdf'
 import PrintScene, { type PrintPhase, type SceneLabel } from './PrintScene'
 import { TranslationRecord } from '@/flow/TranslationRecord'
+import leaf from '@/assets/leaf.svg'
 
 const PX_PER_INCH = PANEL_WIDTH / 4
 
@@ -71,36 +72,42 @@ export function PrintView({ job, onBack, onNewRx, onReport }: { job: PrintJob; o
 
   return (
     <div className="print-view" data-testid="print-view">
+      {/* Not part of Kroll: a visualiser of what the label printer would do, dressed in Kroll's own style. */}
       <section className="print-stage">
-        {labels ? (
-          <PrintScene labels={labels} runKey={run} peel={peeled ? 1 : 0} onPhase={(p, index) => setPhase({ phase: p, index })} />
-        ) : (
-          <div className="print-loading">Rendering labels…</div>
-        )}
-        <div className="print-status" data-testid="print-status" data-phase={phase.phase}>
-          <span className={'print-dot is-' + phase.phase} />
-          {status}
+        <header className="print-bar">
+          <span className="print-title"><img src={leaf} width={12} height={12} alt="" />Label printer</span>
+          <span className="print-status" data-testid="print-status" data-phase={phase.phase}>
+            <span className={'print-dot is-' + phase.phase} />
+            {status}
+          </span>
+        </header>
+        <div className="print-canvas">
+          {labels ? (
+            <PrintScene labels={labels} runKey={run} peel={peeled ? 1 : 0} onPhase={(p, index) => setPhase({ phase: p, index })} />
+          ) : (
+            <div className="print-loading">Rendering labels…</div>
+          )}
         </div>
-        <div className="print-actions">
-          <button type="button" onClick={replay} data-testid="btn-replay">↻ Replay</button>
+        <footer className="print-bar is-foot">
+          <button type="button" className="print-btn" onClick={replay} data-testid="btn-replay">↻ Replay</button>
           {job.translation && (
-            <button type="button" onClick={() => setPeeled((p) => !p)} disabled={phase.phase !== 'done'} data-testid="btn-peel" data-peeled={peeled}>
+            <button type="button" className="print-btn" onClick={() => setPeeled((p) => !p)} disabled={phase.phase !== 'done'} data-testid="btn-peel" data-peeled={peeled}>
               {peeled ? 'Press panel back' : 'Peel panel 1'}
             </button>
           )}
           <span className="print-hint">Drag to orbit · scroll to zoom</span>
-        </div>
+        </footer>
       </section>
       <aside className="print-side">
-        <header>
-          <h1>Printed labels</h1>
-          <p>
+        <header className="print-bar">
+          <span className="print-title"><img src={leaf} width={12} height={12} alt="" />Labels printed — Rx:{job.rx}</span>
+        </header>
+        <div className="print-panels">
+          <p className="print-summary">
             {language
               ? `Two-panel peel label · English on the front, ${language.name} underneath.`
               : 'English label only — no verified translation was printed.'}
           </p>
-        </header>
-        <div className="print-panels">
           <TranslationRecord record={job.record} variant="print" />
           <figure>
             <figcaption>Panel 1 — front, dispensed label</figcaption>
@@ -113,15 +120,17 @@ export function PrintView({ job, onBack, onNewRx, onReport }: { job: PrintJob; o
             </figure>
           )}
         </div>
-        <footer>
+        <footer className="print-foot">
           {saved && <p className="print-saved">Saved to {saved}</p>}
           <div className="print-buttons">
-            <button type="button" onClick={() => void savePdf()} data-testid="btn-save-pdf">Save label PDF</button>
-            {job.translation && (
-              <button type="button" onClick={onReport} data-testid="btn-report-print">Report a translation issue</button>
+            <button type="button" className="print-btn" onClick={() => void savePdf()} data-testid="btn-save-pdf">Save label PDF</button>
+            {job.translation ? (
+              <button type="button" className="print-btn" onClick={onReport} data-testid="btn-report-print">Report an issue</button>
+            ) : (
+              <span />
             )}
-            <button type="button" onClick={onBack} data-testid="btn-back-to-rx">Back to Rx</button>
-            <button type="button" className="is-primary" onClick={onNewRx} data-testid="btn-new-rx">New Rx</button>
+            <button type="button" className="print-btn" onClick={onBack} data-testid="btn-back-to-rx">Back to Rx</button>
+            <button type="button" className="print-btn is-primary" onClick={onNewRx} data-testid="btn-new-rx">✓ New Rx</button>
           </div>
         </footer>
       </aside>

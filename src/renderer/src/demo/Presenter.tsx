@@ -104,13 +104,15 @@ export function Presenter(props: Props) {
       <div className="pz-footer">
         {/* View and demo controls, as a compact toolbar. */}
         <div className="pz-tools" role="toolbar" aria-label="Demo controls">
-          <button type="button" className="pz-tool" aria-pressed={show3d} onClick={() => onShow3d(!show3d)} title="Labels print onto a vial in 3D" data-testid="toggle-3d">
+          <button type="button" role="switch" className="pz-tool is-toggle" aria-checked={show3d} onClick={() => onShow3d(!show3d)} title="On: labels print onto a vial in 3D. Off: they open inside Kroll." data-testid="toggle-3d">
             <Icon name="cube" size={17} />
             <span>3D print</span>
+            <span className="pz-mini-switch" aria-hidden />
           </button>
-          <button type="button" className="pz-tool" aria-pressed={magnifier} onClick={() => onMagnifier(!magnifier)} title={`Zoom in around the pointer (${isMac ? '⇧⌘M' : 'Ctrl+Shift+M'})`} data-testid="toggle-magnifier">
+          <button type="button" role="switch" className="pz-tool is-toggle" aria-checked={magnifier} onClick={() => onMagnifier(!magnifier)} title={`Zoom in around the pointer (${isMac ? '⇧⌘M' : 'Ctrl+Shift+M'})`} data-testid="toggle-magnifier">
             <Icon name="magnifier" size={17} />
             <span>Magnifier</span>
+            <span className="pz-mini-switch" aria-hidden />
           </button>
           <button type="button" className="pz-tool" onClick={onCheatSheet} title="Cheat sheet (F1), in its own window" data-testid="btn-cheatsheet">
             <Icon name="doc" size={17} />

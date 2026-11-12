@@ -364,11 +364,22 @@ function Timeline({ clock, runKey, count, paused, onPhase, onDone }: { clock: Re
   return null
 }
 
+const TARGET = new THREE.Vector3(0.2, 1.3, 0)
+/** The view direction: up and in front of the scene. */
+const VIEW_DIR = new THREE.Vector3(0, 4.9, 14.2).normalize()
+
+/** Frames the printer and the vial whatever the canvas's shape: backs the camera off until both fit. */
 function CameraRig() {
-  const { camera } = useThree()
+  const { camera, size } = useThree()
   useEffect(() => {
-    camera.lookAt(0.2, 1.3, 0)
-  }, [camera])
+    const persp = camera as THREE.PerspectiveCamera
+    const vHalf = THREE.MathUtils.degToRad(persp.fov / 2)
+    const hHalf = Math.atan(Math.tan(vHalf) * (size.width / Math.max(1, size.height)))
+    // The printer and vial span about 5.6 either side of the target and 4 above and below it.
+    const distance = Math.max(14, 4 / Math.tan(vHalf), 5.6 / Math.tan(hHalf))
+    camera.position.copy(TARGET).addScaledVector(VIEW_DIR, distance)
+    camera.lookAt(TARGET)
+  }, [camera, size.width, size.height])
   return null
 }
 
@@ -387,7 +398,7 @@ export default function PrintScene({ labels, runKey, onPhase, onDone, paused = f
   const peel = useRef(0)
   return (
     <Canvas shadows={{ type: THREE.PCFShadowMap }} dpr={[1, 2]} camera={{ position: [0.2, 6.2, 14.2], fov: 34 }} gl={{ antialias: true, preserveDrawingBuffer: true }}>
-      <color attach="background" args={['#eef1f4']} />
+      <color attach="background" args={['#e9e9e9']} />
       <CameraRig />
       <ambientLight intensity={0.35} />
       <directionalLight position={[4, 9, 6]} intensity={1.6} castShadow shadow-mapSize={[2048, 2048]} shadow-bias={-0.0004}>
@@ -407,10 +418,10 @@ export default function PrintScene({ labels, runKey, onPhase, onDone, paused = f
       ))}
       <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
         <planeGeometry args={[60, 60]} />
-        <meshStandardMaterial color="#e3e7eb" roughness={0.9} />
+        <meshStandardMaterial color="#dedede" roughness={0.9} />
       </mesh>
       <ContactShadows position={[0, 0.002, 0]} opacity={0.35} scale={18} blur={2.4} far={4} />
-      <OrbitControls target={[0.2, 1.3, 0]} enablePan={false} minDistance={5} maxDistance={22} maxPolarAngle={Math.PI / 2.1} />
+      <OrbitControls target={[0.2, 1.3, 0]} enablePan={false} minDistance={5} maxDistance={30} maxPolarAngle={Math.PI / 2.1} />
     </Canvas>
   )
 }

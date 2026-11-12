@@ -239,3 +239,11 @@ button.pz-wide:hover { background: var(--pz-hover); }
 .pz-stepper button:hover:not(:disabled) { background: var(--pz-segment); box-shadow: var(--pz-shadow); }
 .pz-stepper button:disabled { opacity: 0.35; cursor: default; }
 .pz-stepper .pz-stepper-value { min-width: 42px; font-size: 12px; font-variant-numeric: tabular-nums; }
+
+/* On/off controls in the toolbar: a switch, not a button. */
+.pz-tool.is-toggle { padding-right: 6px; }
+.pz-tool.is-toggle > span:nth-of-type(1) { flex: 1; }
+.pz-mini-switch { position: relative; width: 26px; height: 15px; flex-shrink: 0; border-radius: 8px; background: var(--pz-control); box-shadow: inset 0 0 0 0.5px var(--pz-separator); transition: background 0.18s ease; }
+.pz-mini-switch::after { content: ''; position: absolute; top: 1px; left: 1px; width: 13px; height: 13px; border-radius: 7px; background: #fff; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25); transition: transform 0.18s ease; }
+.pz-tool.is-toggle[aria-checked='true'] .pz-mini-switch { background: var(--pz-accent); }
+.pz-tool.is-toggle[aria-checked='true'] .pz-mini-switch::after { transform: translateX(11px); }
