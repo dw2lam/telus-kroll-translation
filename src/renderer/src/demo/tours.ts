@@ -410,7 +410,7 @@ export const TOURS: Tour[] = [
         title: 'A sentence is paused',
         body: 'Start where the last case ended: Chinese “twice a day” is paused after another pharmacy’s report.',
         doLabel: 'Pause it',
-        perform: () => [{ type: 'simulateExternalReport' }, { type: 'closeNotice' }],
+        perform: () => [{ type: 'simulateExternalReport' }],
         done: (s) => s.paused.length > 0,
       },
       {
