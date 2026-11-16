@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { ISSUE_TYPES, NOTICED_BY, SEVERITY_TEXT, severityOf, type Taken } from '@/data/audit'
 import { languageByCode } from '@/data/languages'
-import { DButton, Dialog as KDialog, DialogRow } from '@/kroll/primitives'
+import { DButton, Dialog as KDialog, DialogRow, PrintIcon } from '@/kroll/primitives'
 import { outcomeOf, shortTime } from './RxHistoryDialog'
 import { type Action, type FlowState, reportLines } from './state'
 
@@ -11,7 +11,7 @@ const TAKEN: { id: Taken; label: string }[] = [
   { id: 'unknown', label: 'Unknown' },
 ]
 
-const STATUS_TEXT = { received: 'Received', paused: 'Phrase paused for every pharmacy', fixed: 'Fixed', noChange: 'No change to the library' } as const
+const STATUS_TEXT = { received: 'Received by TELUS', paused: 'Confirmed by TELUS translators · sentence paused for every pharmacy', fixed: 'Fixed', noChange: 'No change to the library' } as const
 
 /**
  * PRD 1: report a translation issue. From the preview before printing, a printed label, the Rx
@@ -33,8 +33,8 @@ export function ReportDialog({ state, printView, dispatch }: { state: FlowState;
     return (
       <KDialog title="Report a translation issue" onClose={close} width={640} testId="dialog-report"
         footer={<>
-          <DButton primary onClick={() => r.trace && dispatch({ type: 'reportStep', step: 'line' })} testId="btn-report-next">Next</DButton>
           <DButton onClick={close} testId="btn-report-cancel">Cancel</DButton>
+          <DButton primary onClick={() => r.trace && dispatch({ type: 'reportStep', step: 'line' })} testId="btn-report-next">Next</DButton>
         </>}>
         <span className="k-dnote">Find the label from what the patient can read you: the Rx number is on every label.</span>
         <form className="k-dialog-row" onSubmit={(e) => { e.preventDefault(); set({ rx: lookupRx.trim(), trace: null }) }}>
@@ -71,9 +71,9 @@ export function ReportDialog({ state, printView, dispatch }: { state: FlowState;
     return (
       <KDialog title="Report a translation issue — which line?" onClose={close} width={720} testId="dialog-report"
         footer={<>
-          <DButton primary onClick={() => r.line && dispatch({ type: 'reportStep', step: 'form' })} testId="btn-report-next">Next</DButton>
-          {r.origin === 'lookup' && <DButton onClick={() => dispatch({ type: 'reportStep', step: 'lookup' })} testId="btn-report-back">Back</DButton>}
           <DButton onClick={close} testId="btn-report-cancel">Cancel</DButton>
+          {r.origin === 'lookup' && <DButton onClick={() => dispatch({ type: 'reportStep', step: 'lookup' })} testId="btn-report-back">Back</DButton>}
+          <DButton primary onClick={() => r.line && dispatch({ type: 'reportStep', step: 'form' })} testId="btn-report-next">Next</DButton>
         </>}>
         <span className="k-dnote">
           {beforePrint ? 'The label about to print.' : `Rx ${r.rx} · ${entry ? shortTime(entry.printedAt) : ''} · ${language.name}.`} Each line shows the standard English it was translated from.
@@ -95,9 +95,9 @@ export function ReportDialog({ state, printView, dispatch }: { state: FlowState;
     return (
       <KDialog title="Report a translation issue — what’s wrong?" onClose={close} width={640} testId="dialog-report"
         footer={<>
-          <DButton primary onClick={() => ready && dispatch({ type: 'submitReport' })} testId="btn-report-submit">✓ Submit report</DButton>
-          <DButton onClick={() => dispatch({ type: 'reportStep', step: 'line' })} testId="btn-report-back">Back</DButton>
           <DButton onClick={close} testId="btn-report-cancel">Cancel</DButton>
+          <DButton onClick={() => dispatch({ type: 'reportStep', step: 'line' })} testId="btn-report-back">Back</DButton>
+          <DButton primary onClick={() => ready && dispatch({ type: 'submitReport' })} testId="btn-report-submit">✓ Submit report</DButton>
         </>}>
         <span className="k-hint">Line: {r.line === 'whole' ? 'Whole label' : r.line === 'unsure' ? 'Not sure which line' : lines.find((l) => l.key === r.line)?.english}</span>
         <fieldset className="k-fieldset">
@@ -166,28 +166,28 @@ export function ReportDialog({ state, printView, dispatch }: { state: FlowState;
   return (
     <KDialog title={`Report ${report.id} submitted`} onClose={close} width={640} testId="dialog-report-done"
       footer={<>
+        {/* One primary action, last: English only when the directions were flagged, otherwise the line in English. */}
+        <DButton onClick={close} testId="btn-report-close">{beforePrint || r.trace ? 'Close' : '✓ Done'}</DButton>
         {beforePrint ? (
-          <>
-            <DButton primary onClick={() => dispatch({ type: 'printFlagged', englishOnly: false, view: printView })} testId="btn-print-flagged" disabled={directions}>
-              Print with this line in English
-            </DButton>
-            <DButton primary={directions} onClick={() => dispatch({ type: 'printFlagged', englishOnly: true, view: printView })} testId="btn-print-english-only">
-              Print English only
-            </DButton>
-          </>
-        ) : (
-          r.trace && (
+          directions ? (
+            <DButton primary onClick={() => dispatch({ type: 'printFlagged', englishOnly: true, view: printView })} testId="btn-print-english-only"><PrintIcon />Print English only</DButton>
+          ) : (
             <>
-              <DButton primary onClick={() => dispatch({ type: 'reprint', trace: r.trace!, englishOnly: false, view: printView })} testId="btn-reprint-corrected" disabled={directions}>
-                Corrected reprint
-              </DButton>
-              <DButton primary={directions} onClick={() => dispatch({ type: 'reprint', trace: r.trace!, englishOnly: true, view: printView })} testId="btn-reprint-english">
-                English-only reprint
-              </DButton>
+              <DButton onClick={() => dispatch({ type: 'printFlagged', englishOnly: true, view: printView })} testId="btn-print-english-only"><PrintIcon />Print English only</DButton>
+              <DButton primary onClick={() => dispatch({ type: 'printFlagged', englishOnly: false, view: printView })} testId="btn-print-flagged"><PrintIcon />Print with this line in English</DButton>
             </>
           )
+        ) : (
+          r.trace &&
+          (directions ? (
+            <DButton primary onClick={() => dispatch({ type: 'reprint', trace: r.trace!, englishOnly: true, view: printView })} testId="btn-reprint-english"><PrintIcon />English-only reprint</DButton>
+          ) : (
+            <>
+              <DButton onClick={() => dispatch({ type: 'reprint', trace: r.trace!, englishOnly: true, view: printView })} testId="btn-reprint-english"><PrintIcon />English-only reprint</DButton>
+              <DButton primary onClick={() => dispatch({ type: 'reprint', trace: r.trace!, englishOnly: false, view: printView })} testId="btn-reprint-corrected"><PrintIcon />Corrected reprint</DButton>
+            </>
+          ))
         )}
-        <DButton onClick={close} testId="btn-report-close">Close</DButton>
       </>}>
       <div className={'k-severity is-s' + (report.severity ?? 0)}>
         <b>{report.severity ? SEVERITY_TEXT[report.severity].title : 'Pharmacy error · no change to the library'}</b>
@@ -199,13 +199,13 @@ export function ReportDialog({ state, printView, dispatch }: { state: FlowState;
             <b>{STATUS_TEXT[t.status]}</b> <span className="k-hint">{shortTime(t.at)}</span>
           </li>
         ))}
-        {!report.timeline.some((t) => t.status === 'fixed' || t.status === 'noChange') && <li className="is-pending">Fixed or no change: Kroll updates this when TELUS responds.</li>}
+        {!report.timeline.some((t) => t.status === 'fixed' || t.status === 'noChange') && <li className="is-pending">TELUS translators review it. Kroll updates this when they respond.</li>}
       </ol>
       {beforePrint && (
         <span className="k-dnote" data-testid="report-print-note">
           {directions
             ? 'The flagged line is the dosing directions. Directions translate fully or not at all, so no translated label prints: English only.'
-            : 'The flagged line can print in English with a “could not be translated” note; the rest stays translated. English only is always an option.'}
+            : 'The flagged headings can print in English; the directions stay translated. English only is always an option.'}
         </span>
       )}
       {!beforePrint && (

@@ -115,7 +115,7 @@ describe('hi-fi B3: liability record and translation requests', () => {
     expect(notYet.dialog?.kind).toBe('notYetTranslatable')
     expect(notYet.requestTranslation).toBe(true)
     const logged = run(notYet, { type: 'print', englishOnly: true, view: 'inline' })
-    expect(logged.requests.at(-1)).toMatchObject({ id: 'TR-0042', language: 'Punjabi', sig: '(language)', status: 'Pending' })
+    expect(logged.requests.at(-1)).toMatchObject({ id: 'TR-0042', language: 'Punjabi', sig: 'Whole language (no sigs yet)', status: 'Pending' })
     expect(logged.job?.record).toEqual({ kind: 'request', id: 'TR-0042' })
 
     const skipped = run(notYet, { type: 'toggleRequest' }, { type: 'print', englishOnly: true, view: 'inline' })

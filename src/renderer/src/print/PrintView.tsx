@@ -1,13 +1,12 @@
 import { useEffect, useMemo, useState } from 'react'
 import { languageByCode } from '@/data/languages'
 import type { PrintJob } from '@/flow/state'
-import { Panel1, Panel2, PANEL_WIDTH } from '@/labels/LabelPanels'
+import { Panel1, Panel2, Stickers } from '@/labels/LabelPanels'
+import { PX_PER_INCH, vialById } from '@/labels/vials'
 import { saveLabelPdf } from '@/labels/savePdf'
 import PrintScene, { type PrintPhase, type SceneLabel } from './PrintScene'
 import { TranslationRecord } from '@/flow/TranslationRecord'
 import leaf from '@/assets/leaf.svg'
-
-const PX_PER_INCH = PANEL_WIDTH / 4
 
 /** Rasterises each printed panel through the main process so the 3D label shows the exact DOM label. */
 function usePanelImages(job: PrintJob): SceneLabel[] | null {
@@ -103,10 +102,14 @@ export function PrintView({ job, onBack, onNewRx, onReport }: { job: PrintJob; o
           <span className="print-title"><img src={leaf} width={12} height={12} alt="" />Labels printed — Rx:{job.rx}</span>
         </header>
         <div className="print-panels">
-          <p className="print-summary">
-            {language
-              ? `Two-panel peel label · English on the front, ${language.name} underneath.`
-              : 'English label only — no verified translation was printed.'}
+          <p className="print-confirm" data-testid="print-confirm">
+            <span className="print-confirm-check">✓</span>
+            <span>
+              <b>{language ? 'Labels printed' : 'English label printed'}</b>
+              {language
+                ? ` · Two-panel peel label for a ${vialById(job.vial).name} vial: English on the front, ${language.name} underneath.`
+                : ` · ${vialById(job.vial).name} vial. No verified translation was printed.`}
+            </span>
           </p>
           <TranslationRecord record={job.record} variant="print" />
           <figure>
@@ -119,6 +122,10 @@ export function PrintView({ job, onBack, onNewRx, onReport }: { job: PrintJob; o
               <div className="print-panel-frame"><Panel2 job={job} /></div>
             </figure>
           )}
+          <figure>
+            <figcaption>Warning stickers — on the vial, beside or below the label, never on it</figcaption>
+            <div className="print-panel-frame is-stickers"><Stickers /></div>
+          </figure>
         </div>
         <footer className="print-foot">
           {saved && <p className="print-saved">Saved to {saved}</p>}

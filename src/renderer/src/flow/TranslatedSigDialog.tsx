@@ -3,7 +3,7 @@ import { provider } from '@/data/demoProvider'
 import { languageByCode } from '@/data/languages'
 import { fillDose, forForm } from '@/data/phrasebook'
 import type { Candidate, LanguageCode } from '@/data/types'
-import { DButton, Dialog as KDialog, DialogRow } from '@/kroll/primitives'
+import { DButton, Dialog as KDialog, DialogRow, PrintIcon } from '@/kroll/primitives'
 import type { Action, Dialog } from './state'
 
 interface Props {
@@ -70,7 +70,10 @@ function RequestBox({ label, checked, dispatch }: { label: string; checked: bool
   )
 }
 
-/** The Translated Sig pop-up in each of its states (Figma B4, B4t, B7, B8, B9, B10). */
+/**
+ * The Translated Sig pop-up in each of its states (Figma B4, B4t, B7, B8, B9, B10). Footers read
+ * left to right as back, alternatives, then the primary action last (team review).
+ */
 export function TranslatedSigDialog({ dialog, printView, language, sigEntered, requestTranslation, libraryVersion, dispatch }: Props) {
   const lang = languageByCode(language)
   const close = (): void => dispatch({ type: 'closeDialog' })
@@ -84,9 +87,9 @@ export function TranslatedSigDialog({ dialog, printView, language, sigEntered, r
       return (
         <KDialog title={title} onClose={close} width={560} testId="dialog-exact"
           footer={<>
-            <DButton primary onClick={() => dispatch({ type: 'confirm', candidate: c })} testId="btn-print-translation">✓ Print with translation</DButton>
-            <DButton onClick={() => { dispatch({ type: 'confirm', candidate: c }); dispatch({ type: 'previewLabels' }) }} testId="btn-preview-first">Preview labels</DButton>
             {back}
+            <DButton onClick={() => { dispatch({ type: 'confirm', candidate: c }); dispatch({ type: 'previewLabels' }) }} testId="btn-preview-first">Preview labels</DButton>
+            <DButton primary onClick={() => dispatch({ type: 'confirm', candidate: c })} testId="btn-print-translation"><PrintIcon />Print with translation</DButton>
           </>}>
           <SigEntered sig={sigEntered} />
           <DialogRow label="Matched sig code">
@@ -109,9 +112,9 @@ export function TranslatedSigDialog({ dialog, printView, language, sigEntered, r
       return (
         <KDialog title={title} onClose={close} width={600} testId="dialog-closest"
           footer={<>
-            <DButton primary onClick={() => dispatch({ type: 'confirm', candidate: c })} testId="btn-use-sig">✓ Use this sig</DButton>
-            <DButton onClick={() => dispatch({ type: 'notThisOne' })} testId="btn-not-this-one">Not this one</DButton>
             {back}
+            <DButton onClick={() => dispatch({ type: 'notThisOne' })} testId="btn-not-this-one">Not this one</DButton>
+            <DButton primary onClick={() => dispatch({ type: 'confirm', candidate: c })} testId="btn-use-sig">✓ Use this sig</DButton>
           </>}>
           <SigEntered sig={sigEntered} />
           <DialogRow label="Read as">
@@ -134,9 +137,9 @@ export function TranslatedSigDialog({ dialog, printView, language, sigEntered, r
       return (
         <KDialog title={title} onClose={close} width={660} testId="dialog-candidates"
           footer={<>
-            <DButton primary onClick={() => dispatch({ type: 'confirm', candidate: dialog.candidates[dialog.selected] })} testId="btn-use-selected">✓ Use selected</DButton>
-            <DButton onClick={() => dispatch({ type: 'noneOfThese' })} testId="btn-none-of-these">None of these</DButton>
             {back}
+            <DButton onClick={() => dispatch({ type: 'noneOfThese' })} testId="btn-none-of-these">None of these</DButton>
+            <DButton primary onClick={() => dispatch({ type: 'confirm', candidate: dialog.candidates[dialog.selected] })} testId="btn-use-selected">✓ Use selected</DButton>
           </>}>
           <SigEntered sig={sigEntered} />
           <span className="k-hint">Select the sig you meant:</span>
@@ -159,8 +162,8 @@ export function TranslatedSigDialog({ dialog, printView, language, sigEntered, r
       return (
         <KDialog title={title} onClose={close} width={640} testId="dialog-guide"
           footer={<>
-            <DButton primary onClick={close} testId="btn-reword">✓ Back to Rx to reword</DButton>
             <DButton onClick={() => dispatch({ type: 'noneOfTheseFit' })} testId="btn-none-fit">None of these fit</DButton>
+            <DButton primary onClick={close} testId="btn-reword">✓ Back to Rx to reword</DButton>
           </>}>
           <SigEntered sig={sigEntered} />
           <span className="k-dnote">
@@ -182,7 +185,7 @@ export function TranslatedSigDialog({ dialog, printView, language, sigEntered, r
       const c = dialog.candidate
       return (
         <KDialog title={title} onClose={close} width={560} testId="dialog-paused"
-          footer={<><DButton primary onClick={() => dispatch({ type: 'print', englishOnly: true, view: printView })} testId="btn-print-english">✓ Print English label</DButton>{back}</>}>
+          footer={<>{back}<DButton primary onClick={() => dispatch({ type: 'print', englishOnly: true, view: printView })} testId="btn-print-english"><PrintIcon />Print English label</DButton></>}>
           <SigEntered sig={sigEntered} />
           <DialogRow label="Matched sig code">
             <div className="k-dfield" style={{ fontSize: 10 }}>
@@ -190,8 +193,8 @@ export function TranslatedSigDialog({ dialog, printView, language, sigEntered, r
               <span className="k-badge is-warn">Paused</span>
             </div>
           </DialogRow>
-          <span className="k-dnote is-warning">
-            This {lang.name} sentence is paused while two translators re-review it after a report. The label prints in English until the fix ships.
+          <span className="k-alert" role="alert">
+            TELUS paused this {lang.name} sentence after its translators confirmed a reported problem. The label prints in English until the fix ships.
           </span>
         </KDialog>
       )
@@ -199,9 +202,9 @@ export function TranslatedSigDialog({ dialog, printView, language, sigEntered, r
     case 'cannotTranslate':
       return (
         <KDialog title="Unable to translate" onClose={close} width={480} testId="dialog-cannot"
-          footer={<><DButton primary onClick={() => dispatch({ type: 'print', englishOnly: true, view: printView })} testId="btn-print-english">✓ Print English label only</DButton>{back}</>}>
+          footer={<>{back}<DButton primary onClick={() => dispatch({ type: 'print', englishOnly: true, view: printView })} testId="btn-print-english"><PrintIcon />Print English label only</DButton></>}>
           <SigEntered sig={sigEntered} />
-          <span className="k-dnote is-warning">
+          <span className="k-alert" role="alert">
             This sig can’t be translated. {dialog.reason} The vial label will print in English only.
           </span>
           <RequestBox label={`Request a verified ${lang.name} translation of this sig`} checked={requestTranslation} dispatch={dispatch} />
@@ -210,11 +213,11 @@ export function TranslatedSigDialog({ dialog, printView, language, sigEntered, r
     case 'notYetTranslatable':
       return (
         <KDialog title={title} onClose={close} width={480} testId="dialog-not-yet"
-          footer={<><DButton primary onClick={() => dispatch({ type: 'print', englishOnly: true, view: printView })} testId="btn-print-english">✓ Print English label</DButton>{back}</>}>
+          footer={<>{back}<DButton primary onClick={() => dispatch({ type: 'print', englishOnly: true, view: printView })} testId="btn-print-english"><PrintIcon />Print English label</DButton></>}>
           <DialogRow label="Patient language">
             <div className="k-dfield"><span className="k-strong">{lang.name} — captured, not yet translatable</span></div>
           </DialogRow>
-          <span className="k-dnote is-warning">
+          <span className="k-alert" role="alert">
             No verified {lang.name} sig codes are configured in Kroll yet. The vial label will print in English.
           </span>
           <RequestBox label={`Log that this patient needs ${lang.name} labels`} checked={requestTranslation} dispatch={dispatch} />

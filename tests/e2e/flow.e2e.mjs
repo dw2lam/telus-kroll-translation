@@ -70,8 +70,11 @@ try {
   await page.click('[data-testid=btn-print-translation]')
   assert.equal(await text('[data-testid=translated-sig]'), '每天 1 次，每次 1 粒胶囊')
   await printed()
-  assert.equal(await text('[data-testid=label-english-sig]'), 'TAKE 1 CAPSULE ONCE A DAY')
-  assert.match(await text('[data-testid=label-dispensing]'), /30.*6.*Dr\. McGraw, Phil/s)
+  // Figma C3: sentence-case directions, details on the front, warnings on stickers.
+  assert.equal(await text('[data-testid=label-english-sig]'), 'Take 1 capsule once a day')
+  assert.match(await text('[data-panel="1"]'), /Qty: 30 CAP · Refills: 6/)
+  assert.equal(await page.locator('[data-testid=label-stickers] .lbl-sticker').count(), 5)
+  assert.equal(await page.getAttribute('[data-panel="1"]', 'data-vial'), '16')
   await page.click('[data-testid=btn-peel]')
   console.log('✓ exact match prints both panels')
 
@@ -140,6 +143,15 @@ try {
   // Free play reaches the same edge cases from Kroll's own menus.
   await page.click('[data-testid=btn-restart]')
   await page.click('[data-testid=btn-patient-ok]')
+  // The vial picker changes the label stock.
+  await page.click('[data-testid=vial-field]')
+  await page.click('[data-testid=vial-30]')
+  await page.click('[data-testid=btn-labels-f2]')
+  assert.equal(await page.getAttribute('[data-panel="1"]', 'data-vial'), '30')
+  await page.click('[data-testid=btn-preview-close]')
+  await page.click('[data-testid=vial-field]')
+  await page.click('[data-testid=vial-16]')
+  console.log('✓ vial picker')
   await page.click('[data-testid=menu-rx]')
   await page.click('[data-testid=menu-rx-history]')
   await page.click('[data-testid=history-row-P7C-9KD]')

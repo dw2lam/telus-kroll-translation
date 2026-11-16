@@ -83,7 +83,7 @@ export const TOURS: Tour[] = [
       },
       {
         title: 'Two labels print',
-        body: 'The standard English label stays intact, with the translated directions and warnings on a peel-back panel underneath. No new hardware.',
+        body: 'The English label leads with her name, the drug and the directions. The translated directions sit on a peel-back panel underneath, and warnings go on separate stickers on the vial. No new hardware.',
         highlight: printOutput,
       },
       {
@@ -191,7 +191,7 @@ export const TOURS: Tour[] = [
   {
     id: 'tech-preview',
     title: 'Technician flags a line before printing',
-    summary: 'A bilingual technician spots an unclear warning in the preview. That line prints in English; the rest stays translated.',
+    summary: 'A bilingual technician spots an unclear heading in the preview. The headings print in English; the directions stay translated.',
     setup: { type: 'scenario', persona: 'leung', language: 'zh-Hans', sig: '1C PO BID' },
     steps: [
       {
@@ -212,7 +212,7 @@ export const TOURS: Tour[] = [
       },
       {
         title: 'Report from the preview',
-        body: 'In this example, the technician thinks warning 2 reads awkwardly.',
+        body: 'In this example, the technician thinks the Chinese heading on the back reads awkwardly.',
         highlight: () => '[data-testid=btn-preview-report]',
         doLabel: 'Report a translation issue',
         perform: (s) => [{ type: 'startReport', origin: 'preview', trace: s.job?.trace }],
@@ -220,15 +220,15 @@ export const TOURS: Tour[] = [
       },
       {
         title: 'Pick the line by its English',
-        body: 'Each line shows the standard English next to the translation, so anyone can point at it. No phrase IDs.',
-        highlight: () => '[data-testid=line-warning-2]',
-        doLabel: 'Pick warning 2',
-        perform: () => [{ type: 'report', changes: { line: 'warning-2' } }, { type: 'reportStep', step: 'form' }],
+        body: 'Each line shows the standard English next to the translation, so anyone can point at it. Warnings aren’t listed: they’re English stickers now. No phrase IDs.',
+        highlight: () => '[data-testid=line-chrome]',
+        doLabel: 'Pick the headings',
+        perform: () => [{ type: 'report', changes: { line: 'chrome' } }, { type: 'reportStep', step: 'form' }],
         done: (s) => s.report?.step === 'form',
       },
       {
         title: 'Say what’s wrong',
-        body: 'Meaning right but unclear. Kroll sets the severity itself: 2, reviewed within 5 business days. Nothing is paused.',
+        body: 'Meaning right but unclear. Kroll sets the severity itself: 2, reviewed within 5 business days. The report goes to TELUS; nothing is paused.',
         highlight: () => '[data-testid=issue-unclear]',
         doLabel: 'Submit report',
         perform: () => [{ type: 'report', changes: { type: 'unclear', noticedBy: 'technician' } }, { type: 'submitReport' }],
@@ -236,7 +236,7 @@ export const TOURS: Tour[] = [
       },
       {
         title: 'Print with that line in English',
-        body: 'The flagged warning prints in English with a “could not be translated” note. Everything else stays in Chinese.',
+        body: 'The headings print in English. The directions, which matter most, stay in Chinese.',
         highlight: () => '[data-testid=btn-print-flagged]',
         doLabel: 'Print',
         perform: (_s, ctx) => [{ type: 'printFlagged', englishOnly: false, view: ctx.view }],
@@ -247,7 +247,7 @@ export const TOURS: Tour[] = [
   {
     id: 'directions-flagged',
     title: 'Dosing directions flagged before printing',
-    summary: 'If the directions themselves are wrong, no translated label prints. Severity 1 pauses the sentence for every pharmacy.',
+    summary: 'If the directions themselves are wrong, no translated label prints. The severity 1 report goes to TELUS for review.',
     setup: { type: 'scenario', persona: 'leung', language: 'zh-Hans', sig: '1C PO BID' },
     steps: [
       {
@@ -274,20 +274,12 @@ export const TOURS: Tour[] = [
         done: (s) => s.report?.step === 'form',
       },
       {
-        title: 'Severity 1: paused everywhere',
-        body: 'Changing the meaning is severity 1. The sentence is paused for every Kroll pharmacy within the hour and both translators re-review it.',
+        title: 'Severity 1: report submitted',
+        body: 'Changing the meaning is severity 1. Both TELUS translators review it within the hour. One report doesn’t pause the sentence for other pharmacies; TELUS does that only if they confirm it.',
         highlight: () => '[data-testid=btn-report-submit]',
         doLabel: 'Submit report',
         perform: () => [{ type: 'submitReport' }],
         done: (s) => s.report?.step === 'done',
-      },
-      {
-        title: 'This pharmacy’s callback list',
-        body: 'Kroll lists every prescription here that printed this sentence, from its own log. TELUS never sees the list.',
-        highlight: () => '[data-testid=callback-list]',
-        doLabel: 'OK',
-        perform: () => [{ type: 'closeNotice' }],
-        done: (s) => s.notice === null,
       },
       {
         title: 'English only',
@@ -323,10 +315,10 @@ export const TOURS: Tour[] = [
       },
       {
         title: 'The line they read out',
-        body: 'In this example, the family says warning 1 is missing part of what the English says. They read out the line; the pharmacist picks it by its English.',
-        highlight: () => '[data-testid=line-warning-1]',
-        doLabel: 'Pick warning 1',
-        perform: () => [{ type: 'report', changes: { line: 'warning-1' } }, { type: 'reportStep', step: 'form' }],
+        body: 'In this example, the family says the Chinese directions leave out part of what the English says. They read out the line; the pharmacist picks it by its English.',
+        highlight: () => '[data-testid=line-directions]',
+        doLabel: 'Pick the directions',
+        perform: () => [{ type: 'report', changes: { line: 'directions' } }, { type: 'reportStep', step: 'form' }],
         done: (s) => s.report?.step === 'form',
       },
       {
@@ -338,38 +330,30 @@ export const TOURS: Tour[] = [
         done: (s) => s.report?.step === 'done',
       },
       {
-        title: 'Paused, with a callback list',
-        body: 'The warning is paused for every pharmacy. Here, Kroll lists Ms. Leung’s other prints that carried it.',
-        highlight: () => '[data-testid=callback-list]',
-        doLabel: 'OK',
-        perform: () => [{ type: 'closeNotice' }],
-        done: (s) => s.notice === null,
-      },
-      {
-        title: 'Call her, and report the incident',
-        body: 'Because she took it, Kroll prompts a call to the patient and reminds the pharmacy of its AIMS duty. Kroll doesn’t file it.',
+        title: 'Report submitted: call her, and report the incident',
+        body: 'The report goes to TELUS for review. Because she took it, Kroll prompts a call to the patient and reminds the pharmacy of its AIMS duty. Kroll doesn’t file it.',
         highlight: () => '[data-testid=report-aims]',
-        doLabel: 'Corrected reprint',
-        perform: (_s, ctx) => [{ type: 'reprint', trace: 'W3R-6TB', englishOnly: false, view: ctx.view }],
+        doLabel: 'English-only reprint',
+        perform: (_s, ctx) => [{ type: 'reprint', trace: 'W3R-6TB', englishOnly: true, view: ctx.view }],
         done: printed,
       },
       {
         title: 'A new entry, not an edit',
-        body: 'The reprint prints warning 1 in English. It is a new log entry that points at the original, which stays unchanged.',
+        body: 'The directions were flagged, so the reprint is English only. It is a new log entry that points at the original, which stays unchanged.',
         highlight: printOutput,
       },
     ],
   },
   {
     id: 'network-pause',
-    title: 'Another pharmacy pauses a sentence',
-    summary: 'A report elsewhere pauses Chinese “twice a day”. Every pharmacy is told, gets its callback list, and prints English.',
+    title: 'TELUS pauses a sentence',
+    summary: 'TELUS’s translators confirm another pharmacy’s report on Chinese “twice a day” and pause it. Every pharmacy is told, gets its callback list, and prints English.',
     setup: { type: 'scenario', persona: 'leung', language: 'zh-Hans', sig: '1C PO BID' },
     steps: [
       {
-        title: 'A report at another pharmacy',
-        body: 'Another pharmacy files a severity 1 report on the Chinese twice-a-day sentence. Simulated here from the presenter.',
-        doLabel: 'Simulate the report',
+        title: 'TELUS confirms a report',
+        body: 'Another pharmacy reported the Chinese twice-a-day sentence, and both TELUS translators confirmed it could cause harm. Only then is it paused. Simulated here from the presenter.',
+        doLabel: 'Simulate TELUS’s confirmation',
         perform: () => [{ type: 'simulateExternalReport' }],
         done: (s) => s.notice?.kind === 'paused',
       },
@@ -408,7 +392,7 @@ export const TOURS: Tour[] = [
     steps: [
       {
         title: 'A sentence is paused',
-        body: 'Start where the last case ended: Chinese “twice a day” is paused after another pharmacy’s report.',
+        body: 'Start where the last case ended: TELUS paused Chinese “twice a day” after confirming another pharmacy’s report.',
         doLabel: 'Pause it',
         perform: () => [{ type: 'simulateExternalReport' }],
         done: (s) => s.paused.length > 0,

@@ -145,29 +145,6 @@ export const PERSONA_RX: Record<PersonaId, string> = { leung: '1000051', farahan
 export const patientName = (d: Details): string => (d.firstName ? `${d.lastName}, ${d.firstName}` : d.lastName)
 
 /**
- * RX.warnings in the patient's language, in the same order, for the under-panel, matching
- * the Figma labels (section C2). A language without an entry keeps its warnings in English.
- * Hindi is the team's wording. Chinese is the team's Simplified wording (Figma "Letter - 76"),
- * which still needs team verification.
- */
-export const RX_WARNINGS: Partial<Record<LanguageCode, string[]>> = {
-  hi: [
-    'दवा खाली पेट लें—भोजन से एक घंटा पहले या भोजन के दो से तीन घंटे बाद, जब तक कि आपके डॉक्टर ने अन्यथा निर्देश न दिए हों।',
-    'यदि इस दवा से आपके पेट में परेशानी होती है, तो इसे क्रैकर्स, ब्रेड या थोड़े से भोजन के साथ लें।',
-    'इस दवा के कारण पेशाब या मल के रंग में बदलाव हो सकता है।',
-    'इस दवा को भरपूर पानी के साथ लेना चाहिए।',
-    'इस दवा को लेने के बाद कम से कम 10 मिनट तक न लेटें',
-  ],
-  'zh-Hans': [
-    '除非医生另有指示，请空腹服药：饭前1小时或饭后2至3小时服用。',
-    '如服药后胃部不适，可与饼干、面包或少量食物同服。',
-    '本药可能使尿液或粪便变色。',
-    '服药时请饮用足量的水。',
-    '服药后至少10分钟内不要躺下。',
-  ],
-}
-
-/**
  * The presenter's list. Each scenario can be set up (Fill Rx loaded, the presenter drives) or,
  * when it has a walkthrough, guided step by step. The basic demo comes first; edge cases follow.
  */
@@ -197,9 +174,9 @@ export const SCENARIOS: Scenario[] = [
   { id: 'rollout', title: 'Language not supported yet', detail: 'Mrs. Farahani · Persian. English label, and the need is logged.', language: 'fa', sig: 'DAILY', persona: 'farahani', tour: 'rollout', edge: true },
   { id: 'no-match', title: 'No verified sentence fits', detail: 'Free text “1 CAP DAILY FOR ANEMIA”. Closest, top 5, guide, English only.', language: 'zh-Hans', sig: '1 CAP DAILY FOR ANEMIA', persona: 'leung', tour: 'no-match', edge: true },
   { id: 'tech-preview', title: 'Technician flags a line before printing', detail: 'Report from the preview; that line prints in English.', language: 'zh-Hans', sig: '1C PO BID', persona: 'leung', tour: 'tech-preview', edge: true },
-  { id: 'directions-flagged', title: 'Dosing directions flagged', detail: 'Severity 1, paused everywhere, English-only label.', language: 'zh-Hans', sig: '1C PO BID', persona: 'leung', tour: 'directions-flagged', edge: true },
+  { id: 'directions-flagged', title: 'Dosing directions flagged', detail: 'Severity 1 report submitted, English-only label.', language: 'zh-Hans', sig: '1C PO BID', persona: 'leung', tour: 'directions-flagged', edge: true },
   { id: 'phone-call', title: 'Family calls days later', detail: 'Find Rx 1000048 by number, report, reprint, AIMS.', language: 'zh-Hans', sig: '1C PO BID', persona: 'leung', tour: 'phone-call', edge: true },
-  { id: 'network-pause', title: 'Another pharmacy pauses a sentence', detail: 'Notice, callback list, English until fixed.', language: 'zh-Hans', sig: '1C PO BID', persona: 'leung', tour: 'network-pause', edge: true },
+  { id: 'network-pause', title: 'TELUS pauses a sentence', detail: 'After confirming a report: notice, callback list, English until fixed.', language: 'zh-Hans', sig: '1C PO BID', persona: 'leung', tour: 'network-pause', edge: true },
   { id: 'fix-ships', title: 'TELUS ships the fix', detail: 'New library version, report Fixed, translating again.', language: 'zh-Hans', sig: '1C PO BID', persona: 'leung', tour: 'fix-ships', edge: true },
   { id: 'wrong-phrase', title: 'Wrong English phrase picked', detail: 'A pharmacy error: logged, nothing paused.', language: 'zh-Hans', sig: '1C PO BID', persona: 'leung', tour: 'wrong-phrase', edge: true },
   { id: 'offline-dispute', title: 'Offline, then a dispute', detail: 'Receipt queues, then the entry is verified.', language: 'zh-Hans', sig: '1C PO BID', persona: 'leung', tour: 'offline-dispute', edge: true },
@@ -225,8 +202,11 @@ export interface TranslationRequest {
 /** Requests already in the queue when the demo starts (illustrative). */
 export const daysAgo = (n: number): string => krollDate(new Date(TODAY.getFullYear(), TODAY.getMonth(), TODAY.getDate() - n))
 
+/** A request for a whole language (none of its sigs are verified yet), in the queue's Sig column. */
+export const WHOLE_LANGUAGE = 'Whole language (no sigs yet)'
+
 export const SEED_REQUESTS: TranslationRequest[] = [
-  { id: 'TR-0039', language: 'Punjabi', sig: '(language)', rx: '1000047', logged: daysAgo(7), status: 'Pending' },
+  { id: 'TR-0039', language: 'Punjabi', sig: WHOLE_LANGUAGE, rx: '1000047', logged: daysAgo(7), status: 'Pending' },
   { id: 'TR-0040', language: 'Hindi', sig: '1 CAP Q2D WITH MEALS', rx: '1000049', logged: daysAgo(4), status: 'In review' },
-  { id: 'TR-0041', language: 'Urdu', sig: '(language)', rx: '1000050', logged: daysAgo(2), status: 'Pending' },
+  { id: 'TR-0041', language: 'Urdu', sig: WHOLE_LANGUAGE, rx: '1000050', logged: daysAgo(2), status: 'Pending' },
 ]

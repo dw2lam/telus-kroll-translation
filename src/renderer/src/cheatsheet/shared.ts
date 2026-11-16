@@ -19,7 +19,7 @@ export const OUTCOMES: { kind: Outcome; label: string; frame: string; tone: Tone
   { kind: 'noVerified', label: 'Phrasing guide', frame: 'B9', tone: 'guide', meaning: 'Codes that do translate, to reword the sig.', via: 'Top 5 → None of these' },
   { kind: 'cannotTranslate', label: 'Can’t translate', frame: 'B10', tone: 'stop', meaning: 'Nothing verified fits. English label, and a translation request is logged.' },
   { kind: 'notYetTranslatable', label: 'Not yet translatable', frame: 'B4t', tone: 'stop', meaning: 'The patient’s language has no verified sentences yet.' },
-  { kind: 'paused', label: 'Paused', frame: 'E6', tone: 'stop', meaning: 'A severity 1 report paused the sentence. English until TELUS ships the fix.', via: 'Simulate → Another pharmacy reports a problem, then 1C PO BID' },
+  { kind: 'paused', label: 'Paused', frame: 'E6', tone: 'stop', meaning: 'TELUS paused the sentence after its translators confirmed a report. English until the fix ships.', via: 'Simulate → TELUS confirms another pharmacy’s report, then 1C PO BID' },
 ]
 
 export const outcome = (kind: Outcome) => OUTCOMES.find((o) => o.kind === kind)!

@@ -96,7 +96,7 @@ export function RxHistoryDialog({ state, dispatch }: { state: FlowState; dispatc
       footer={<>
         <DButton onClick={() => selected && dispatch({ type: 'rxHistory', changes: { view: 'entry' } })} testId="btn-view-entry">View entry</DButton>
         <DButton onClick={() => selected && dispatch({ type: 'startReport', origin: 'history', trace: selected.trace })} testId="btn-history-report">Report a translation issue</DButton>
-        <DButton primary onClick={close} testId="btn-history-close">Close</DButton>
+        <DButton primary onClick={close} testId="btn-history-close">✓ Done</DButton>
       </>}>
       <form className="k-dialog-row" onSubmit={(e) => { e.preventDefault(); dispatch({ type: 'rxHistory', changes: { rx: draftRx.trim(), selected: null } }) }}>
         <span className="k-dlabel">Rx number</span>

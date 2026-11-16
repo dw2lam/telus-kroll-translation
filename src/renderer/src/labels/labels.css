@@ -1,52 +1,53 @@
-/* Printed label panels, at the Figma label frames' 576px width. */
-.lbl { width: 576px; background: #fff; color: #000; font-family: var(--font-ui); line-height: 1.28; }
+/* Printed label panels, drawn from Figma C3 at 144 px to the inch. Each size sets its own scale
+   through custom properties (see LabelPanels.tsx). */
+.lbl { position: relative; background: #fff; color: #000; font-family: var(--font-ui); line-height: 1.18; overflow: hidden; }
 .lbl p { margin: 0; }
-.lbl-p1 { border: 1px solid var(--border-field); display: flex; flex-direction: column; }
-.lbl-p1-body { display: flex; gap: 14px; padding: 12px 12px 10px 14px; }
-.lbl-rx { width: 330px; flex-shrink: 0; display: flex; flex-direction: column; gap: 5px; }
-.lbl-pharmacy { font-size: 13px; font-weight: 500; color: var(--accent-ok); white-space: pre; }
-.lbl-address { font-size: 7px; color: var(--text-muted); }
-.lbl-line { display: flex; align-items: center; justify-content: space-between; white-space: nowrap; }
-.lbl-line.is-start { justify-content: flex-start; gap: 5px; }
-.lbl-stack { display: flex; flex-direction: column; gap: 2px; }
-.lbl-stack.is-end { align-items: flex-end; }
-.lbl-hl { background: var(--accent-highlight); padding: 1px 3px; }
-.lbl-7 { font-size: 7px; }
-.lbl-9 { font-size: 9px; }
-.lbl-9b { font-size: 9px; font-weight: 700; }
-.lbl-10 { font-size: 10px; }
-.lbl-10b { font-size: 10px; font-weight: 700; }
-.lbl-11b { font-size: 11px; font-weight: 700; white-space: pre; }
-.lbl-12 { font-size: 12px; }
-.lbl-16 { font-size: 16px; }
-.lbl-16b { font-size: 16px; font-weight: 700; white-space: pre; }
-.lbl-17b { font-size: 17px; font-weight: 700; }
-.lbl-italic { font-style: italic; }
-.lbl-sig { white-space: normal; }
-.lbl-warnings { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 8px; font-size: 9px; line-height: 1.18; }
 
-.lbl-pointer { display: flex; align-items: center; gap: 10px; padding: 8px 14px; background: var(--accent-highlight); border: 1px solid #000; margin: 0 -1px -1px; }
-.lbl-pointer-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
-.lbl-pointer-main { font-size: 17px; font-weight: 700; }
-.lbl-pointer-gloss { font-size: 7.5px; }
-.lbl-peel { display: flex; flex-direction: column; align-items: center; gap: 3px; flex-shrink: 0; }
-.lbl-peel span { font-size: 14px; font-weight: 700; line-height: 1.25; }
+/* ---- Panel 1: front */
+.lbl-front { border: 1px solid var(--border-field); display: flex; flex-direction: column; gap: var(--gap); padding: var(--pad-y) var(--pad-x); }
+.lbl-front.has-peel .lbl-pointer,
+.lbl-front.has-peel .lbl-critical > .lbl-name:first-child { padding-right: calc(var(--peel) - var(--pad-x)); }
+.lbl-pointer { display: flex; flex-direction: column; font-size: var(--pointer); }
+.lbl-pointer-main { font-weight: 700; line-height: 1.35; }
+.lbl-critical { display: flex; flex-direction: column; gap: var(--critical-gap); }
+.lbl-name { font-size: var(--name); font-weight: 700; white-space: nowrap; }
+.lbl-drug { font-size: var(--drug); font-weight: 700; white-space: pre; }
+.lbl-generic { font-size: var(--generic); white-space: nowrap; }
+.lbl-directions { align-self: flex-start; max-width: 100%; }
+.lbl-directions > span { display: inline-block; background: var(--accent-highlight); padding: var(--hl-y) var(--hl-x); font-size: var(--directions); font-weight: 700; }
+.lbl-directions[lang='zh-Hans'] > span, .lbl-directions[lang='hi'] > span { line-height: 1.35; }
+.lbl-divider { height: 1px; flex-shrink: 0; background: var(--border-field); }
+.lbl-details { display: flex; flex-direction: column; gap: var(--details-gap); font-size: var(--details); }
+.lbl-row { display: flex; justify-content: space-between; gap: 8px; white-space: pre; }
+.lbl-pharmacy { font-size: var(--details); color: var(--text-muted); white-space: pre-wrap; }
 
-.lbl-p2 { border: 1.5px solid #000; display: flex; flex-direction: column; }
-.lbl-p2-head { display: flex; align-items: center; justify-content: space-between; padding: 5px 14px; background: #000; color: #fff; white-space: nowrap; }
-.lbl-p2-title { font-size: 18px; font-weight: 700; }
-.lbl-p2-body { display: flex; flex-direction: column; gap: 5px; padding: 7px 16px 6px; }
-.lbl-rule { height: 1px; flex-shrink: 0; background: var(--border-field); }
-.lbl-translated { display: flex; flex-direction: column; gap: 4px; }
-.lbl-translated-main { font-weight: 700; white-space: nowrap; }
-.lbl-gloss { font-size: 10px; color: var(--text-muted); }
-.lbl-dispensing { font-size: 10px; white-space: pre-wrap; }
-.lbl-footer { display: flex; flex-direction: column; gap: 3px; font-size: 9.5px; color: var(--text-muted); }
-.lbl-trace { margin: 0; font-size: 7px; letter-spacing: 0.02em; color: #444; font-variant-numeric: tabular-nums; }
+/* The peel tab: a black corner triangle with the patient's word for "peel" over "Peel". */
+.lbl-peel { position: absolute; top: -2px; right: -1px; width: var(--peel); height: var(--peel); pointer-events: none; }
+.lbl-peel img { position: absolute; top: 0; right: 0; display: block; }
+.lbl-peel > span { position: absolute; top: 4px; right: 6px; display: flex; flex-direction: column; align-items: flex-end; font-size: var(--peel-font); font-weight: 700; color: #fff; white-space: nowrap; }
+.lbl-peel [lang] { line-height: 1.35; }
+
+/* ---- Panel 2: under-panel, in the patient's language */
+.lbl-back { border: 1.5px solid #000; display: flex; flex-direction: column; }
+.lbl-back-head { height: var(--head-h); flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; padding: 0 var(--head-x); background: #000; color: #fff; font-weight: 700; white-space: nowrap; }
+.lbl-back-title { font-size: var(--head-font); line-height: 1.35; }
+.lbl-back-tag { font-size: var(--tag-font); }
+.lbl-back-body { flex: 1; display: flex; flex-direction: column; gap: var(--gap); padding: var(--pad-y) var(--pad-x); }
+.lbl-back-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+.lbl-back-who { display: flex; flex-direction: column; }
+.lbl-back-side { display: flex; flex-direction: column; align-items: flex-end; font-size: var(--side); white-space: nowrap; }
+.lbl-back-side .is-bold { font-weight: 700; }
+.lbl-back-side [lang] { line-height: 1.35; }
+.lbl-gloss { font-size: var(--side); color: var(--text-muted); }
+/* Not on the C3 design: the trace code ties the label to its audit entry (PRD 2), and the demo flag says the wording is unverified. */
+.lbl-trace { margin-top: auto !important; padding-top: 2px; font-size: 7px; letter-spacing: 0.02em; color: #444; font-variant-numeric: tabular-nums; }
 .lbl-demo { font-weight: 700; color: var(--accent-warning); }
-.lbl-untranslated { font-size: 0.85em; font-style: italic; color: #555; }
-.lbl-p2-warnings li.is-english { font-family: var(--font-ui); }
 
-/* Translated warnings in two columns: 1–2, then 3–5. */
-.lbl-p2-warnings { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 9px; line-height: 1.3; }
-.lbl-p2-warnings ol { margin: 0; padding-inline-start: 1.3em; display: flex; flex-direction: column; gap: 3px; }
+/* ---- Warning stickers: 2″ × 0.5″ each, on the vial, never on the label */
+.lbl-stickers { display: flex; flex-wrap: wrap; gap: 12px; }
+.lbl-sticker { width: 288px; height: 72px; flex-shrink: 0; display: flex; align-items: center; gap: 10px; padding: 8px 12px; border: 1px solid rgba(0, 0, 0, 0.12); border-radius: 8px; filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.18)); color: #1a1a1a; font-family: var(--font-ui); }
+.lbl-sticker img { flex-shrink: 0; display: block; }
+.lbl-sticker > div { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.lbl-sticker p { margin: 0; }
+.lbl-sticker-title { font-size: 15px; font-weight: 700; line-height: 1.18; }
+.lbl-sticker-detail { font-size: 12.5px; line-height: 1.22; }

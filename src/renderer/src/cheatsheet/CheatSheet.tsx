@@ -13,10 +13,10 @@ import './cheatsheet.css'
 const EDGE_CASES: { title: string; how: string; load?: { language: LanguageCode; sig: string } }[] = [
   { title: 'Language not supported yet', how: 'F3 → Language: Persian, Tagalog or any without “Translation Available” → F12 → ↵', load: { language: 'fa', sig: 'DAILY' } },
   { title: 'No verified sentence fits', how: 'Type free text, e.g. 1 CAP DAILY FOR ANEMIA → ↵ → Not this one → None of these → None of these fit', load: { language: DEMO_LANGUAGE, sig: '1 CAP DAILY FOR ANEMIA' } },
-  { title: 'Technician flags a line before printing', how: 'A code → ↵ → Preview labels → Report a translation issue → pick a warning' },
+  { title: 'Technician flags a line before printing', how: 'A code → ↵ → Preview labels → Report a translation issue → pick the headings' },
   { title: 'Dosing directions flagged', how: 'As above, pick the directions line → Changes the meaning → no translated label prints' },
   { title: 'Family calls days later', how: 'Utilities → Report a translation issue… → Rx 1000048 → pick the print' },
-  { title: 'Another pharmacy pauses a sentence', how: 'Sidebar → Simulate: Another pharmacy reports a problem → then 1C PO BID → ↵' },
+  { title: 'TELUS pauses a sentence', how: 'Sidebar → Simulate: TELUS confirms another pharmacy’s report → then 1C PO BID → ↵' },
   { title: 'TELUS ships the fix', how: 'Sidebar → Simulate: TELUS ships the fix' },
   { title: 'Wrong English phrase picked', how: 'Rx → Rx History → pick a print → Report a translation issue → Wrong English phrase picked' },
   { title: 'Offline, then a dispute', how: 'Sidebar → Pharmacy online off → print → Rx → Rx History → View entry → Verify against receipt' },

@@ -1,8 +1,8 @@
 # Telus Kroll Translation Demo — translated prescription labels for TELUS Health Kroll
 
-A clickable demo of the **GBDA 402 capstone** concept for TELUS Health **Kroll**. The pharmacist records the patient's language, fills an Rx, and confirms a translated sig. Kroll then prints a **two-panel peel label**: English on the front and the patient's language underneath. A 3D printer prints it onto a pill vial.
+A clickable demo of the **GBDA 402 capstone** concept for TELUS Health **Kroll**. The pharmacist records the patient's language, fills an Rx, and confirms a translated sig. Kroll then prints a **two-panel peel label** (Figma C3): English on the front and the patient's language underneath, sized to the vial, with warnings on separate colour stickers instead of on the label. A 3D printer prints it onto a pill vial.
 
-It also covers what happens when things go wrong: a language that isn't supported yet, a sig with no verified sentence, a translation reported as wrong before or after printing, a sentence paused for every pharmacy, and the audit log that proves what printed.
+It also covers what happens when things go wrong: a language that isn't supported yet, a sig with no verified sentence, a translation reported as wrong before or after printing, TELUS pausing a sentence once its translators confirm a report, and the audit log that proves what printed.
 
 It runs on **macOS and Windows**.
 
@@ -54,7 +54,7 @@ The demo patient is **Ms. Mei Leung**, the team's primary persona: 74, Markham, 
 | 2. **F12 Fill Rx**: type a sig code (`DAILY`, `1C PO BID`, `2 CAP PO QHS`) or free text and press ↵. The **Translated Sig** pop-up shows the verified sentence and where it came from. The pharmacist confirms the English; the translation's accuracy is the verified library's. | ![Exact match](docs/screenshots/02-exact-match.jpg) |
 | 3. Free text that isn't exact goes **Closest → Not this one → Top 5 → None of these → Phrasing guide → None of these fit → Can't translate**: English label only, with a translation request logged. | ![Top 5 candidates](docs/screenshots/04-top-five.jpg) |
 | 4. **Preview labels** before printing, or print straight away: a 3D printer feeds both panels onto an amber vial, and **Peel panel 1** reveals the patient's language underneath. Each translated label carries a **trace code**. | ![3D printer and vial, panel peeled](docs/screenshots/05-print-3d-peeled.jpg) |
-| 5. With **3D print view** off, or via the **Labels** menu, **Labels F2** or **Ctrl/⌘+L**, the labels open inside Kroll with the **translation record** saved to the Rx history. **Save label PDF** prints them 4 in wide. | ![Ms. Leung's English and Chinese labels inside Kroll](docs/screenshots/09-mrs-leung-label.jpg) |
+| 5. With **3D print view** off, or via the **Labels** menu, **Labels F2** or **Ctrl/⌘+L**, the labels open inside Kroll with the **translation record** saved to the Rx history. **Save label PDF** prints them at the vial's label size. The **Vial** field on Fill Rx picks the size (6 to 60 dram); Kroll suggests one from the quantity. | ![Ms. Leung's English and Chinese labels inside Kroll](docs/screenshots/09-mrs-leung-label.jpg) |
 
 The Translated Sig pop-up has seven states:
 
@@ -66,7 +66,7 @@ The Translated Sig pop-up has seven states:
 | Phrasing guide | B9 |
 | Can't translate | B10 |
 | Captured, not yet translatable | B4t |
-| Paused (a severity 1 report is being re-reviewed) | E6 |
+| Paused (TELUS confirmed a reported problem and is fixing it) | E6 |
 
 ## Edge cases: reporting and the audit log
 
@@ -76,9 +76,10 @@ Two PRDs drive the error cases. Everything works in free play as well as in the 
 
 - The pharmacist picks the faulty line by its **standard English**, never a phrase ID, and says what's wrong, who noticed, and whether the medication was taken.
 - **Severity is computed, not chosen:** changes the meaning or missing information is 1, unreadable or unclear is 2, formatting only is 3, and a wrong English phrase is a pharmacy error that pauses nothing.
-- **Before printing:** the flagged line prints in English with a "could not be translated" note. If it's the dosing directions, no translated label prints at all.
+- **Only the directions and the headings can be flagged.** Warnings are English stickers, so they aren't label lines.
+- **Before printing:** flagged headings print in English. If it's the dosing directions, no translated label prints at all.
 - **After printing:** a corrected or English-only reprint, a prompt to contact the patient if the medication was taken, and the AIMS incident-reporting reminder.
-- **Severity 1 pauses the sentence for every pharmacy.** Each pharmacy gets a callback list built from its own log; TELUS never sees it.
+- **A report never pauses a sentence by itself.** It goes to TELUS; only when both translators confirm the problem does TELUS pause it for every pharmacy. Each pharmacy then gets a callback list built from its own log; TELUS never sees it.
 
 | | |
 |---|---|
@@ -98,11 +99,11 @@ Presenter controls live in a sidebar on the right. None of it is part of Kroll. 
   4. Technician flags a line before printing
   5. Dosing directions flagged
   6. Family calls days later (Rx 1000048)
-  7. Another pharmacy pauses a sentence
+  7. TELUS pauses a sentence
   8. TELUS ships the fix
   9. Wrong English phrase picked
   10. Offline, then a dispute
-- **Simulate the network:** another pharmacy reports a problem, TELUS ships the fix, and the pharmacy going offline.
+- **Simulate the network:** TELUS confirms another pharmacy's report, TELUS ships the fix, and the pharmacy going offline.
 - **Controls:** 3D print view, Magnifier (zooms around the pointer, **⇧⌘M**), Cheat sheet, Undo edits, Start over, and Kroll size (**⌘+ / ⌘− / ⌘0**).
 - **Cheat sheet** (or **F1**) opens in its own window, in three tabs. **Learn sig codes** is a short lesson (what a sig is, reading one left to right, the Latin pieces, how codes stack, why codes translate exactly, what to watch out for) with a live **sig decoder** beside it that breaks any sig into its pieces and shows both label panels, and a practice quiz. **Code reference** lists every code with its meaning, its Latin, the English Kroll prints and the Chinese and Hindi. **Demo guide** has each pop-up state with a live example, how to reach every edge case, the reporting tools and the keys. Search filters the codes; a phrase with no code can be tried as free text. Click anything to run it in Kroll; **Save as PDF** for a printable copy.
 

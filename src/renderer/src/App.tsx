@@ -347,6 +347,8 @@ export default function App() {
                   onPatient={() => dispatch({ type: 'go', screen: 'patient' })}
                   onFill={fillOrPrint}
                   onPreview={() => dispatch({ type: 'previewLabels' })}
+                  vial={state.vial}
+                  onVial={(vial) => dispatch({ type: 'setVial', vial })}
                   onRequests={() => dispatch({ type: 'openRequests' })}
                 />
               )}

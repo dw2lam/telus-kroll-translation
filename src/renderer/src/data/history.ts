@@ -6,6 +6,7 @@ import { daysAgo, krollDate, PERSONAS, type PersonaId, PHARMACIST, TODAY } from 
 import { languageByCode } from './languages'
 import { fillDose, forForm, KROLL_EXPANSIONS, PHRASEBOOK } from './phrasebook'
 import type { LanguageCode } from './types'
+import { suggestVial, vialById } from '@/labels/vials'
 
 interface Seed {
   trace: string
@@ -40,6 +41,7 @@ function build(seed: Seed, i: number): { job: PrintJob; entry: AuditEntry } {
   const filled = new Date(TODAY.getFullYear(), TODAY.getMonth(), TODAY.getDate() - seed.daysAgo)
   const expiry = krollDate(new Date(filled.getFullYear() + 1, filled.getMonth(), filled.getDate()))
   const lang = languageByCode(seed.language)
+  const vial = suggestVial(details.quantity, 'capsule')
   const text = seed.translated ? (sig.translations[seed.language] ?? '') : ''
   const translation = seed.translated
     ? { language: seed.language, text: fillDose(text, '1'), gloss: fillDose(forForm(sig.english, 'capsule'), '1').toUpperCase(), sigCode: seed.code }
@@ -50,6 +52,7 @@ function build(seed: Seed, i: number): { job: PrintJob; entry: AuditEntry } {
     fill: seed.fill,
     details,
     form: 'capsule',
+    vial,
     englishSig: fillDose(KROLL_EXPANSIONS[seed.code], '1'),
     date,
     expiry,
@@ -61,7 +64,7 @@ function build(seed: Seed, i: number): { job: PrintJob; entry: AuditEntry } {
   }
   const lines =
     translation && lang.label
-      ? labelLines({ language: seed.language, sigCode: seed.code, text: translation.text, gloss: translation.gloss, details, form: 'capsule', date, expiry })
+      ? labelLines({ language: seed.language, sigCode: seed.code, text: translation.text, gloss: translation.gloss, pointer: vialById(vial).pointer })
       : []
   const entry = sealEntry({
     trace: seed.trace,

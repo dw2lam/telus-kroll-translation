@@ -5,7 +5,7 @@ import { shortTime } from './RxHistoryDialog'
 import { type Action, callbacksFor, type FlowState } from './state'
 
 /**
- * A notice from the translation network (PRD 1): a phrase was paused after a severity 1 report,
+ * A notice from TELUS (PRD 1): it paused a phrase after its translators confirmed a report,
  * with this pharmacy's callback list built locally from its own audit log, or a fix shipped.
  */
 export function NoticeDialog({ state, dispatch }: { state: FlowState; dispatch: (a: Action) => void }) {
@@ -29,8 +29,8 @@ export function NoticeDialog({ state, dispatch }: { state: FlowState; dispatch: 
   return (
     <KDialog title="Translation paused" onClose={close} width={660} testId="dialog-notice-paused"
       footer={<DButton primary onClick={close} testId="btn-notice-close">OK</DButton>}>
-      <span className="k-dnote is-warning">
-        {notice.elsewhere ? 'Another pharmacy reported' : `Your report ${notice.reportId} flagged`} a {languageByCode(notice.language).name} sentence that could cause harm. It’s paused for every Kroll pharmacy and prints in English until both translators re-review it.
+      <span className="k-alert" role="alert">
+        {notice.elsewhere ? 'Another pharmacy reported' : `Your report ${notice.reportId} flagged`} a {languageByCode(notice.language).name} sentence, and both TELUS translators confirmed it could cause harm. TELUS has paused it for every Kroll pharmacy; it prints in English until the fix ships.
       </span>
       <div className="k-record">
         <span className="k-record-title">Paused sentence</span>

@@ -157,7 +157,7 @@ function Simulate({ onSimulate, online, onOnline, pausedCount }: Pick<Props, 'on
       </div>
       <button type="button" className="pz-wide" onClick={() => onSimulate('externalReport')} data-testid="sim-external-report">
         <Icon name="alert" size={14} />
-        <span>Another pharmacy reports a problem<small>Pauses Chinese “twice a day” everywhere</small></span>
+        <span>TELUS confirms another pharmacy’s report<small>Pauses Chinese “twice a day” everywhere</small></span>
       </button>
       <button type="button" className="pz-wide" onClick={() => onSimulate('fix')} data-testid="sim-fix">
         <Icon name="check" size={14} />

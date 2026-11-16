@@ -3,9 +3,9 @@ import { writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import type { LabelRequest } from '../shared/api'
 
-/** Label panels are laid out 576 CSS px wide, like the Figma label frames; on paper that is 4 inches. */
+/** Label panels are laid out at 144 CSS px to the inch, like the Figma C3 labels; the widest stock is 4 inches. */
+const PX_PER_INCH = 144
 const PANEL_CSS_WIDTH = 576
-const PANEL_INCHES = 4
 
 export function loadPage(win: BrowserWindow, hash: string): Promise<void> {
   if (process.env.ELECTRON_RENDERER_URL) return win.loadURL(`${process.env.ELECTRON_RENDERER_URL}#${hash}`)
@@ -96,14 +96,15 @@ export function registerLabelIpc(): void {
   ipcMain.handle('label:savePdf', async (event, job: string, panels: ('1' | '2')[], suggestedName: string) => {
     const filePath = await askForPdfPath(BrowserWindow.fromWebContents(event.sender), suggestedName)
     if (!filePath) return null
-    const zoom = (PANEL_INCHES * 96) / PANEL_CSS_WIDTH
+    // CSS inches are 96 px, so this prints each panel at its real stock size.
+    const zoom = 96 / PX_PER_INCH
     const win = new BrowserWindow({ show: false, width: 800, height: 1000, webPreferences: { sandbox: true, contextIsolation: true } })
     try {
       await loadPage(win, hashFor({ job, panels: panels.join(','), zoom: String(zoom), pdf: '1' }))
-      const { height } = await waitForLabel(win)
+      const { width, height } = await waitForLabel(win)
       const pdf = await win.webContents.printToPDF({
-        // Every panel gets a page as tall as the tallest one.
-        pageSize: { width: PANEL_INCHES, height: Math.max(1, (height * zoom) / 96 + 0.02) },
+        // One page per panel, the size of the vial's label stock.
+        pageSize: { width: Math.max(1, width / PX_PER_INCH + 0.02), height: Math.max(1, height / PX_PER_INCH + 0.02) },
         margins: { top: 0, bottom: 0, left: 0, right: 0 },
         printBackground: true,
       })

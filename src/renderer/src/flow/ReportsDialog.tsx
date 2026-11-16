@@ -11,7 +11,7 @@ export function ReportsDialog({ state, dispatch }: { state: FlowState; dispatch:
   const reports = [...state.reports].reverse()
   return (
     <KDialog title="Translation reports" onClose={close} width={720} testId="dialog-reports"
-      footer={<DButton primary onClick={close} testId="btn-reports-close">Close</DButton>}>
+      footer={<DButton primary onClick={close} testId="btn-reports-close">✓ Done</DButton>}>
       <span className="k-dnote">Reports this pharmacy filed, and pauses from other pharmacies’ reports. Status updates as TELUS responds.</span>
       {reports.length === 0 ? (
         <span className="k-hint">No reports yet. Report from a label preview, Rx History, or Utilities → Report a translation issue…</span>

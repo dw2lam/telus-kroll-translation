@@ -2,26 +2,18 @@ import type { DoseForm } from './phrasebook'
 
 export type LanguageCode = 'en' | 'fr' | 'ar' | 'zh-Hans' | 'zh-Hant' | 'hi' | 'pa' | 'es' | 'tl' | 'ur' | 'fa'
 
-/** Label chrome in the patient's language, taken from the Figma label designs. */
+/** Label chrome in the patient's language, taken from the Figma C3 labels. */
 export interface LabelStrings {
-  /** Panel 1 pointer strip: "look at the back for instructions". */
+  /** Front-label line on 3.5″ labels and up: "turn to the back for translated instructions". */
   pointer: string
-  /** Word on the peel tab. */
+  /** Word on the peel tab, above "Peel". */
   peel: string
   /** Panel 2 header. */
   header: string
-  /** Panel 2 header tag, e.g. `INSTRUCTIONS · हिन्दी`. */
+  /** Panel 2 header tag, e.g. `SIMPLIFIED · 简体`. */
   tag: string
-  /** Panel 2 footer lines (patient language · English gloss). */
-  footer: string[]
-  /** Panel 2 dispensing line. `{}` marks where the English value goes. */
-  dispensing: {
-    quantity: string
-    refills: string
-    date: string
-    expiry: string
-    prescriber: string
-  }
+  /** Word before the expiry date on panel 2, before the English "Expiry". */
+  expiry: string
 }
 
 export interface Language {

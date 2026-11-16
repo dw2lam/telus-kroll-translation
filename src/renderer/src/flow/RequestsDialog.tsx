@@ -8,7 +8,7 @@ const seeded = new Set(SEED_REQUESTS.map((r) => r.id))
 export function RequestsDialog({ requests, onClose }: { requests: TranslationRequest[]; onClose: () => void }) {
   return (
     <KDialog title="Translation requests" onClose={onClose} width={640} testId="dialog-requests"
-      footer={<DButton primary onClick={onClose} testId="btn-requests-close">Close</DButton>}>
+      footer={<DButton primary onClick={onClose} testId="btn-requests-close">✓ Done</DButton>}>
       <span className="k-dnote">Requests go to the translation library team. Most-requested languages and sigs are verified first.</span>
       <table className="k-table">
         <thead>

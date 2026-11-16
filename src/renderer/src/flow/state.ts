@@ -7,7 +7,6 @@ import {
   type LabelLine,
   type MatchType,
   type NoticedBy,
-  phraseToPause,
   type PrintReceipt,
   receiptFor,
   scriptOf,
@@ -17,12 +16,13 @@ import {
   traceCode,
   type TranslationReport,
 } from '@/data/audit'
-import { type Details, krollDate, krollDateTime, LIBRARY_VERSION, PERSONA_RX, PERSONAS, type PersonaId, PHARMACIST, RX, SEED_REQUESTS, type TranslationRequest } from '@/data/demo'
+import { type Details, krollDate, krollDateTime, LIBRARY_VERSION, PERSONA_RX, PERSONAS, type PersonaId, PHARMACIST, RX, SEED_REQUESTS, type TranslationRequest, WHOLE_LANGUAGE } from '@/data/demo'
 import { languageByCode } from '@/data/languages'
 import { provider } from '@/data/demoProvider'
 import { SEED_AUDIT, SEED_JOBS, SEED_RECEIPTS } from '@/data/history'
 import { type DoseForm, fillDose, forForm, KROLL_EXPANSIONS, parseSigCode } from '@/data/phrasebook'
 import type { Candidate, LanguageCode, VerifiedSig } from '@/data/types'
+import { suggestVial, type VialId, vialById } from '@/labels/vials'
 
 export type Screen = 'patient' | 'fill' | 'print'
 
@@ -34,7 +34,7 @@ export type Dialog =
   | { kind: 'guide' }
   | { kind: 'cannotTranslate'; reason: string }
   | { kind: 'notYetTranslatable' }
-  /** The matching sentence is paused after a severity 1 report: it prints in English until fixed. */
+  /** TELUS paused the matching sentence after confirming a report: it prints in English until fixed. */
   | { kind: 'paused'; candidate: Candidate }
 
 /** What goes to the label printer. */
@@ -45,6 +45,8 @@ export interface PrintJob {
   /** The names, drug and quantities on the label, as edited on screen. */
   details: Details
   form: DoseForm
+  /** The vial, which sets the label stock and type scale (Figma C3). */
+  vial: VialId
   /** Kroll's own English sig, unchanged. */
   englishSig: string
   /** Fill date and expiry as printed. */
@@ -90,7 +92,7 @@ export interface ReportDraft {
   reportId: string | null
 }
 
-/** A Kroll notice: a phrase was paused (here or at another pharmacy), or a fix shipped. */
+/** A Kroll notice from TELUS: it paused a sentence after confirming a report, or a fix shipped. */
 export type Notice =
   | { kind: 'paused'; phraseId: string; english: string; language: LanguageCode; elsewhere: boolean; reportId: string }
   | { kind: 'fixed'; version: string; phraseIds: string[] }
@@ -104,6 +106,8 @@ export interface FlowState {
   sigInput: string
   /** The sig as last submitted (what the pop-up says was entered). */
   sigEntered: string
+  /** The vial picked on Fill Rx. Null: Kroll suggests one from the quantity. */
+  vial: VialId | null
   dialog: Dialog | null
   confirmed: null | { sig: VerifiedSig; dose: string; form: DoseForm; text: string; match: MatchType }
   job: PrintJob | null
@@ -140,6 +144,7 @@ export const initialState: FlowState = {
   language: 'zh-Hans',
   sigInput: 'DAILY',
   sigEntered: '',
+  vial: null,
   dialog: null,
   confirmed: null,
   job: null,
@@ -164,6 +169,7 @@ export type Action =
   | { type: 'go'; screen: Screen }
   | { type: 'setLanguage'; language: LanguageCode }
   | { type: 'setSig'; sig: string }
+  | { type: 'setVial'; vial: VialId | null }
   | { type: 'submitSig' }
   | { type: 'closeDialog' }
   | { type: 'confirm'; candidate: Candidate }
@@ -215,6 +221,10 @@ export function krollSigText(input: string): string {
 /** What's on screen: the persona with any edits on top. */
 export const detailsOf = (state: FlowState): Details => ({ ...PERSONAS[state.persona], ...state.edits })
 
+/** The vial for what's on screen: the one picked, or Kroll's suggestion for the quantity. */
+export const vialOf = (state: FlowState): VialId =>
+  state.vial ?? suggestVial(detailsOf(state).quantity, parseSigCode(state.sigEntered || state.sigInput)?.form ?? 'capsule')
+
 /** The prescription on screen. */
 export const rxOf = (state: FlowState): string => PERSONA_RX[state.persona]
 
@@ -226,10 +236,7 @@ export function linesOf(job: PrintJob): LabelLine[] {
     sigCode: job.translation.sigCode,
     text: job.translation.text,
     gloss: job.translation.gloss,
-    details: job.details,
-    form: job.form,
-    date: job.date,
-    expiry: job.expiry,
+    pointer: vialById(job.vial).pointer,
   })
 }
 
@@ -274,6 +281,7 @@ function buildJob(state: FlowState, englishOnly: boolean, record: TranslationRec
     fill: Math.max(0, ...state.audit.filter((e) => e.rx === rx).map((e) => e.fill)) + 1,
     details: detailsOf(state),
     form: parseSigCode(state.sigEntered || state.sigInput)?.form ?? 'capsule',
+    vial: vialOf(state),
     englishSig: krollSigText(state.sigEntered || state.sigInput),
     date: RX.date,
     expiry: RX.expiry,
@@ -346,7 +354,7 @@ function newRequest(state: FlowState, now: Date): TranslationRequest {
   return {
     id: `TR-${String(highest + 1).padStart(4, '0')}`,
     language: languageByCode(state.language).name,
-    sig: state.dialog?.kind === 'notYetTranslatable' ? '(language)' : krollSigText(state.sigEntered).slice(0, 40),
+    sig: state.dialog?.kind === 'notYetTranslatable' ? WHOLE_LANGUAGE : krollSigText(state.sigEntered).slice(0, 40),
     rx: rxOf(state),
     logged: krollDate(now),
     status: 'Pending',
@@ -374,6 +382,11 @@ export function reducer(state: FlowState, action: Action): FlowState {
       return { ...state, language: action.language, confirmed: null }
     case 'setSig':
       return { ...state, sigInput: action.sig, confirmed: null }
+    case 'setVial': {
+      const next = { ...state, vial: action.vial }
+      // The preview before printing follows the pick; a printed label keeps the vial it printed on.
+      return state.preview === 'requested' && state.job ? { ...next, job: { ...state.job, vial: vialOf(next) } } : next
+    }
     case 'submitSig': {
       const sig = state.sigInput.trim()
       if (!sig) return state
@@ -502,7 +515,6 @@ export function reducer(state: FlowState, action: Action): FlowState {
       const { phraseId, english } = reportedPhrase(lines, r.line)
       const severity = severityOf(r.type)
       const id = nextReportId(state.reports)
-      const pause = phraseToPause({ severity, phraseId })
       const report: TranslationReport = {
         id,
         trace: r.trace ?? state.job?.trace ?? '',
@@ -518,18 +530,12 @@ export function reducer(state: FlowState, action: Action): FlowState {
         filedAt: now.toISOString(),
         timeline: [
           { status: 'received', at: now.toISOString() },
-          ...(pause ? [{ status: 'paused' as const, at: now.toISOString() }] : []),
           ...(severity === null ? [{ status: 'noChange' as const, at: now.toISOString() }] : []),
         ],
       }
-      const language = (r.trace ? state.audit.find((e) => e.trace === r.trace)?.language : state.job?.translation?.language) ?? state.language
-      return {
-        ...state,
-        reports: [...state.reports, report],
-        paused: pause && !state.paused.includes(pause) ? [...state.paused, pause] : state.paused,
-        report: { ...r, step: 'done', reportId: id },
-        notice: pause ? { kind: 'paused', phraseId: pause, english, language, elsewhere: false, reportId: id } : state.notice,
-      }
+      // A report never pauses a sentence by itself (team review, 2026-11-16): it goes to TELUS,
+      // whose translators pause it for every pharmacy only once they confirm the problem.
+      return { ...state, reports: [...state.reports, report], report: { ...r, step: 'done', reportId: id } }
     }
     case 'closeReport':
       return { ...state, report: null }
@@ -578,7 +584,8 @@ export function reducer(state: FlowState, action: Action): FlowState {
 
     // ---------------------------------------------------------------- Simulate (presenter)
     case 'simulateExternalReport': {
-      // Another pharmacy's severity 1 report on the Chinese twice-daily sentence: every Kroll pharmacy pauses it.
+      // Another pharmacy's severity 1 report on the Chinese twice-daily sentence, confirmed by both
+      // TELUS translators: TELUS pauses it for every Kroll pharmacy.
       const phraseId = directionsPhraseId('BID', 'zh-Hans')
       if (state.paused.includes(phraseId)) return { ...state, notice: { kind: 'paused', phraseId, english: 'TAKE 1 CAPSULE BY MOUTH TWICE DAILY', language: 'zh-Hans', elsewhere: true, reportId: 'RPT-0098' } }
       const now = new Date().toISOString()

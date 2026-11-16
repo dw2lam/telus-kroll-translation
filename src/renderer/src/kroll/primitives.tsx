@@ -193,6 +193,17 @@ export function DialogRow({ label, children }: { label: string; children: ReactN
   )
 }
 
+/** A small printer glyph for print buttons, in the button's text colour. */
+export function PrintIcon() {
+  return (
+    <svg className="k-print-icon" width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" aria-hidden="true">
+      <path d="M4 6V1.5h8V6" />
+      <rect x="1.5" y="6" width="13" height="6" rx="1" />
+      <path d="M4 10h8v4.5H4z" fill="currentColor" fillOpacity="0.15" />
+    </svg>
+  )
+}
+
 export function DButton({ children, primary, onClick, testId, disabled }: { children: ReactNode; primary?: boolean; onClick: () => void; testId?: string; disabled?: boolean }) {
   return (
     <button type="button" className={'k-dbtn' + (primary ? ' is-primary' : '')} onClick={onClick} data-testid={testId} disabled={disabled}>

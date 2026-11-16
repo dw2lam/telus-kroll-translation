@@ -1,15 +1,13 @@
 // PRD 2: the audit log, trace codes, print receipts and fingerprints, and PRD 1's report
 // severity. Pure functions only; the flow reducer owns the state.
-import { type Details, RX, RX_WARNINGS } from './demo'
 import { languageByCode } from './languages'
-import { forForm } from './phrasebook'
 import type { LanguageCode } from './types'
 
 /** One line of the translated under-panel, as the line picker and the audit log see it. */
 export interface LabelLine {
-  /** Stable within a print: `directions`, `dispensing`, `warning-1` … `warning-5`, `chrome`. */
+  /** Stable within a print: `directions` or `chrome`. Warnings are English stickers (Figma C3), not label lines. */
   key: string
-  kind: 'directions' | 'dispensing' | 'warning' | 'chrome'
+  kind: 'directions' | 'chrome'
   /** The standard English phrase, which is what the pharmacist reads in the line picker. */
   english: string
   /** What printed in the patient's language. */
@@ -26,62 +24,25 @@ export function libraryPrefix(language: LanguageCode): string {
 /** The phrase ID for a sig code's sentence, e.g. `ZH-DAILY-001`. */
 export const directionsPhraseId = (code: string, language: LanguageCode): string => `${libraryPrefix(language)}-${code.trim().replace(/\s+/g, '-')}-001`
 
-/** Quantity, refills, dates and prescriber in the patient's language. The values stay as dispensed. */
-export function dispensingParts(language: LanguageCode, details: Details, form: 'capsule' | 'tablet', date: string, expiry: string): { template: string; value: string }[] {
-  const d = languageByCode(language).label!.dispensing
-  return [
-    { template: forForm(d.quantity, form), value: details.quantity },
-    { template: d.refills, value: details.refills },
-    { template: d.date, value: date },
-    { template: d.expiry, value: expiry },
-    { template: d.prescriber, value: details.doctor },
-  ]
-}
-
-const fillTemplate = (template: string, value: string): string => template.replace('{}', value)
-
-/** Every line of the translated under-panel, in print order. */
-export function labelLines(input: {
-  language: LanguageCode
-  sigCode: string
-  text: string
-  gloss: string
-  details: Details
-  form: 'capsule' | 'tablet'
-  date: string
-  expiry: string
-}): LabelLine[] {
+/**
+ * Every translated line on a C3 label, in print order: the directions, then the headings
+ * (the front's "turn to the back" line on labels with room for it, the under-panel header,
+ * the expiry word and the peel tab). Names, drug, numbers and dates stay in English.
+ */
+export function labelLines(input: { language: LanguageCode; sigCode: string; text: string; gloss: string; pointer?: boolean }): LabelLine[] {
   const { language } = input
-  const prefix = libraryPrefix(language)
   const strings = languageByCode(language).label!
-  const warnings = RX_WARNINGS[language] ?? []
-  const lines: LabelLine[] = [
+  const headings = [...(input.pointer === false ? [] : [strings.pointer]), strings.header, strings.expiry, strings.peel]
+  return [
     { key: 'directions', kind: 'directions', english: input.gloss, text: input.text, phraseId: directionsPhraseId(input.sigCode, language) },
-    {
-      key: 'dispensing',
-      kind: 'dispensing',
-      english: 'Quantity, refills, fill date, expiry date and prescriber',
-      text: dispensingParts(language, input.details, input.form, input.date, input.expiry)
-        .map((p) => fillTemplate(p.template, p.value))
-        .join('  ·  '),
-      phraseId: `${prefix}-DISPENSING-001`,
-    },
-    ...warnings.map((text, i) => ({
-      key: `warning-${i + 1}`,
-      kind: 'warning' as const,
-      english: RX.warnings[i] ?? '',
-      text,
-      phraseId: `${prefix}-WARN-${String(i + 1).padStart(2, '0')}-001`,
-    })),
     {
       key: 'chrome',
       kind: 'chrome',
-      english: 'Peel tab and headings: “Look at the back for instructions”',
-      text: `${strings.pointer} · ${strings.header} · ${strings.peel}`,
-      phraseId: `${prefix}-CHROME-001`,
+      english: `Headings and peel tab: ${input.pointer === false ? '' : '“Turn to the back for instructions”, '}“Instructions”, “Expiry”, “Peel”`,
+      text: headings.join(' · '),
+      phraseId: `${libraryPrefix(language)}-CHROME-001`,
     },
   ]
-  return lines
 }
 
 /** Which patient-facing script a language prints in, for the log. */
@@ -219,13 +180,14 @@ export const NOTICED_BY: { id: NoticedBy; label: string }[] = [
 
 export type Taken = 'yes' | 'no' | 'unknown'
 
-/** 1 could cause harm, 2 misleading, 3 cosmetic, null a pharmacy error (no pause). */
+/** 1 could cause harm, 2 misleading, 3 cosmetic, null a pharmacy error (no change to the library). */
 export type Severity = 1 | 2 | 3 | null
 
 /**
  * Severity is computed, never chosen: changing the meaning or missing information is 1,
  * unreadable or unclear is 2, formatting only is 3. Picking the wrong English phrase is a
- * pharmacy error, logged as a usability signal, and doesn't pause anything.
+ * pharmacy error, logged as a usability signal. No report pauses a sentence by itself: only
+ * TELUS does, once its translators confirm the problem.
  */
 export function severityOf(type: IssueType): Severity {
   if (type === 'meaning' || type === 'missing') return 1
@@ -237,7 +199,7 @@ export function severityOf(type: IssueType): Severity {
 export const SEVERITY_TEXT: Record<1 | 2 | 3, { title: string; response: string }> = {
   1: {
     title: 'Severity 1 · Could cause harm',
-    response: 'Phrase paused for every pharmacy within 1 hour; it prints in English until fixed. Both translators re-review. Fix within 48 hours.',
+    response: 'Both TELUS translators review it within 1 hour. A single report doesn’t pause the sentence for other pharmacies; if the translators confirm it, TELUS pauses it everywhere and fixes it within 48 hours.',
   },
   2: { title: 'Severity 2 · Misleading, not dangerous', response: 'Reviewed within 5 business days. Fixed in the next library update.' },
   3: { title: 'Severity 3 · Cosmetic', response: 'Batched into the next library update.' },
@@ -261,13 +223,8 @@ export interface TranslationReport {
   filedAt: string
   /** Status history, oldest first. */
   timeline: { status: ReportStatus; at: string }[]
-  /** Filed at another pharmacy (simulated); only its pause reaches this one. */
+  /** Filed at another pharmacy (simulated); only TELUS's pause reaches this one. */
   elsewhere?: boolean
-}
-
-/** Which phrase a report pauses: the picked line's, the directions for "whole label", none for "not sure" or a pharmacy error. */
-export function phraseToPause(report: Pick<TranslationReport, 'severity' | 'phraseId'>): string | null {
-  return report.severity === 1 ? report.phraseId : null
 }
 
 /** The prescriptions at this pharmacy that printed a phrase: the callback list, built locally. */

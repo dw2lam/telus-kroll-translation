@@ -1,185 +1,168 @@
-import peelOff from '@/assets/peel-off.svg'
-import { dispensingParts } from '@/data/audit'
-import { patientName, RX, RX_WARNINGS } from '@/data/demo'
+import type { CSSProperties } from 'react'
+import { patientName, RX } from '@/data/demo'
 import { languageByCode } from '@/data/languages'
-import type { LanguageCode } from '@/data/types'
 import type { PrintJob } from '@/flow/state'
+import { STICKERS, type Sticker } from './stickers'
+import { sentenceCase, type Vial, vialById } from './vials'
 import './labels.css'
 
-export const PANEL_WIDTH = 576
-/** Width of panel 2's text column. */
-const SIG_WIDTH = 541
-
-/**
- * The largest size that keeps a translated sig on one line, so panel 2 stays shorter than
- * panel 1, which covers it on the vial. Chinese characters are about 1em wide; Devanagari
- * averages under half that per character.
- */
-function sigSize(text: string, language: LanguageCode): number {
-  const base = language === 'hi' ? 28 : 30
-  const perCharacter = language === 'zh-Hans' ? 1 : 0.45
-  return Math.min(base, Math.floor(SIG_WIDTH / (text.length * perCharacter)))
+/** The vial's type scale as CSS custom properties, so one stylesheet draws every C3 size. */
+function frontVars(v: Vial): CSSProperties {
+  const f = v.front
+  return {
+    width: v.width,
+    minHeight: v.height,
+    '--pad-y': `${f.padY}px`,
+    '--pad-x': `${f.padX}px`,
+    '--gap': `${f.gap}px`,
+    '--critical-gap': `${f.criticalGap}px`,
+    '--pointer': `${f.pointerFont}px`,
+    '--name': `${f.name}px`,
+    '--drug': `${f.drug}px`,
+    '--generic': `${f.generic}px`,
+    '--directions': `${f.directions}px`,
+    '--hl-y': `${f.highlight.y}px`,
+    '--hl-x': `${f.highlight.x}px`,
+    '--details': `${f.details}px`,
+    '--details-gap': `${f.detailsGap}px`,
+    '--peel': `${v.peel.size}px`,
+    '--peel-font': `${v.peel.font}px`,
+  } as CSSProperties
 }
 
-/** Panel 1 — Kroll's English vial label, plus the pointer strip when a translation is under it (Figma label 10). */
+function backVars(v: Vial): CSSProperties {
+  const b = v.back
+  return {
+    width: v.width,
+    minHeight: v.height,
+    '--head-h': `${b.headerHeight}px`,
+    '--head-x': `${b.headerPadX}px`,
+    '--head-font': `${b.headerFont}px`,
+    '--tag-font': `${b.tagFont}px`,
+    '--pad-y': `${b.padY}px`,
+    '--pad-x': `${b.padX}px`,
+    '--gap': `${b.gap}px`,
+    '--name': `${b.name}px`,
+    '--drug': `${b.drug}px`,
+    '--side': `${b.side}px`,
+    '--directions': `${b.directions}px`,
+    '--hl-y': `${v.front.highlight.y}px`,
+    '--hl-x': `${v.front.highlight.x}px`,
+  } as CSSProperties
+}
+
+/**
+ * Panel 1, the front label (Figma C3): patient, drug and directions first and largest, then the
+ * required details. No warnings: those are stickers. With a translation underneath, a peel tab,
+ * and on labels with room for it, a "turn to the back" line in the patient's language.
+ */
 export function Panel1({ job }: { job: PrintJob }) {
+  const v = vialById(job.vial)
   const t = job.translation
-  const d = job.details
   const strings = t ? languageByCode(t.language).label : undefined
   const chromeInEnglish = job.englishLines.includes('chrome')
-  const rtl = t ? languageByCode(t.language).rtl : false
+  const d = job.details
   return (
-    <div className="lbl lbl-p1" data-panel="1">
-      <div className="lbl-p1-body">
-        <div className="lbl-rx">
-          <p className="lbl-pharmacy">{`${RX.pharmacy}   ${RX.pharmacyPhone}`}</p>
-          <p className="lbl-address">{RX.pharmacyAddress}</p>
-          <div className="lbl-line">
-            <span className="lbl-hl lbl-17b">Rx:{job.rx}</span>
-            <span className="lbl-16b">{patientName(d)}</span>
-          </div>
-          <div className="lbl-line">
-            <span className="lbl-12">{d.doctor}</span>
-            <span className="lbl-10">{job.date}</span>
-          </div>
-          <div className="lbl-line is-start">
-            <span className="lbl-16">{d.quantity} {job.form === 'tablet' ? 'TAB' : RX.form}</span>
-            <span className="lbl-16b">{`${d.brand}  ${d.strength}`}</span>
-          </div>
-          <div className="lbl-line">
-            <span className="lbl-12 lbl-italic">{d.generic} {d.strength}</span>
-            <span className="lbl-7">Expiry:{job.expiry}</span>
-          </div>
-          <div className="lbl-line">
-            <span className="lbl-10">{`DIN:  ${RX.din}  ${RX.manufacturer}`}</span>
-            <span className="lbl-hl lbl-10b">Refills: {d.refills}</span>
-          </div>
-          <p className="lbl-17b lbl-sig" data-testid="label-english-sig">{job.englishSig}</p>
+    <div className={'lbl lbl-front' + (t ? ' has-peel' : '')} data-panel="1" data-vial={v.id} style={frontVars(v)}>
+      {t && strings && v.pointer && (
+        <div className="lbl-pointer">
+          {!chromeInEnglish && <p className="lbl-pointer-main" lang={t.language}>{strings.pointer}</p>}
+          <p className="lbl-pointer-en">Turn to the back for translated medication instructions</p>
         </div>
-        <div className="lbl-warnings">
-          {RX.warnings.map((w) => (
-            <p key={w}>{w}</p>
-          ))}
+      )}
+      <div className="lbl-critical">
+        <p className="lbl-name">{patientName(d)}</p>
+        <div>
+          <p className="lbl-drug">{`${d.brand}  ${d.strength}`}</p>
+          <p className="lbl-generic">{d.generic} {d.strength}</p>
         </div>
+        <p className="lbl-directions" data-testid="label-english-sig">
+          <span>{sentenceCase(job.englishSig)}</span>
+        </p>
       </div>
+      <div className="lbl-divider" />
+      <div className="lbl-details">
+        <p className="lbl-row"><span>Rx: {job.rx}</span><span>Filled: {job.date}</span></p>
+        <p className="lbl-row"><span>{d.doctor}</span><span>{`Qty: ${d.quantity} ${job.form === 'tablet' ? 'TAB' : RX.form} · Refills: ${d.refills}`}</span></p>
+        <p className="lbl-row"><span>{`DIN: ${RX.din}  ${RX.manufacturer}`}</span><span>Expiry: {job.expiry}</span></p>
+      </div>
+      <p className="lbl-pharmacy">{`${RX.pharmacy}   ${RX.pharmacyPhone} · ${RX.pharmacyAddress}`}</p>
       {t && strings && (
-        <div className="lbl-pointer" dir={rtl ? 'rtl' : 'ltr'}>
-          <div className="lbl-pointer-text">
-            <p className="lbl-pointer-main" lang={chromeInEnglish ? 'en' : t.language}>{chromeInEnglish ? 'Look at the back for instructions' : strings.pointer}</p>
-            <p className="lbl-pointer-gloss" dir="ltr">Look at the back for instructions — printed in the patient’s language, not English</p>
-          </div>
-          <div className="lbl-peel">
-            <img src={peelOff} width={64} height={35.833} alt="" style={rtl ? { transform: 'scaleX(-1)' } : undefined} />
-            <span lang={chromeInEnglish ? 'en' : t.language}>{chromeInEnglish ? 'PEEL' : strings.peel}</span>
-          </div>
+        <div className="lbl-peel" aria-label="Peel tab">
+          <img src={v.peel.src} alt="" />
+          <span>
+            {!chromeInEnglish && <span lang={t.language}>{strings.peel}</span>}
+            <span>Peel</span>
+          </span>
         </div>
       )}
     </div>
   )
 }
 
-/** Quantity, refills, dates and prescriber in the patient's language. The values stay as dispensed. */
-function Dispensing({ job, english }: { job: PrintJob; english: boolean }) {
-  const t = job.translation!
-  const language = languageByCode(t.language)
-  if (english) {
-    const d = job.details
-    return (
-      <p className="lbl-dispensing" dir="ltr" data-testid="label-dispensing">
-        {`Qty: ${d.quantity}  ·  Refills: ${d.refills}  ·  Filled: ${job.date}  ·  Expiry: ${job.expiry}  ·  ${d.doctor}`}
-        <span className="lbl-untranslated"> · could not be translated</span>
-      </p>
-    )
-  }
-  const parts = dispensingParts(t.language, job.details, job.form, job.date, job.expiry)
-  return (
-    <p className="lbl-dispensing" lang={language.code} dir={language.rtl ? 'rtl' : 'ltr'} data-testid="label-dispensing">
-      {parts.map(({ template, value }, i) => {
-        const [before, after] = template.split('{}')
-        return (
-          <span key={template}>
-            {i > 0 && '  ·  '}
-            {before}
-            <bdi dir="ltr">{value}</bdi>
-            {after}
-          </span>
-        )
-      })}
-    </p>
-  )
-}
-
-/** An auxiliary warning: in the patient's language, or in English when it was flagged or its phrase is paused. */
-function Warning({ text, english }: { text: string; english: boolean }) {
-  return (
-    <li lang={english ? 'en' : undefined} dir={english ? 'ltr' : undefined} className={english ? 'is-english' : undefined}>
-      {text}
-      {english && <span className="lbl-untranslated"> · could not be translated</span>}
-    </li>
-  )
-}
-
-/** Panel 2 — the under-panel in the patient's language, revealed when panel 1 is peeled (Figma C2). */
+/** Panel 2, the under-panel in the patient's language, revealed when panel 1 is peeled (Figma C3). */
 export function Panel2({ job }: { job: PrintJob }) {
   const t = job.translation
   if (!t) return null
+  const v = vialById(job.vial)
   const language = languageByCode(t.language)
   const strings = language.label!
-  const inEnglish = (key: string): boolean => job.englishLines.includes(key)
-  const warnings = RX_WARNINGS[t.language]?.map((w, i) => (inEnglish(`warning-${i + 1}`) ? { text: RX.warnings[i], english: true } : { text: w, english: false }))
+  const chromeInEnglish = job.englishLines.includes('chrome')
   const dir = language.rtl ? 'rtl' : 'ltr'
   const d = job.details
+  const expiryLabel = chromeInEnglish ? 'Expiry:' : v.back.expiryEnglish ? `${strings.expiry} Expiry:` : `${strings.expiry}:`
   return (
-    <div className="lbl lbl-p2" data-panel="2">
-      <div className="lbl-p2-head" dir={dir}>
-        <span lang={inEnglish('chrome') ? 'en' : t.language} className="lbl-p2-title">{inEnglish('chrome') ? 'Instructions' : strings.header}</span>
-        <span className="lbl-9b" dir="ltr">{strings.tag}</span>
+    <div className="lbl lbl-back" data-panel="2" data-vial={v.id} style={backVars(v)}>
+      <div className="lbl-back-head" dir={dir}>
+        <span className="lbl-back-title" lang={chromeInEnglish ? 'en' : t.language}>{chromeInEnglish ? 'Instructions' : strings.header}</span>
+        <span className="lbl-back-tag" dir="ltr">{strings.tag}</span>
       </div>
-      <div className="lbl-p2-body">
-        <div className="lbl-line" dir={dir}>
-          <div className="lbl-stack" dir="ltr">
-            <span className="lbl-16b">{patientName(d)}</span>
-            <span className="lbl-11b">{`${d.brand}  ${d.strength}  ·  ${d.generic}`}</span>
+      <div className="lbl-back-body">
+        <div className="lbl-back-top" dir={dir}>
+          <div className="lbl-back-who" dir="ltr">
+            <p className="lbl-name">{patientName(d)}</p>
+            <p className="lbl-drug">{`${d.brand}  ${d.strength}`}</p>
           </div>
-          <div className="lbl-stack is-end" dir="ltr">
-            <span className="lbl-11b">Rx:{job.rx}</span>
-            <span className="lbl-9">DIN: {RX.din}</span>
+          <div className="lbl-back-side" dir="ltr">
+            <p className="is-bold">Rx: {job.rx}</p>
+            <p>DIN: {RX.din}</p>
+            <p lang={chromeInEnglish ? 'en' : t.language}>{expiryLabel} {job.expiry}</p>
           </div>
         </div>
-        <div className="lbl-rule" />
-        <div className="lbl-translated" dir={dir}>
-          <p className="lbl-translated-main" lang={t.language} style={{ fontSize: sigSize(t.text, t.language) }} data-testid="label-translated-sig">
-            {t.text}
-          </p>
-          <p className="lbl-gloss" dir="ltr">{t.gloss}</p>
-          <Dispensing job={job} english={inEnglish('dispensing')} />
-        </div>
-        <div className="lbl-footer" dir={dir}>
-          {strings.footer.map((line) => (
-            <p key={line} lang={t.language}>{line}</p>
-          ))}
-        </div>
-        {warnings && (
-          <>
-            <div className="lbl-rule" />
-            <div className="lbl-p2-warnings" lang={t.language} dir={dir} data-testid="label-translated-warnings">
-              <ol>
-                {warnings.slice(0, 2).map((w) => (
-                  <Warning key={w.text} {...w} />
-                ))}
-              </ol>
-              <ol start={3}>
-                {warnings.slice(2).map((w) => (
-                  <Warning key={w.text} {...w} />
-                ))}
-              </ol>
-            </div>
-          </>
-        )}
-        <p className="lbl-trace" dir="ltr" data-testid="label-trace">
+        <div className="lbl-divider" />
+        <p className="lbl-directions" lang={t.language} dir={dir} data-testid="label-translated-sig">
+          <span>{t.text}</span>
+        </p>
+        <p className="lbl-gloss">{sentenceCase(t.gloss)}</p>
+        <p className="lbl-trace" data-testid="label-trace">
           Trace {job.trace} · Library {job.libraryVersion} · <span className="lbl-demo">demo wording, not verified</span>
         </p>
       </div>
+    </div>
+  )
+}
+
+/** One auxiliary warning sticker (Figma C3 "Warning sticker / …"), 2″ × 0.5″. */
+export function WarningSticker({ sticker }: { sticker: Sticker }) {
+  return (
+    <div className="lbl-sticker" style={{ background: sticker.colour }} data-testid={`sticker-${sticker.id}`}>
+      <img src={sticker.icon} width={30} height={30} alt="" />
+      <div>
+        <p className="lbl-sticker-title">{sticker.title}</p>
+        {sticker.detail && <p className="lbl-sticker-detail">{sticker.detail}</p>}
+      </div>
+    </div>
+  )
+}
+
+/** The stickers for this drug's warnings, in priority order. They go on the vial, never on the label. */
+export function Stickers() {
+  const stickers = STICKERS.filter((s) => RX.warnings[s.warning] !== undefined)
+  return (
+    <div className="lbl-stickers" data-testid="label-stickers">
+      {stickers.map((s) => (
+        <WarningSticker key={s.id} sticker={s} />
+      ))}
     </div>
   )
 }

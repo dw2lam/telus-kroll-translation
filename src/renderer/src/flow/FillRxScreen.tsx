@@ -6,6 +6,7 @@ import { Btn, Field, FKeyBar, Label, MenuBar, pharmacistInitials, StatusBar } fr
 import { parseSigCode } from '@/data/phrasebook'
 import { krollSigText } from './state'
 import drugCapsules from '@/assets/drug-capsules.svg'
+import { suggestVial, type VialId, VIALS, vialById } from '@/labels/vials'
 
 interface Props {
   language: LanguageCode
@@ -20,10 +21,38 @@ interface Props {
   onFill: () => void
   onPreview: () => void
   onRequests: () => void
+  /** The vial picked, or null for Kroll's suggestion from the quantity. */
+  vial: VialId | null
+  onVial: (vial: VialId | null) => void
+}
+
+/** The vial, which sets the label size (Figma C3). Kroll suggests one from the quantity; the pharmacist can pick another. */
+function VialField({ vial, suggested, onVial }: { vial: VialId | null; suggested: VialId; onVial: (vial: VialId | null) => void }) {
+  const [open, setOpen] = useState(false)
+  const current = vialById(vial ?? suggested)
+  return (
+    <div className="k-select" style={{ position: 'relative' }}>
+      <button type="button" className="k-field h17" style={{ width: 84 }} onClick={() => setOpen((o) => !o)} data-testid="vial-field" title={`Label ${current.inches}`}>
+        <span>{current.name}</span>
+        <span className="k-caret">▾</span>
+      </button>
+      {open && (
+        <div className="k-list" style={{ width: 168, top: 18, left: 0 }} role="listbox" data-testid="vial-list">
+          {VIALS.map((v) => (
+            <button type="button" key={v.id} className={v.id === current.id ? 'is-selected' : undefined}
+              onClick={() => { onVial(v.id === suggested ? null : v.id); setOpen(false) }} data-testid={`vial-${v.id}`}>
+              <span>{v.name}</span>
+              <span className="k-list-note">{v.id === suggested ? 'Suggested' : v.inches}</span>
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  )
 }
 
 /** F12 Fill Rx (Figma B3 / B5 / B6), the screen the Translated Sig pop-up opens over. */
-export function FillRxScreen({ language, details, onEdit, sigInput, translated, dialogOpen, onSig, onSubmit, onPatient, onFill, onPreview, onRequests }: Props) {
+export function FillRxScreen({ language, details, onEdit, sigInput, translated, dialogOpen, onSig, onSubmit, onPatient, onFill, onPreview, onRequests, vial, onVial }: Props) {
   const input = useRef<HTMLInputElement>(null)
   const lang = languageByCode(language)
   const sigText = krollSigText(sigInput)
@@ -171,6 +200,10 @@ export function FillRxScreen({ language, details, onEdit, sigInput, translated, 
             <Label width={44}>Labels</Label>
             <Field value="1" width={34} />
             <Btn width={22} onClick={onPreview} title="Preview labels" testId="btn-labels-f2">F2</Btn>
+          </div>
+          <div className="k-row is-open">
+            <Label width={44}>Vial</Label>
+            <VialField vial={vial} suggested={suggestVial(details.quantity, form)} onVial={onVial} />
           </div>
         </div>
         <div className="k-panel k-form" style={{ flex: '1 0 0', gap: 2 }}>

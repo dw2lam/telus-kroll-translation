@@ -89,9 +89,19 @@
 .k-dialog-footer { background: #fff; display: flex; justify-content: flex-end; gap: 8px; padding: 8px 12px 10px; }
 .k-dbtn { all: unset; height: 18px; display: inline-flex; align-items: center; padding: 0 10px; background: var(--surface-control); border: 1px solid var(--border-control); font-size: 9px; cursor: pointer; }
 .k-dbtn.is-primary { background: var(--accent-ok); color: #fff; }
+.k-dbtn { gap: 5px; }
+.k-dbtn:disabled { opacity: 0.45; cursor: default; }
+.k-print-icon { flex-shrink: 0; }
 .k-dbtn:hover { filter: brightness(0.95); }
 .k-dnote { font-size: 10px; }
 .k-dnote.is-warning { color: var(--accent-warning); }
+/* An error that stops translation: a red box, not just red text (team review). */
+.k-alert { display: block; padding: 6px 8px; background: #fdecec; border: 1px solid #e8a3a3; border-left: 3px solid var(--accent-warning); color: #8f1d1d; font-size: 10px; line-height: 1.4; }
+/* Printed: say so plainly at the top of the dialog. */
+.k-confirm { display: flex; align-items: center; gap: 8px; padding: 6px 8px; background: #eaf7ee; border: 1px solid #a9d8b6; font-size: 10px; color: #14532d; }
+.k-confirm b { font-size: 11px; }
+.k-confirm-check { width: 16px; height: 16px; flex-shrink: 0; display: grid; place-items: center; border-radius: 8px; background: var(--accent-ok); color: #fff; font-size: 10px; font-weight: 700; }
+.k-preview-stickers { zoom: 0.62; width: 924px; }
 .k-hint { font-size: 9px; color: var(--text-muted); }
 
 /* Hi-fi B3: source row, responsibility note, request box, translation record, requests list. */
@@ -129,6 +139,7 @@
 /* F3 Patient (Figma B2). */
 .k-patient { height: 185px; flex-shrink: 0; background: var(--field-patient); border: 1px solid var(--border-field); padding: 8px; display: flex; flex-direction: column; gap: 6px; }
 .k-patient-body { display: flex; gap: 10px; align-items: flex-start; }
+.k-list .k-list-note { margin-left: auto; padding-left: 8px; color: var(--text-muted); font-size: 8px; }
 .k-select > .k-field { cursor: pointer; padding-right: 0; font-size: 9px; text-align: left; }
 .k-phones { width: 100%; background: var(--surface-field); border: 1px solid var(--border-field); }
 .k-phones-head { display: flex; justify-content: space-between; align-items: center; padding: 2px 4px; background: var(--surface-control); }
